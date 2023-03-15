@@ -1,0 +1,15 @@
+app_name: LL! SIF Private Server
+server:
+    powered_by: KLab Native APP Platform
+    version_date: "20120129"
+    version_number: 97.4.6
+    version_up: "0"
+log:
+    log_dir: logs
+    log_level: 5
+    log_save: true
+redis:
+    host: 192.168.1.9
+    port: "6379"
+    pass: "klsbgames"
+    db: 5
