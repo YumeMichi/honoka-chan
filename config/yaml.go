@@ -18,6 +18,7 @@ type AppConfigs struct {
 	Server  ServerConfigs `yaml:"server"`
 	Log     LogConfigs    `yaml:"log"`
 	Redis   RedisConfigs  `yaml:"redis"`
+	SifCap  SifCapConfigs `yaml:"sifcap"`
 }
 
 type ServerConfigs struct {
@@ -40,6 +41,10 @@ type RedisConfigs struct {
 	Db   int    `yaml:"db"`
 }
 
+type SifCapConfigs struct {
+	Enabled bool `yaml:"enabled"`
+}
+
 func DefaultConfigs() *AppConfigs {
 	return &AppConfigs{
 		AppName: "LL! SIF Private Server",
@@ -59,6 +64,9 @@ func DefaultConfigs() *AppConfigs {
 			Port: "6379",
 			Pass: "",
 			Db:   0,
+		},
+		SifCap: SifCapConfigs{
+			Enabled: false,
 		},
 	}
 }

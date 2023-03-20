@@ -13,3 +13,5 @@ redis:
     port: "6379"
     pass: "klsbgames"
     db: 5
+sifcap:
+    enabled: false
