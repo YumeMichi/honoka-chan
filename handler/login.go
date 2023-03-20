@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"honoka-chan/database"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
 	"honoka-chan/utils"
@@ -48,7 +49,7 @@ func AuthKeyHandler(ctx *gin.Context) {
 		"server_token": serverToken,
 		"nonce":        nonce,
 	}
-	_, err = redisCli.HSet(redisCtx, authorizeToken, authData).Result()
+	_, err = database.RedisCli.HSet(database.RedisCtx, authorizeToken, authData).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +95,7 @@ func LoginHandler(ctx *gin.Context) {
 		ctx.String(http.StatusForbidden, "Fuck you!")
 		return
 	}
-	authData, err := redisCli.HGetAll(redisCtx, authToken[0]).Result()
+	authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken[0]).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -134,7 +135,7 @@ func LoginHandler(ctx *gin.Context) {
 	nonce++
 
 	authorizeToken := utils.RandomBase64Token(32)
-	uid, err := redisCli.HGet(redisCtx, "login_key_uid", string(keyDescrypted)).Result()
+	uid, err := database.RedisCli.HGet(database.RedisCtx, "login_key_uid", string(keyDescrypted)).Result()
 	if err != nil {
 		ctx.String(http.StatusForbidden, "Fuck you!")
 		return

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"honoka-chan/resp"
+	"honoka-chan/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,8 +9,8 @@ import (
 
 func GdprHandler(ctx *gin.Context) {
 	ctx.Header("Server-Version", "97.4.6")
-	ctx.Header("user_id", "5802913")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1678640520&version=1.1&token=bS5G6TKTsw0aGxVQz8JWJTx8Tf73H0bF9Bq1PEw3UaxoEoUG8GcrrzaEbjOwEQJTrThgHpBlbwnMRl9ITGw1&nonce=4&requestTimeStamp=1678640520")
-	ctx.Header("X-Message-Sign", "nGH0cQ34z9D3QnTGFDe2r2WMBGfTzYx+5oaJJbvYCqMESTDAQWlxq8X73OBLgdCkEIMuIAiRyF0z+0MQEVohDL4l6nDgcVDDJztCXP/W5ZXZh1wNgGhHZIDrwboNjsg1acq0+phBAiBEQQt6HipEdGRQh5fhAhhA717ns/C4iUI=")
-	ctx.String(http.StatusOK, resp.Gdpr)
+	ctx.Header("user_id", "3241988")
+	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236700&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=4&requestTimeStamp=1679236697")
+	ctx.Header("X-Message-Sign", "El2L/coKTfbHF8shto7SjxnukwicN1BtIMhvD21uKy+9ISwH0G2fI4aCemKn77o54H2zv+mVN4osDK0N0Zi86lGyx0rFXMlQ75D7XKX5KbWAhHcgn+W8t6tk2R0PVUyEeo1gtHgjNauT1asNK+PDJ7h3WWINPFgfVSnldCUnYLk=")
+	ctx.String(http.StatusOK, utils.ReadAllText("assets/gdpr.json"))
 }

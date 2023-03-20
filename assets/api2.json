@@ -1,0 +1,96 @@
+{
+    "response_data": [
+        {
+            "result": {
+                "friend_action_cnt": 0,
+                "friend_greet_cnt": 0,
+                "friend_variety_cnt": 0,
+                "friend_new_cnt": 0,
+                "present_cnt": 0,
+                "secret_box_badge_flag": true,
+                "server_datetime": "2023-03-13 01:02:03",
+                "server_timestamp": 1678640523,
+                "notice_friend_datetime": "2013-04-15 11:47:00",
+                "notice_mail_datetime": "2000-01-01 12:00:00",
+                "friends_approval_wait_cnt": 0,
+                "friends_request_cnt": 0,
+                "is_today_birthday": false,
+                "license_info": {
+                    "license_list": [],
+                    "licensed_info": [],
+                    "expired_info": [],
+                    "badge_flag": false
+                },
+                "using_buff_info": [],
+                "is_klab_id_task_flag": false,
+                "klab_id_task_can_sync": false,
+                "has_unread_announce": true,
+                "exchange_badge_cnt": [
+                    642,
+                    41,
+                    0
+                ],
+                "ad_flag": false,
+                "has_ad_reward": false
+            },
+            "status": 200,
+            "commandNum": false,
+            "timeStamp": 1678640523
+        },
+        {
+            "result": {
+                "new_achievement_cnt": 61,
+                "unaccomplished_achievement_cnt": 80,
+                "live_daily_reward_exist": false,
+                "training_energy": 3,
+                "training_energy_max": 3,
+                "notification": {
+                    "push": true,
+                    "lp": false,
+                    "update_info": false,
+                    "campaign": false,
+                    "live": false,
+                    "lbonus": false,
+                    "event": true,
+                    "secretbox": true,
+                    "birthday": true
+                },
+                "open_arena": true,
+                "costume_status": true,
+                "open_accessory": true,
+                "arena_si_skill_unique_check": true,
+                "open_v98": true
+            },
+            "status": 200,
+            "commandNum": false,
+            "timeStamp": 1678640523
+        },
+        {
+            "result": {
+                "accessory_list": [],
+                "wearing_info": [],
+                "especial_create_flag": false
+            },
+            "status": 200,
+            "commandNum": false,
+            "timeStamp": 1678640523
+        },
+        {
+            "result": {
+                "museum_info": {
+                    "parameter": {
+                        "smile": 0,
+                        "pure": 0,
+                        "cool": 0
+                    },
+                    "contents_id_list": []
+                }
+            },
+            "status": 200,
+            "commandNum": false,
+            "timeStamp": 1678640523
+        }
+    ],
+    "release_info": [],
+    "status_code": 200
+}

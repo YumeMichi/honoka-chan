@@ -5,6 +5,7 @@ import (
 	"honoka-chan/handler"
 	"honoka-chan/middleware"
 	"honoka-chan/sifcap"
+	"honoka-chan/tools"
 	"honoka-chan/xclog"
 
 	"github.com/gin-gonic/gin"
@@ -15,59 +16,8 @@ func init() {
 }
 
 func main() {
-	// test
-	// apiData := utils.ReadAllText("data/api1.json")
-	// var obj model.Response
-	// err := json.Unmarshal([]byte(apiData), &obj)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// var data interface{}
-	// err = json.Unmarshal(obj.ResponseData, &data)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// resultType := reflect.TypeOf(data)
-	// // fmt.Println(resultType.Kind())
-	// if resultType.Kind() == reflect.Map {
-	// 	data = data.(map[string]interface{})
-	// }
-	// result := data.([]interface{})
-	// for k, v := range result {
-	// 	m, err := json.Marshal(v)
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-
-	// 	switch k {
-	// 	case 0:
-	// 		res := model.LiveStatusResp{}
-	// 		err = json.Unmarshal(m, &res)
-	// 		if err != nil {
-	// 			panic(err)
-	// 		}
-	// 		// fmt.Println(res.Result.NormalLiveStatusList[0].HiScore)
-	// 	case 1:
-	// 		res := model.LiveScheduleResp{}
-	// 		err = json.Unmarshal(m, &res)
-	// 		if err != nil {
-	// 			panic(err)
-	// 		}
-	// 		// fmt.Println(res.Result.LiveList[0].StartDate)
-	// 	case 2:
-	// 		res := model.UnitAllResp{}
-	// 		err = json.Unmarshal(m, &res)
-	// 		if err != nil {
-	// 			panic(err)
-	// 		}
-	// 		for _, vv := range res.Result.Active {
-	// 			if vv.MaxLevel == 120 {
-	// 				fmt.Println(vv)
-	// 			}
-	// 		}
-	// 	}
-	// }
+	tools.AnalysisApi1Data("assets/api1.json")
+	tools.AnalysisApi2Data("assets/api2.json")
 
 	if config.Conf.SifCap.Enabled {
 		sifcap.Start()

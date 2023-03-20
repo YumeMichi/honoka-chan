@@ -614,7 +614,7 @@ func Start() {
 	fmt.Printf(" overlap packets:\t%d\n", stats.overlapPackets)
 	fmt.Printf(" overlap bytes:\t\t%d\n", stats.overlapBytes)
 	fmt.Printf("Errors: %d\n", errors)
-	for e, _ := range errorsMap {
+	for e := range errorsMap {
 		fmt.Printf(" %s:\t\t%d\n", e, errorsMap[e])
 	}
 }

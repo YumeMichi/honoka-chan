@@ -1,15 +1,15 @@
 package handler
 
 import (
-	"honoka-chan/resp"
+	"honoka-chan/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func TosCheckHandler(ctx *gin.Context) {
-	ctx.Header("user_id", "5802913")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1678640520&version=1.1&token=bS5G6TKTsw0aGxVQz8JWJTx8Tf73H0bF9Bq1PEw3UaxoEoUG8GcrrzaEbjOwEQJTrThgHpBlbwnMRl9ITGw1&nonce=6&requestTimeStamp=1678640520")
-	ctx.Header("X-Message-Sign", "lHGAUrSt27AAUkeB+WJCSLjs9xZdyNnDRlZVZ0VRXFhqDnVBag0lwSQEUQoedh3/FyIHazbfjuTJw9REsgSJwX05I7GW7KoqPIYNoRLiLgjM6Y7MOZWrpVdipWl0q7IPS3mKyL8ye6sRZ8TfWx8cFfnohp3U7FnvrAEWdh1h71I=")
-	ctx.String(http.StatusOK, resp.TosCheck)
+	ctx.Header("user_id", "3241988")
+	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=6&requestTimeStamp=1679236698")
+	ctx.Header("X-Message-Sign", "3OYeXseR08OvVJfG9cEU6CbEXwbjAhL93vTEL6G4i3FqCY5wpELp0XR8FVZeHo7wsO9UI3+5JJZylnlWvaPgaXej2oefsk5cWHO2rKvrPxaqWRfz5YeGZBvXQejY81KgRRZBWZaQBlHEacH+aILl608xwQGQ98wGtyyMYfOf4Ss=")
+	ctx.String(http.StatusOK, utils.ReadAllText("assets/toscheck.json"))
 }

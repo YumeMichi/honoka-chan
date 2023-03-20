@@ -1,0 +1,10 @@
+{
+    "response_data": {
+        "tos_id": 1,
+        "tos_type": 1,
+        "is_agreed": true,
+        "server_timestamp": 1679236701
+    },
+    "release_info": [],
+    "status_code": 200
+}

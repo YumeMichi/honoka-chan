@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"honoka-chan/resp"
+	"honoka-chan/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,8 +9,8 @@ import (
 
 func LBonusExecuteHandler(ctx *gin.Context) {
 	ctx.Header("Server-Version", "97.4.6")
-	ctx.Header("user_id", "5802913")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1678640521&version=1.1&token=bS5G6TKTsw0aGxVQz8JWJTx8Tf73H0bF9Bq1PEw3UaxoEoUG8GcrrzaEbjOwEQJTrThgHpBlbwnMRl9ITGw1&nonce=8&requestTimeStamp=1678640521")
-	ctx.Header("X-Message-Sign", "2UDMPncUOcUnQdLPCSuZIrRWK9yRgASUzCL3YiMpox/IUDNrHn7BRr/eo6iMQ1TlDTnNqzHj/ZP/8m4rpgvlDFHg16nlPUQJe0hqF9Ck3tjeHfT7wbwV75deoqIlPNONS5u3eCI8ZlhRf9VeDUBxRoVDRiq4xqiwjOILvmPAb1w=")
-	ctx.String(http.StatusOK, resp.LBonus)
+	ctx.Header("user_id", "3241988")
+	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=9&requestTimeStamp=1679236698")
+	ctx.Header("X-Message-Sign", "pV5H3WfRtj2zpDYuYwt9BuB8jMUJiXrGXQbsemJA+8sX7/c9s4mnbMFTKDD3cxK1mSeCLNhJVtR1M6QKZVgbCjyQGSVPR1EG1cTumR9T5LFF6ighJWV7EEYxbeYgJjAEcjVHOgB3d2hy7SK7u4oCatEgXhbJMQYGV5lH2gdwEpw=")
+	ctx.String(http.StatusOK, utils.ReadAllText("assets/lbonus.json"))
 }
