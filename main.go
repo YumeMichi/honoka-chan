@@ -19,6 +19,7 @@ func main() {
 	tools.AnalysisApi1Data("assets/api1.json")
 	tools.AnalysisApi2Data("assets/api2.json")
 	tools.AnalysisApi3Data("assets/api3.json")
+	// tools.ListUnitData()
 
 	if config.Conf.SifCap.Enabled {
 		sifcap.Start()
