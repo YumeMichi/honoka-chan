@@ -2,10 +2,10 @@ package tools
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"honoka-chan/model"
 
-	"github.com/goccy/go-json"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -14,6 +14,7 @@ func ListUnitData() {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 
 	sql := `SELECT unit_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140)));`
 	rows, err := db.Query(sql)
@@ -90,12 +91,29 @@ func ListUnitData() {
 			unitData.UnitSkillLevel = 8
 			unitData.UnitRemovableSkillCapacity = 8
 			unitData.FavoriteFlag = true
-			unitData.IsRankMax = false
-			unitData.IsLevelMax = false
-			unitData.IsLoveMax = false
-			unitData.IsSigned = true
+			unitData.IsRankMax = true
+			unitData.IsLevelMax = true
+			unitData.IsLoveMax = true
 			unitData.IsSkillLevelMax = true
 			unitData.IsRemovableSkillCapacityMax = true
+
+			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
+			if err != nil {
+				panic(err)
+			}
+
+			ct := 0
+			for rs.Next() {
+				err = rs.Scan(&ct)
+				if err != nil {
+					panic(err)
+				}
+			}
+			if ct > 0 {
+				unitData.IsSigned = true
+			} else {
+				unitData.IsSigned = false
+			}
 		}
 
 		unitsData = append(unitsData, unitData)
@@ -106,6 +124,4 @@ func ListUnitData() {
 		panic(err)
 	}
 	fmt.Println(string(data))
-
-	db.Close()
 }
