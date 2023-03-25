@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"honoka-chan/model"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -16,7 +17,7 @@ func ListUnitData() {
 	}
 	defer db.Close()
 
-	sql := `SELECT unit_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140)));`
+	sql := `SELECT unit_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140))) ORDER BY unit_number ASC;`
 	rows, err := db.Query(sql)
 	if err != nil {
 		panic(err)
@@ -24,6 +25,7 @@ func ListUnitData() {
 
 	unitsData := []model.Active{}
 	oId := 3071290948
+	sdt := time.Now().Add(-time.Hour * 24 * 30)
 
 	for rows.Next() {
 		unitData := model.Active{}
@@ -34,6 +36,7 @@ func ListUnitData() {
 			continue
 		}
 		oId++
+		sdt = sdt.Add(time.Second * 3)
 
 		unitData.UnitOwningUserID = oId
 		unitData.UnitID = uid
@@ -42,7 +45,7 @@ func ListUnitData() {
 		unitData.MaxRank = max_rank
 		unitData.MaxHp = hp_max
 		unitData.DisplayRank = 2
-		unitData.InsertDate = "2023-03-17 21:35:20"
+		unitData.InsertDate = sdt.Local().Format("2006-01-02 03:04:05")
 		if rit != 4 {
 			unitData.Exp = 0
 			unitData.Level = 1
