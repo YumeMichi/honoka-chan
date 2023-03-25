@@ -958,7 +958,7 @@
                         ]
                     }
                 ],
-                "stamp_num": 2
+                "stamp_num": 4
             },
             {
                 "nlbonus_id": 695,
@@ -1095,11 +1095,11 @@
                         ]
                     }
                 ],
-                "stamp_num": 1
+                "stamp_num": 3
             }
         ],
         "calendar_info": {
-            "current_date": "2023-03-19",
+            "current_date": "2023-03-21",
             "current_month": {
                 "year": 2023,
                 "month": 3,
@@ -1364,7 +1364,7 @@
                         "day_of_the_week": 1,
                         "special_day": false,
                         "special_image_asset": "",
-                        "received": false,
+                        "received": true,
                         "ad_received": false,
                         "item": {
                             "item_id": 4,
@@ -1377,7 +1377,7 @@
                         "day_of_the_week": 2,
                         "special_day": false,
                         "special_image_asset": "",
-                        "received": false,
+                        "received": true,
                         "ad_received": false,
                         "item": {
                             "item_id": 3,
@@ -1717,8 +1717,8 @@
             }
         },
         "total_login_info": {
-            "login_count": 2624,
-            "remaining_count": 76,
+            "login_count": 2626,
+            "remaining_count": 74,
             "reward": [
                 {
                     "item_id": 5,
@@ -1743,8 +1743,8 @@
             {
                 "live_effort_point_box_spec_id": 5,
                 "capacity": 4000000,
-                "before": 1482785,
-                "after": 1482785,
+                "before": 1400116,
+                "after": 1400116,
                 "rewards": []
             }
         ],
@@ -1770,8 +1770,8 @@
                 1701
             ]
         },
-        "server_timestamp": 1679236701,
-        "present_cnt": 2165
+        "server_timestamp": 1679360063,
+        "present_cnt": 2140
     },
     "release_info": [],
     "status_code": 200

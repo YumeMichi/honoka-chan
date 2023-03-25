@@ -138,3 +138,45 @@ func AnalysisApi2Data(path string) {
 		}
 	}
 }
+
+func AnalysisApi3Data(path string) {
+	apiData := utils.ReadAllText(path)
+	if apiData != "" {
+		var obj model.Response
+		err := json.Unmarshal([]byte(apiData), &obj)
+		if err != nil {
+			panic(err)
+		}
+
+		var data interface{}
+		err = json.Unmarshal(obj.ResponseData, &data)
+		if err != nil {
+			panic(err)
+		}
+		// resultType := reflect.TypeOf(data)
+		// if resultType.Kind() == reflect.Map {
+		// 	data = data.(map[string]interface{})
+		// }
+		result := data.([]interface{})
+		for k, v := range result {
+			m, err := json.Marshal(v)
+			if err != nil {
+				panic(err)
+			}
+
+			key := ""
+			switch k {
+			case 0:
+				key = "profile_livecnt_result"
+			case 1:
+				key = "profile_card_ranking_result"
+			case 2:
+				key = "profile_info_result"
+			}
+
+			if key != "" {
+				database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+			}
+		}
+	}
+}

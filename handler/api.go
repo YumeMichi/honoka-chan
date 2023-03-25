@@ -12,7 +12,7 @@ import (
 )
 
 func ApiHandler(ctx *gin.Context) {
-	// fmt.Println(c.PostForm("request_data"))
+	// fmt.Println(ctx.PostForm("request_data"))
 	var formdata []model.SifApi
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &formdata)
 	if err != nil {
@@ -124,6 +124,17 @@ func ApiHandler(ctx *gin.Context) {
 		case "museum":
 			// fmt.Println("info")
 			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "museum_result").Result()
+		case "profile":
+			if v.Action == "liveCnt" {
+				// fmt.Println("liveCnt")
+				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "profile_livecnt_result").Result()
+			} else if v.Action == "cardRanking" {
+				// fmt.Println("cardRanking")
+				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "profile_card_ranking_result").Result()
+			} else if v.Action == "profileInfo" {
+				// fmt.Println("profileInfo")
+				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "profile_info_result").Result()
+			}
 		default:
 			// fmt.Println("Fuck you!")
 			err = errors.New("invalid option")

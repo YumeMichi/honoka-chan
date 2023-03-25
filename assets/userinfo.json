@@ -4,18 +4,18 @@
             "user_id": 3241988,
             "name": "\u68a6\u8def @\u65c5\u7acb\u3061\u306e\u65e5\u306b",
             "level": 1028,
-            "exp": 28823566,
+            "exp": 28824396,
             "previous_exp": 27734700,
             "next_exp": 28941885,
-            "game_coin": 86618244,
-            "sns_coin": 49,
-            "free_sns_coin": 48,
-            "paid_sns_coin": 1,
-            "social_point": 1438165,
-            "unit_max": 900,
+            "game_coin": 112124104,
+            "sns_coin": 0,
+            "free_sns_coin": 0,
+            "paid_sns_coin": 0,
+            "social_point": 1438395,
+            "unit_max": 904,
             "waiting_unit_max": 700,
             "energy_max": 417,
-            "energy_full_time": "2023-03-11 09:31:30",
+            "energy_full_time": "2023-03-20 03:58:55",
             "license_live_energy_recoverly_time": 60,
             "energy_full_need_time": 0,
             "over_max_energy": 0,
@@ -31,7 +31,7 @@
             "lp_recovery_item": [
                 {
                     "item_id": 1,
-                    "amount": 17
+                    "amount": 16
                 },
                 {
                     "item_id": 2,
@@ -39,7 +39,7 @@
                 },
                 {
                     "item_id": 3,
-                    "amount": 622
+                    "amount": 662
                 },
                 {
                     "item_id": 4,
@@ -83,7 +83,7 @@
             "birth_month": 5,
             "birth_day": 22
         },
-        "server_timestamp": 1679236700
+        "server_timestamp": 1679360062
     },
     "release_info": [],
     "status_code": 200

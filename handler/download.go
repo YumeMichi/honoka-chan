@@ -7,6 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func DownloadBatchHandler(ctx *gin.Context) {
+	ctx.Header("user_id", "3241988")
+	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=7&requestTimeStamp=1679236698")
+	ctx.Header("X-Message-Sign", "wlfzdWAcqk2B1wgZvJH+YOC64Zc2TcsKZAftPDwM0FLbzPaQnI2/qtdlzviays2redRCzQjePmJEKhDq8AQjUN0D+sX7lwNtlf5HnmCX7SICglYCPflMg+lsl36yppBNkTT8ZbIKu5znlWJVUIXMIS8k/uUwmfBqeOLna7IJNnI=")
+	ctx.String(http.StatusOK, utils.ReadAllText("assets/batch.json"))
+}
+
 func DownloadEventHandler(ctx *gin.Context) {
 	ctx.Header("user_id", "3241988")
 	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=8&requestTimeStamp=1679236698")

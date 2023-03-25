@@ -18,6 +18,7 @@ func init() {
 func main() {
 	tools.AnalysisApi1Data("assets/api1.json")
 	tools.AnalysisApi2Data("assets/api2.json")
+	tools.AnalysisApi3Data("assets/api3.json")
 
 	if config.Conf.SifCap.Enabled {
 		sifcap.Start()
@@ -34,6 +35,7 @@ func main() {
 		r.POST("/main.php/gdpr/get", handler.GdprHandler)
 		r.POST("/main.php/personalnotice/get", handler.PersonalNoticeHandler)
 		r.POST("/main.php/tos/tosCheck", handler.TosCheckHandler)
+		r.POST("/main.php/download/batch", handler.DownloadBatchHandler)
 		r.POST("/main.php/download/event", handler.DownloadEventHandler)
 		r.POST("/main.php/lbonus/execute", handler.LBonusExecuteHandler)
 		r.POST("/main.php/api", handler.ApiHandler)
