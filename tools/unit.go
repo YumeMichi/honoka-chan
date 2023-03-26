@@ -40,7 +40,6 @@ func ListUnitData() {
 
 		unitData.UnitOwningUserID = oId
 		unitData.UnitID = uid
-		unitData.LevelLimitID = 1
 		unitData.Rank = rank
 		unitData.MaxRank = max_rank
 		unitData.MaxHp = hp_max
@@ -49,6 +48,7 @@ func ListUnitData() {
 		if rit != 4 {
 			unitData.Exp = 0
 			unitData.Level = 1
+			unitData.LevelLimitID = 1
 			unitData.Love = 0
 			unitData.UnitSkillExp = 0
 			unitData.UnitSkillLevel = 1
@@ -84,10 +84,11 @@ func ListUnitData() {
 			}
 		} else {
 			// UR
-			unitData.Exp = 117111 // Lv.120
+			unitData.Exp = 79700
 			unitData.NextExp = 0
-			unitData.Level = 120
-			unitData.MaxLevel = 120
+			unitData.Level = 100
+			unitData.MaxLevel = 100
+			unitData.LevelLimitID = 0
 			unitData.Love = 1000
 			unitData.MaxLove = 1000
 			unitData.UnitSkillExp = 29900
