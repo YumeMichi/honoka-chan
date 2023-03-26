@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserInfoHandler(ctx *gin.Context) {
+func ProductListHandler(ctx *gin.Context) {
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
@@ -45,7 +45,7 @@ func UserInfoHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	resp := utils.ReadAllText("assets/userinfo.json")
+	resp := utils.ReadAllText("assets/products.json")
 	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 

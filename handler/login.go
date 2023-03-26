@@ -9,8 +9,6 @@ import (
 	"honoka-chan/model"
 	"honoka-chan/utils"
 	"net/http"
-	"net/url"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,17 +16,19 @@ import (
 
 func AuthKeyHandler(ctx *gin.Context) {
 	reqTime := time.Now().Unix()
+
 	authReq := model.AuthKeyReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &authReq)
 	if err != nil {
 		panic(err)
 	}
+
 	dummyToken64, err := base64.StdEncoding.DecodeString(authReq.DummyToken)
 	if err != nil {
 		panic(err)
 	}
 	dummyTokenDecrypted := encrypt.RSA_Decrypt(dummyToken64, "privatekey.pem")
-	clientToken := base64.RawStdEncoding.EncodeToString(dummyTokenDecrypted)
+
 	aesKey := dummyTokenDecrypted[0:16]
 	data64, err := base64.StdEncoding.DecodeString(authReq.AuthData)
 	if err != nil {
@@ -44,10 +44,10 @@ func AuthKeyHandler(ctx *gin.Context) {
 
 	nonce++
 
+	clientToken := base64.RawStdEncoding.EncodeToString(dummyTokenDecrypted)
 	authData := map[string]interface{}{
 		"client_token": clientToken,
 		"server_token": serverToken,
-		"nonce":        nonce,
 	}
 	_, err = database.RedisCli.HSet(database.RedisCtx, authorizeToken, authData).Result()
 	if err != nil {
@@ -79,29 +79,21 @@ func AuthKeyHandler(ctx *gin.Context) {
 
 func LoginHandler(ctx *gin.Context) {
 	reqTime := time.Now().Unix()
+
 	authorizeStr := ctx.Request.Header["Authorize"]
-	if len(authorizeStr) == 0 {
-		ctx.String(http.StatusForbidden, "Fuck you!")
-		return
-	}
-	fmt.Println(authorizeStr[0])
-	urlParams, err := url.ParseQuery(authorizeStr[0])
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
 	if err != nil {
-		panic(err)
-	}
-	fmt.Println(urlParams)
-	authToken := urlParams["token"]
-	if len(authToken) == 0 {
 		ctx.String(http.StatusForbidden, "Fuck you!")
 		return
 	}
-	authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken[0]).Result()
+
+	authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(authData)
-	clientToken, serverToken, clientNonce := authData["client_token"], authData["server_token"], authData["nonce"]
-	fmt.Println(clientToken)
+
+	clientToken, serverToken := authData["client_token"], authData["server_token"]
 	clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
 	if err != nil {
 		panic(err)
@@ -110,9 +102,10 @@ func LoginHandler(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+
 	xmcKey := utils.SliceXor([]byte(clientToken64), []byte(serverToken64))
-	fmt.Println(xmcKey)
 	aesKey := xmcKey[0:16]
+
 	loginReq := model.LoginReq{}
 	err = json.Unmarshal([]byte(ctx.PostForm("request_data")), &loginReq)
 	if err != nil {
@@ -131,16 +124,25 @@ func LoginHandler(ctx *gin.Context) {
 	passDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(pass64, aesKey))
 	fmt.Println(string(passDescrypted))
 
-	nonce, _ = strconv.Atoi(clientNonce)
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
 	nonce++
 
-	authorizeToken := utils.RandomBase64Token(32)
-	uid, err := database.RedisCli.HGet(database.RedisCtx, "login_key_uid", string(keyDescrypted)).Result()
+	userId, err := database.GetUid(string(keyDescrypted))
 	if err != nil {
 		ctx.String(http.StatusForbidden, "Fuck you!")
 		return
 	}
-	userId, _ := strconv.Atoi(uid)
+	authorizeToken := utils.RandomBase64Token(32)
+
+	_, err = database.RedisCli.HSet(database.RedisCtx, "token_uid", authorizeToken, userId).Result()
+	if err != nil {
+		panic(err)
+	}
 
 	loginResp := model.LoginResp{}
 	loginResp.ResponseData.AuthorizeToken = authorizeToken

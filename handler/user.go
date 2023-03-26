@@ -1,16 +1,99 @@
 package handler
 
 import (
+	"encoding/base64"
+	"fmt"
+	"honoka-chan/config"
+	"honoka-chan/database"
+	"honoka-chan/encrypt"
 	"honoka-chan/resp"
+	"honoka-chan/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetNotificationTokenHandler(ctx *gin.Context) {
-	ctx.Header("Server-Version", "97.4.6")
-	ctx.Header("user_id", "3241988")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1678891478&version=1.1&token=cTMEyAfIDErcKUyCgBM6ZuJv8UBRgSzG4z4MfqYhR7xSHBYhIA9ofaVKtSefeiP2LTKIfbnCfE5dppYw8Af&nonce=18&requestTimeStamp=1678891478")
-	ctx.Header("X-Message-Sign", "bNZj/YjRADDccb5vcF/NHI9Kin3bkM3ECBQdxttXvCBqzoSBX6yWuEn9Fsjx+Yp3g2D9CcONZzqJlAvXbatGHJkbClSXuomLXVOcNmQYgidjyUvC7CceoSvCbL8U4Ge12tyGd8V2EMHVZfxqPKdHsJSGaOFbUpmo7wAhKVfuEjg=")
+	reqTime := time.Now().Unix()
+
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	xms := encrypt.RSA_Sign_SHA1([]byte(resp.NotificationToken), "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
+	ctx.String(http.StatusOK, resp.NotificationToken)
+}
+
+func ChangeNaviHandler(ctx *gin.Context) {
+	reqTime := time.Now().Unix()
+
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	xms := encrypt.RSA_Sign_SHA1([]byte(resp.NotificationToken), "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
 	ctx.String(http.StatusOK, resp.NotificationToken)
 }

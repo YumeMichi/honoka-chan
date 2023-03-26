@@ -1,15 +1,55 @@
 package handler
 
 import (
+	"encoding/base64"
+	"fmt"
+	"honoka-chan/database"
+	"honoka-chan/encrypt"
 	"honoka-chan/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func TosCheckHandler(ctx *gin.Context) {
-	ctx.Header("user_id", "3241988")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=6&requestTimeStamp=1679236698")
-	ctx.Header("X-Message-Sign", "3OYeXseR08OvVJfG9cEU6CbEXwbjAhL93vTEL6G4i3FqCY5wpELp0XR8FVZeHo7wsO9UI3+5JJZylnlWvaPgaXej2oefsk5cWHO2rKvrPxaqWRfz5YeGZBvXQejY81KgRRZBWZaQBlHEacH+aILl608xwQGQ98wGtyyMYfOf4Ss=")
-	ctx.String(http.StatusOK, utils.ReadAllText("assets/toscheck.json"))
+	reqTime := time.Now().Unix()
+
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	resp := utils.ReadAllText("assets/toscheck.json")
+	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
+	ctx.String(http.StatusOK, resp)
 }

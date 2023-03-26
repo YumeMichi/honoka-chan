@@ -1,22 +1,97 @@
 package handler
 
 import (
+	"encoding/base64"
+	"fmt"
+	"honoka-chan/database"
+	"honoka-chan/encrypt"
 	"honoka-chan/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func DownloadBatchHandler(ctx *gin.Context) {
-	ctx.Header("user_id", "3241988")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=7&requestTimeStamp=1679236698")
-	ctx.Header("X-Message-Sign", "wlfzdWAcqk2B1wgZvJH+YOC64Zc2TcsKZAftPDwM0FLbzPaQnI2/qtdlzviays2redRCzQjePmJEKhDq8AQjUN0D+sX7lwNtlf5HnmCX7SICglYCPflMg+lsl36yppBNkTT8ZbIKu5znlWJVUIXMIS8k/uUwmfBqeOLna7IJNnI=")
-	ctx.String(http.StatusOK, utils.ReadAllText("assets/batch.json"))
+	reqTime := time.Now().Unix()
+
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	resp := utils.ReadAllText("assets/batch.json")
+	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
+	ctx.String(http.StatusOK, resp)
 }
 
 func DownloadEventHandler(ctx *gin.Context) {
-	ctx.Header("user_id", "3241988")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1679236701&version=1.1&token=cHPoOHP5dAs2dh30EkOW8FndO07xlpKHrDRdVOtT7Whlo1opiEMXSwk1JJdAFd4cSeKQvGVRwH2Z7sFh1gnz3gd&nonce=8&requestTimeStamp=1679236698")
-	ctx.Header("X-Message-Sign", "rFJdTYrGPvG9V/IESgiAZu4qod4VgVTe5/oj8/5fA2mzXhJkKAD7nE8IOI9MQmjwECFYRc4KLPjtqsxuosloIjxTk6pHiAPtGvzkajqBivbbaBIB2OdIZQarqMRURN5M0TGLOC0vzO9xP5fYKJzMHSskJsmMdunPWLkUz3eqoZU=")
-	ctx.String(http.StatusOK, utils.ReadAllText("assets/event.json"))
+	reqTime := time.Now().Unix()
+
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	resp := utils.ReadAllText("assets/event.json")
+	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
+	ctx.String(http.StatusOK, resp)
 }

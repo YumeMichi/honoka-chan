@@ -6,8 +6,11 @@ package utils
 import (
 	"encoding/base64"
 	"encoding/hex"
+	"errors"
 	"math/rand"
+	"net/url"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -57,4 +60,51 @@ func RandomBase64Token(len int) string {
 	mRandStr := hex.EncodeToString(mRand)[0:len]
 
 	return base64.RawStdEncoding.EncodeToString([]byte(mRandStr))
+}
+
+func ParseAuthorizeStr(authorize []string) (url.Values, error) {
+	if len(authorize) == 0 {
+		return nil, errors.New("authorize is null")
+	}
+	urlParams, err := url.ParseQuery(authorize[0])
+	if err != nil {
+		return nil, err
+	}
+
+	return urlParams, nil
+}
+
+func GetAuthorizeToken(authorize []string) (string, error) {
+	params, err := ParseAuthorizeStr(authorize)
+	if err != nil {
+		return "", err
+	}
+	token := params["token"]
+	if len(token) == 0 {
+		return "", errors.New("token is null")
+	}
+
+	return token[0], nil
+}
+
+func GetAuthorizeNonce(authorize []string) (int, error) {
+	params, err := ParseAuthorizeStr(authorize)
+	if err != nil {
+		return 0, err
+	}
+	nonce := params["nonce"]
+	if len(nonce) == 0 {
+		return 0, errors.New("nonce is null")
+	}
+
+	n_nonce, err := strconv.Atoi(nonce[0])
+	if err != nil {
+		return 0, err
+	}
+
+	if n_nonce == 0 {
+		return 0, errors.New("nonce is 0")
+	}
+
+	return n_nonce, nil
 }

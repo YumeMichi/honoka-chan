@@ -1,22 +1,58 @@
 package handler
 
 import (
+	"encoding/base64"
+	"fmt"
+	"honoka-chan/config"
+	"honoka-chan/database"
+	"honoka-chan/encrypt"
+	"honoka-chan/resp"
+	"honoka-chan/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ScenarioStartupHandler(ctx *gin.Context) {
-	ctx.Header("Content-Type", "application/json")
-	ctx.Header("X-Powered-By", "KLab Native APP Platform")
-	ctx.Header("server_version", "20120129")
-	ctx.Header("Server-Version", "97.4.6")
-	ctx.Header("user_id", "3241988")
-	ctx.Header("version_up", "0")
-	ctx.Header("status_code", "200")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1678786443&version=1.1&token=2gjbstqCHAlIv600Pk0AJN5uvfPYgLvfSKB418sMIoclOy1M9UP7LUC1CG14tPicVzOq2MBOXLvpmNRwyWIi9Qf&nonce=17&requestTimeStamp=1678786443")
-	ctx.Header("X-Message-Sign", "L+cK2fiaDxkRwJCmT6lpMu9RM/emmUye32RtS8C36I7OpBhGiZLbiPN30dPXITWDIUjUyPsVCqvLVzEy484Q+NHvQfDEUuS5SnKOtoNxW9Zk6kjyckjJKFIbsdH61cbb4pfzmSptcaByZ6ieNIpbHTzsvpu54JFOXb84g859Pxs=")
+	reqTime := time.Now().Unix()
 
-	res := `{"response_data":{"scenario_id":1,"scenario_adjustment":50,"server_timestamp":1678785161},"release_info":[],"status_code":200}`
-	ctx.String(http.StatusOK, res)
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	xms := encrypt.RSA_Sign_SHA1([]byte(resp.ScenarioStartup), "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
+
+	ctx.String(http.StatusOK, resp.ScenarioStartup)
 }

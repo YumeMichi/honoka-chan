@@ -1,17 +1,23 @@
 package handler
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"honoka-chan/config"
 	"honoka-chan/database"
+	"honoka-chan/encrypt"
 	"honoka-chan/model"
+	"honoka-chan/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ApiHandler(ctx *gin.Context) {
+	reqTime := time.Now().Unix()
 	// fmt.Println(ctx.PostForm("request_data"))
 	var formdata []model.SifApi
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &formdata)
@@ -166,9 +172,41 @@ func ApiHandler(ctx *gin.Context) {
 	}
 	// fmt.Println(string(b))
 
-	ctx.Header("Server-Version", "97.4.6")
-	ctx.Header("user_id", "3241988")
-	ctx.Header("authorize", "consumerKey=lovelive_test&timeStamp=1678640521&version=1.1&token=bS5G6TKTsw0aGxVQz8JWJTx8Tf73H0bF9Bq1PEw3UaxoEoUG8GcrrzaEbjOwEQJTrThgHpBlbwnMRl9ITGw1&nonce=9&requestTimeStamp=1678640521")
-	ctx.Header("X-Message-Sign", "bNuSClKqt20FoGduZJI4pB1Y8xUwrrarvfsq0soqU5U97x7kGLESNoXSQVZcFfa1Eo4kgntEktokmDHzCbxpsYFvrD1mhbn++UOmcwXXCQRdxbbfhTt7MVfXbcqXAuFKAfkE37n9dkn1U0RnNt5U4m3mbRhLYT5B16ZcPGIPn/E=")
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, "Fuck you!")
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	xms := encrypt.RSA_Sign_SHA1(b, "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
 	ctx.String(http.StatusOK, string(b))
 }
