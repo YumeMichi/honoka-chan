@@ -42,8 +42,8 @@
                 "new_achievement_cnt": 5,
                 "unaccomplished_achievement_cnt": 15,
                 "live_daily_reward_exist": false,
-                "training_energy": 10,
-                "training_energy_max": 10,
+                "training_energy": 999,
+                "training_energy_max": 999,
                 "notification": {
                     "push": true,
                     "lp": true,

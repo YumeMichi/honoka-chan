@@ -46,6 +46,9 @@ func main() {
 		r.POST("/main.php/user/changeNavi", handler.SetNotificationTokenHandler)
 		r.POST("/main.php/event/eventList", handler.EventListHandler)
 		r.POST("/main.php/payment/productList", handler.ProductListHandler)
+		r.POST("/main.php/live/partyList", handler.PartyListHandler)
+		r.POST("/main.php/live/play", handler.PlayLiveHandler)
+		r.POST("/main.php/live/gameover", handler.GameOverHandler)
 
 		r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	}
