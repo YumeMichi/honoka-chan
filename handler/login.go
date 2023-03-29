@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tidwall/gjson"
 )
 
 func AuthKeyHandler(ctx *gin.Context) {
@@ -31,13 +30,13 @@ func AuthKeyHandler(ctx *gin.Context) {
 	}
 	dummyTokenDecrypted := encrypt.RSA_Decrypt(dummyToken64, "privatekey.pem")
 
-	aesKey := dummyTokenDecrypted[0:16]
-	data64, err := base64.StdEncoding.DecodeString(authReq.AuthData)
-	if err != nil {
-		panic(err)
-	}
-	dataDecrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(data64, aesKey))
-	fmt.Println(string(dataDecrypted))
+	// aesKey := dummyTokenDecrypted[0:16]
+	// data64, err := base64.StdEncoding.DecodeString(authReq.AuthData)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// dataDecrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(data64, aesKey))
+	// fmt.Println(string(dataDecrypted))
 
 	mRandStr := utils.RandomStr(32)
 	serverToken := base64.RawStdEncoding.EncodeToString([]byte(mRandStr))
@@ -68,11 +67,11 @@ func AuthKeyHandler(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(resp))
+	// fmt.Println(string(resp))
 
 	respTime := time.Now().Unix()
 	authorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&nonce=%d&requestTimeStamp=%d", respTime, nonce, reqTime)
-	fmt.Println(authorizeStr)
+	// fmt.Println(authorizeStr)
 
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -87,51 +86,51 @@ func LoginHandler(ctx *gin.Context) {
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, "Fuck you!")
-		return
-	}
+	// authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	// if err != nil {
+	// 	ctx.String(http.StatusForbidden, "Fuck you!")
+	// 	return
+	// }
 
 	// authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken).Result()
-	authData, err := database.LevelDb.Get([]byte(authToken))
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(authData)
+	// authData, err := database.LevelDb.Get([]byte(authToken))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(authData)
 
 	// clientToken, serverToken := authData["client_token"], authData["server_token"]
-	clientToken := gjson.Get(string(authData), "client_token").String()
-	serverToken := gjson.Get(string(authData), "server_token").String()
-	clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
-	if err != nil {
-		panic(err)
-	}
-	serverToken64, err := base64.RawStdEncoding.DecodeString(serverToken)
-	if err != nil {
-		panic(err)
-	}
+	// clientToken := gjson.Get(string(authData), "client_token").String()
+	// serverToken := gjson.Get(string(authData), "server_token").String()
+	// clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// serverToken64, err := base64.RawStdEncoding.DecodeString(serverToken)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	xmcKey := utils.SliceXor([]byte(clientToken64), []byte(serverToken64))
-	aesKey := xmcKey[0:16]
+	// xmcKey := utils.SliceXor([]byte(clientToken64), []byte(serverToken64))
+	// aesKey := xmcKey[0:16]
 
 	loginReq := model.LoginReq{}
-	err = json.Unmarshal([]byte(ctx.PostForm("request_data")), &loginReq)
+	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &loginReq)
 	if err != nil {
 		panic(err)
 	}
-	key64, err := base64.StdEncoding.DecodeString(loginReq.LoginKey)
-	if err != nil {
-		panic(err)
-	}
-	pass64, err := base64.StdEncoding.DecodeString(loginReq.LoginPasswd)
-	if err != nil {
-		panic(err)
-	}
-	keyDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(key64, aesKey))
-	fmt.Println(string(keyDescrypted))
-	passDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(pass64, aesKey))
-	fmt.Println(string(passDescrypted))
+	// key64, err := base64.StdEncoding.DecodeString(loginReq.LoginKey)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// pass64, err := base64.StdEncoding.DecodeString(loginReq.LoginPasswd)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// keyDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(key64, aesKey))
+	// fmt.Println(string(keyDescrypted))
+	// passDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(pass64, aesKey))
+	// fmt.Println(string(passDescrypted))
 
 	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
 	if err != nil {
@@ -166,11 +165,11 @@ func LoginHandler(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(resp))
+	// fmt.Println(string(resp))
 
 	respTime := time.Now().Unix()
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%d&requestTimeStamp=%d", respTime, authorizeToken, nonce, userId, reqTime)
-	fmt.Println(newAuthorizeStr)
+	// fmt.Println(newAuthorizeStr)
 
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
