@@ -5,5 +5,5 @@ func init() {
 	AnalysisApi2Data("assets/api2.json")
 	AnalysisApi3Data("assets/api3.json")
 	// ListUnitData()
-	go SyncNotesList()
+	// go SyncNotesList()
 }

@@ -7,6 +7,7 @@ import (
 	"honoka-chan/sifcap"
 	_ "honoka-chan/tools"
 	"honoka-chan/xclog"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +23,10 @@ func main() {
 		// router
 		r := gin.Default()
 		r.Use(middleware.KlabHeader)
+
+		r.Any("/", func(ctx *gin.Context) {
+			ctx.String(http.StatusOK, "Hello, world!")
+		})
 
 		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
 
@@ -44,6 +49,8 @@ func main() {
 		r.POST("/main.php/live/partyList", handler.PartyListHandler)
 		r.POST("/main.php/live/play", handler.PlayLiveHandler)
 		r.POST("/main.php/live/gameover", handler.GameOverHandler)
+		r.POST("/main.php/unit/setDisplayRank", handler.SetDisplayRankHandler)
+		r.POST("/main.php/unit/favorite", handler.SetDisplayRankHandler)
 
 		r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	}
