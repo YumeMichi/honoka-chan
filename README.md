@@ -8,14 +8,13 @@ LoveLive! 学园偶像祭自用私服
 2. 进入游戏右上角 `各种设置 - 批量下载`，将所有数据下载到本地，大约 11G 左右；
 3. 模拟器开启 root 权限，然后备份游戏数据 `/data/data/klb.android.lovelivecn/files` 以及 `/data/data/klb.android.lovelivecn/shared_prefs` 目录下的账号数据 `GameEngineActivity.xml` 和 `klb.android.lovelivecn_preferences.xml`；
 4. 从登录开始的过程中使用 WireShark 等工具对游戏响应数据进行抓取，并尽可能地将所有功能都使用一遍，以便于给后续开发做参考；
-5. 接下来需要搭建一台 DNS 服务器（内网或者互联网均可）用于劫持到 `prod.game1.ll.sdo.com` 的请求并转发到私服，这个不在本文范围内故请自行 Google；
-6. 反编译官方游戏安装包，替换客户端使用的公钥为你自己的，然后重新打包签名，这样我们才能在服务端解密数据包，可参考我的 [llsif-cn-client](https://github.com/YumeMichi/llsif-cn-client)；
-7. 都准备好后，现在需要一台有 root 权限的安卓手机（苹果 iOS 不了解）用于后续操作；
-8. 在手机上安装修改后的客户端，然后将第 3 步中备份的数据解压到对应的目录下，修复好权限（chown）；
-9. 手机连接到 WiFi，由 DHCP 改为手动设置，并将 DNS IP 设置成第 5 步中搭建的 DNS 服务器 IP，或者使用第三方软件修改移动数据的 DNS（需要 root 权限请谨慎）；
-10. 上述步骤都操作完成后运行 `honoka-chan`（第一次运行会生成配置文件，根据自身情况进行配置）；
-11. 手机运行游戏，上述步骤如果都没有问题，从登录开始的请求都会转发到 `honoka-chan`；
-12. 后续即可根据第 4 步中抓取的数据包进行相应的服务端功能开发。
+5. 反编译官方游戏安装包，替换客户端使用的公钥为你自己的，然后重新打包签名，这样我们才能在服务端解密数据包，可参考我的 [llsif-cn-client](https://github.com/YumeMichi/llsif-cn-client)；
+6. 都准备好后，现在需要一台有 root 权限的安卓手机（苹果 iOS 不了解）用于后续操作；
+7. 在手机上安装修改后的客户端，然后将第 3 步中备份的数据解压到对应的目录下，修复好权限（chown）；
+8. 修改游戏默认的请求地址，使用 [HonokaMiku](https://github.com/YumeMichi/HonokaMiku) 解密游戏目录下的服务器配置文件 `/data/data/klb.android.lovelivecn/files/external/config/server_info.json`，将其中的 `prod.game1.ll.sdo.com` 都替换为自己的服务器地址，然后重新加密后替换掉相应文件并修复权限（chown）；
+9. 上述步骤都操作完成后运行 `honoka-chan`（第一次运行会生成配置文件，根据自身情况进行配置）；
+10. 手机运行游戏，上述步骤如果都没有问题，从登录开始的请求都会转发到 `honoka-chan`；
+11. 后续即可根据第 4 步中抓取的数据包进行相应的服务端功能开发。
 
 ## 注意事项
 
