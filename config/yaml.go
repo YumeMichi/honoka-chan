@@ -14,11 +14,11 @@ import (
 )
 
 type AppConfigs struct {
-	AppName string        `yaml:"app_name"`
-	Server  ServerConfigs `yaml:"server"`
-	Log     LogConfigs    `yaml:"log"`
-	Redis   RedisConfigs  `yaml:"redis"`
-	SifCap  SifCapConfigs `yaml:"sifcap"`
+	AppName string         `yaml:"app_name"`
+	Server  ServerConfigs  `yaml:"server"`
+	Log     LogConfigs     `yaml:"log"`
+	LevelDb LevelDbConfigs `yaml:"leveldb"`
+	SifCap  SifCapConfigs  `yaml:"sifcap"`
 }
 
 type ServerConfigs struct {
@@ -34,11 +34,8 @@ type LogConfigs struct {
 	LogSave  bool   `yaml:"log_save"`
 }
 
-type RedisConfigs struct {
-	Host string `yaml:"host"`
-	Port string `yaml:"port"`
-	Pass string `yaml:"pass"`
-	Db   int    `yaml:"db"`
+type LevelDbConfigs struct {
+	DataPath string `yaml:"data_path"`
 }
 
 type SifCapConfigs struct {
@@ -59,11 +56,8 @@ func DefaultConfigs() *AppConfigs {
 			LogLevel: 5,
 			LogSave:  true,
 		},
-		Redis: RedisConfigs{
-			Host: "127.0.0.1",
-			Port: "6379",
-			Pass: "",
-			Db:   0,
+		LevelDb: LevelDbConfigs{
+			DataPath: "./data/honoka-chan.db",
 		},
 		SifCap: SifCapConfigs{
 			Enabled: false,

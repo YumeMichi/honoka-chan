@@ -27,7 +27,8 @@ func ApiHandler(ctx *gin.Context) {
 	}
 	var results []interface{}
 	for _, v := range formdata {
-		var res string
+		var res []byte
+		var key string
 		var err error
 		// fmt.Println(v)
 		// fmt.Println(v.Module, v.Action)
@@ -36,119 +37,121 @@ func ApiHandler(ctx *gin.Context) {
 		case "login":
 			if v.Action == "topInfo" {
 				// fmt.Println("topInfo")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "login_topinfo_result").Result()
+				key = "login_topinfo_result"
 			} else if v.Action == "topInfoOnce" {
 				// fmt.Println("topInfoOnce")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "login_topinfo_once_result").Result()
+				key = "login_topinfo_once_result"
 			}
 		case "live":
 			if v.Action == "liveStatus" {
 				// fmt.Println("liveStatus")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "live_status_result").Result()
+				key = "live_status_result"
 			} else if v.Action == "schedule" {
 				// fmt.Println("schedule")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "live_list_result").Result()
+				key = "live_list_result"
 			}
 		case "unit":
 			switch v.Action {
 			case "unitAll":
 				// fmt.Println("unitAll")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "unit_list_result").Result()
+				key = "unit_list_result"
 			case "deckInfo":
 				// fmt.Println("deckInfo")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "unit_deck_result").Result()
+				key = "unit_deck_result"
 			case "supporterAll":
 				// fmt.Println("supporterAll")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "unit_support_result").Result()
+				key = "unit_support_result"
 			case "removableSkillInfo":
 				// fmt.Println("removableSkillInfo")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "owning_equip_result").Result()
+				key = "owning_equip_result"
 			case "accessoryAll":
 				// fmt.Println("accessoryAll")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "unit_accessory_result").Result()
+				key = "unit_accessory_result"
 			}
 		case "costume":
 			// fmt.Println("costumeList")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "costume_list_result").Result()
+			key = "costume_list_result"
 		case "album":
 			// fmt.Println("albumAll")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "album_unit_result").Result()
+			key = "album_unit_result"
 		case "scenario":
 			// fmt.Println("scenarioStatus")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "scenario_status_result").Result()
+			key = "scenario_status_result"
 		case "subscenario":
 			// fmt.Println("subscenarioStatus")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "subscenario_status_result").Result()
+			key = "subscenario_status_result"
 		case "eventscenario":
 			// fmt.Println("status")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "event_scenario_result").Result()
+			key = "event_scenario_result"
 		case "multiunit":
 			// fmt.Println("multiunitscenarioStatus")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "multi_unit_scenario_result").Result()
+			key = "multi_unit_scenario_result"
 		case "payment":
 			// fmt.Println("productList")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "product_result").Result()
+			key = "product_result"
 		case "banner":
 			// fmt.Println("bannerList")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "banner_result").Result()
+			key = "banner_result"
 		case "notice":
 			// fmt.Println("noticeMarquee")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "item_marquee_result").Result()
+			key = "item_marquee_result"
 		case "user":
 			// fmt.Println("getNavi")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "user_intro_result").Result()
+			key = "user_intro_result"
 		case "navigation":
 			// fmt.Println("specialCutin")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "special_cutin_result").Result()
+			key = "special_cutin_result"
 		case "award":
 			// fmt.Println("awardInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "award_result").Result()
+			key = "award_result"
 		case "background":
 			// fmt.Println("backgroundInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "background_result").Result()
+			key = "background_result"
 		case "stamp":
 			// fmt.Println("stampInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "stamp_result").Result()
+			key = "stamp_result"
 		case "exchange":
 			// fmt.Println("owningPoint")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "exchange_point_result").Result()
+			key = "exchange_point_result"
 		case "livese":
 			// fmt.Println("liveseInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "live_se_result").Result()
+			key = "live_se_result"
 		case "liveicon":
 			// fmt.Println("liveiconInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "live_icon_result").Result()
+			key = "live_icon_result"
 		case "item":
 			// fmt.Println("list")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "item_list_result").Result()
+			key = "item_list_result"
 		case "marathon":
 			// fmt.Println("marathonInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "marathon_result").Result()
+			key = "marathon_result"
 		case "challenge":
 			// fmt.Println("challengeInfo")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "challenge_result").Result()
+			key = "challenge_result"
 		case "museum":
 			// fmt.Println("info")
-			res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "museum_result").Result()
+			key = "museum_result"
 		case "profile":
 			if v.Action == "liveCnt" {
 				// fmt.Println("liveCnt")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "profile_livecnt_result").Result()
+				key = "profile_livecnt_result"
 			} else if v.Action == "cardRanking" {
 				// fmt.Println("cardRanking")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "profile_card_ranking_result").Result()
+				key = "profile_card_ranking_result"
 			} else if v.Action == "profileInfo" {
 				// fmt.Println("profileInfo")
-				res, err = database.RedisCli.HGet(database.RedisCtx, "temp_dataset", "profile_info_result").Result()
+				key = "profile_info_result"
 			}
 		default:
 			// fmt.Println("Fuck you!")
 			err = errors.New("invalid option")
 		}
 
+		res, err = database.LevelDb.Get([]byte(key))
 		if err != nil {
 			panic(err)
 		}
+
 		var result interface{}
 		err = json.Unmarshal([]byte(res), &result)
 		if err != nil {

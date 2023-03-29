@@ -9,9 +9,11 @@ import (
 	"honoka-chan/model"
 	"honoka-chan/utils"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
 )
 
 func AuthKeyHandler(ctx *gin.Context) {
@@ -49,7 +51,11 @@ func AuthKeyHandler(ctx *gin.Context) {
 		"client_token": clientToken,
 		"server_token": serverToken,
 	}
-	_, err = database.RedisCli.HSet(database.RedisCtx, authorizeToken, authData).Result()
+	authJson, err := json.Marshal(authData)
+	if err != nil {
+		panic(err)
+	}
+	database.LevelDb.Put([]byte(authorizeToken), authJson)
 	if err != nil {
 		panic(err)
 	}
@@ -87,13 +93,16 @@ func LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken).Result()
+	// authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken).Result()
+	authData, err := database.LevelDb.Get([]byte(authToken))
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(authData)
 
-	clientToken, serverToken := authData["client_token"], authData["server_token"]
+	// clientToken, serverToken := authData["client_token"], authData["server_token"]
+	clientToken := gjson.Get(string(authData), "client_token").String()
+	serverToken := gjson.Get(string(authData), "server_token").String()
 	clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
 	if err != nil {
 		panic(err)
@@ -138,9 +147,11 @@ func LoginHandler(ctx *gin.Context) {
 	// 	return
 	// }
 	userId := 9999999
+	sUserId := strconv.Itoa(userId)
 	authorizeToken := utils.RandomBase64Token(32)
 
-	_, err = database.RedisCli.HSet(database.RedisCtx, "token_uid", authorizeToken, userId).Result()
+	// _, err = database.RedisCli.HSet(database.RedisCtx, "token_uid", authorizeToken, userId).Result()
+	err = database.LevelDb.Put([]byte(authorizeToken), []byte(sUserId))
 	if err != nil {
 		panic(err)
 	}

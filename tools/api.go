@@ -89,7 +89,11 @@ func AnalysisApi1Data(path string) {
 			}
 
 			if key != "" {
-				database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+				// database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+				err = database.LevelDb.Put([]byte(key), m)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
@@ -133,7 +137,11 @@ func AnalysisApi2Data(path string) {
 			}
 
 			if key != "" {
-				database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+				// database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+				err = database.LevelDb.Put([]byte(key), m)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
@@ -175,7 +183,11 @@ func AnalysisApi3Data(path string) {
 			}
 
 			if key != "" {
-				database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+				// database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
+				err = database.LevelDb.Put([]byte(key), m)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}

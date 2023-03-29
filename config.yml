@@ -8,10 +8,7 @@ log:
     log_dir: logs
     log_level: 5
     log_save: true
-redis:
-    host: 192.168.1.9
-    port: "6379"
-    pass: "klsbgames"
-    db: 5
+leveldb:
+    data_path: ./data/honoka-chan.db
 sifcap:
     enabled: false
