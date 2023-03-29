@@ -1,7 +1,7 @@
 package model
 
 // module: album, action: albumAll
-type AlbumAll struct {
+type AlbumUnitList struct {
 	UnitID             int  `json:"unit_id"`
 	RankMaxFlag        bool `json:"rank_max_flag"`
 	LoveMaxFlag        bool `json:"love_max_flag"`
@@ -13,6 +13,7 @@ type AlbumAll struct {
 	SignFlag           bool `json:"sign_flag"`
 }
 
-type AlbumAllResult struct {
-	AlbumAll []AlbumAll
+type AlbumResponseData struct {
+	SeriesID int             `json:"series_id"`
+	UnitList []AlbumUnitList `json:"unit_list"`
 }

@@ -54,6 +54,7 @@ func main() {
 		r.POST("/main.php/unit/favorite", handler.SetDisplayRankHandler)
 		r.POST("/main.php/subscenario/startup", handler.SubScenarioStartupHandler)
 		r.POST("/main.php/subscenario/reward", handler.SubScenarioStartupHandler)
+		r.POST("/main.php/album/seriesAll", handler.AlbumSeriesAllHandler)
 
 		r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	}
