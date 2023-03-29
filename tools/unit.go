@@ -40,66 +40,74 @@ func ListUnitData() {
 
 		unitData.UnitOwningUserID = oId
 		unitData.UnitID = uid
+		unitData.NextExp = 0
 		unitData.Rank = rank
 		unitData.MaxRank = max_rank
 		unitData.MaxHp = hp_max
 		unitData.DisplayRank = 2
+		unitData.UnitSkillLevel = 8
+		unitData.FavoriteFlag = true
+		unitData.IsRankMax = true
+		unitData.IsLevelMax = true
+		unitData.IsLoveMax = true
+		unitData.IsSkillLevelMax = true
+		unitData.IsRemovableSkillCapacityMax = true
 		unitData.InsertDate = sdt.Local().Format("2006-01-02 03:04:05")
 		if rit != 4 {
-			unitData.Exp = 0
-			unitData.Level = 1
-			unitData.LevelLimitID = 1
-			unitData.Love = 0
-			unitData.UnitSkillExp = 0
-			unitData.UnitSkillLevel = 1
+			unitData.LevelLimitID = 0
 			unitData.UnitRemovableSkillCapacity = skill_capacity
-			unitData.FavoriteFlag = false
-			unitData.IsRankMax = false
-			unitData.IsLevelMax = false
-			unitData.IsLoveMax = false
 			unitData.IsSigned = false
-			unitData.IsSkillLevelMax = false
-			unitData.IsRemovableSkillCapacityMax = false
 			switch rit {
 			case 1:
 				// N
-				unitData.NextExp = 6
+				unitData.Exp = 8000
+				unitData.Level = 40
 				unitData.MaxLevel = 40
+				unitData.Love = 50
 				unitData.MaxLove = 50
+				unitData.UnitSkillExp = 0
+				unitData.UnitSkillLevel = 0
+				unitData.FavoriteFlag = false
+				unitData.IsRankMax = false
+				unitData.IsLevelMax = false
+				unitData.IsLoveMax = false
+				unitData.IsSkillLevelMax = false
+				unitData.IsRemovableSkillCapacityMax = false
 			case 2:
 				// R
-				unitData.NextExp = 14
+				unitData.Exp = 13500
+				unitData.Level = 60
 				unitData.MaxLevel = 60
+				unitData.Love = 200
 				unitData.MaxLove = 200
+				unitData.UnitSkillExp = 490
 			case 3:
 				// SR
-				unitData.NextExp = 54
+				unitData.Exp = 36800
+				unitData.Level = 80
 				unitData.MaxLevel = 80
+				unitData.Love = 500
 				unitData.MaxLove = 500
+				unitData.UnitSkillExp = 4900
 			case 5:
 				// SSR
-				unitData.NextExp = 128
+				unitData.Exp = 56657
+				unitData.Level = 90
 				unitData.MaxLevel = 90
+				unitData.Love = 750
 				unitData.MaxLove = 750
+				unitData.UnitSkillExp = 12700
 			}
 		} else {
 			// UR
 			unitData.Exp = 79700
-			unitData.NextExp = 0
 			unitData.Level = 100
 			unitData.MaxLevel = 100
-			unitData.LevelLimitID = 0
+			unitData.LevelLimitID = 2
 			unitData.Love = 1000
 			unitData.MaxLove = 1000
 			unitData.UnitSkillExp = 29900
-			unitData.UnitSkillLevel = 8
 			unitData.UnitRemovableSkillCapacity = 8
-			unitData.FavoriteFlag = true
-			unitData.IsRankMax = true
-			unitData.IsLevelMax = true
-			unitData.IsLoveMax = true
-			unitData.IsSkillLevelMax = true
-			unitData.IsRemovableSkillCapacityMax = true
 
 			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
 			if err != nil {
