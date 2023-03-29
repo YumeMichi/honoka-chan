@@ -1,0 +1,110 @@
+{
+    "response_data": {
+        "clear_subscenario": {
+            "subscenario_id": 3244
+        },
+        "before_user_info": {
+            "level": 1028,
+            "exp": 28853572,
+            "previous_exp": 27734700,
+            "next_exp": 28941885,
+            "game_coin": 112462154,
+            "sns_coin": 11,
+            "free_sns_coin": 11,
+            "paid_sns_coin": 0,
+            "social_point": 1442340,
+            "unit_max": 904,
+            "waiting_unit_max": 700,
+            "current_energy": 222,
+            "energy_max": 417,
+            "training_energy": 8,
+            "training_energy_max": 10,
+            "energy_full_time": "2023-03-30 23:05:52",
+            "license_live_energy_recoverly_time": 60,
+            "friend_max": 99,
+            "tutorial_state": -1,
+            "over_max_energy": 0,
+            "unlock_random_live_muse": 1,
+            "unlock_random_live_aqours": 1
+        },
+        "after_user_info": {
+            "level": 1028,
+            "exp": 28853572,
+            "previous_exp": 27734700,
+            "next_exp": 28941885,
+            "game_coin": 112482154,
+            "sns_coin": 12,
+            "free_sns_coin": 12,
+            "paid_sns_coin": 0,
+            "social_point": 1442340,
+            "unit_max": 904,
+            "waiting_unit_max": 700,
+            "current_energy": 222,
+            "energy_max": 417,
+            "training_energy": 8,
+            "training_energy_max": 10,
+            "energy_full_time": "2023-03-30 23:05:52",
+            "license_live_energy_recoverly_time": 60,
+            "friend_max": 99,
+            "tutorial_state": -1,
+            "over_max_energy": 0,
+            "unlock_random_live_muse": 1,
+            "unlock_random_live_aqours": 1
+        },
+        "next_level_info": [
+            {
+                "level": 1028,
+                "from_exp": 28853572
+            }
+        ],
+        "base_reward_info": {
+            "game_coin_reward_box_flag": false,
+            "game_coin": 20000
+        },
+        "item_reward_info": [
+            {
+                "add_type": 3001,
+                "reward_item_id": 4,
+                "item_category_id": 0,
+                "amount": 1,
+                "comment": "\u652f\u7ebf\u5267\u60c5\u5b8c\u6210\uff01",
+                "reward_box_flag": false
+            }
+        ],
+        "class_system": {
+            "rank_info": {
+                "before_class_rank_id": 10,
+                "after_class_rank_id": 10,
+                "rank_up_date": "2020-02-12 11:57:15"
+            },
+            "complete_flag": false,
+            "is_opened": true,
+            "is_visible": true
+        },
+        "museum_info": {
+            "parameter": {
+                "smile": 228,
+                "pure": 300,
+                "cool": 372
+            },
+            "contents_id_list": [
+                1597,
+                1598,
+                1599,
+                1600,
+                1601,
+                1694,
+                1695,
+                1696,
+                1697,
+                1699,
+                1700,
+                1701
+            ]
+        },
+        "server_timestamp": 1680118815,
+        "present_cnt": 2125
+    },
+    "release_info": [],
+    "status_code": 200
+}

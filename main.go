@@ -42,6 +42,7 @@ func main() {
 		r.POST("/main.php/api", handler.ApiHandler)
 		r.POST("/main.php/announce/checkState", handler.AnnounceCheckStateHandler)
 		r.POST("/main.php/scenario/startup", handler.ScenarioStartupHandler)
+		r.POST("/main.php/scenario/reward", handler.ScenarioRewardHandler)
 		r.POST("/main.php/user/setNotificationToken", handler.SetNotificationTokenHandler)
 		r.POST("/main.php/user/changeNavi", handler.SetNotificationTokenHandler)
 		r.POST("/main.php/event/eventList", handler.EventListHandler)
@@ -51,6 +52,8 @@ func main() {
 		r.POST("/main.php/live/gameover", handler.GameOverHandler)
 		r.POST("/main.php/unit/setDisplayRank", handler.SetDisplayRankHandler)
 		r.POST("/main.php/unit/favorite", handler.SetDisplayRankHandler)
+		r.POST("/main.php/subscenario/startup", handler.SubScenarioStartupHandler)
+		r.POST("/main.php/subscenario/reward", handler.SubScenarioStartupHandler)
 
 		r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	}
