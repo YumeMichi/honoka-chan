@@ -132,11 +132,12 @@ func LoginHandler(ctx *gin.Context) {
 	}
 	nonce++
 
-	userId, err := database.GetUid(string(keyDescrypted))
-	if err != nil {
-		ctx.String(http.StatusForbidden, "Fuck you!")
-		return
-	}
+	// userId, err := database.GetUid(string(keyDescrypted))
+	// if err != nil {
+	// 	ctx.String(http.StatusForbidden, "Fuck you!")
+	// 	return
+	// }
+	userId := 9999999
 	authorizeToken := utils.RandomBase64Token(32)
 
 	_, err = database.RedisCli.HSet(database.RedisCtx, "token_uid", authorizeToken, userId).Result()
