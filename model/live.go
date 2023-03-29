@@ -90,6 +90,19 @@ type LiveScheduleResp struct {
 }
 
 // Play
+type PlayReq struct {
+	Module           string `json:"module"`
+	PartyUserID      int    `json:"party_user_id"`
+	Action           string `json:"action"`
+	Mgd              int    `json:"mgd"`
+	IsTraining       bool   `json:"is_training"`
+	UnitDeckID       int    `json:"unit_deck_id"`
+	LiveDifficultyID string `json:"live_difficulty_id"`
+	TimeStamp        int    `json:"timeStamp"`
+	LpFactor         int    `json:"lp_factor"`
+	CommandNum       string `json:"commandNum"`
+}
+
 type RankInfo struct {
 	Rank    int `json:"rank"`
 	RankMin int `json:"rank_min"`
@@ -101,7 +114,7 @@ type NotesList struct {
 	NotesAttribute int     `json:"notes_attribute"`
 	NotesLevel     int     `json:"notes_level"`
 	Effect         int     `json:"effect"`
-	EffectValue    int     `json:"effect_value"`
+	EffectValue    float64 `json:"effect_value"`
 	Position       int     `json:"position"`
 }
 
@@ -120,10 +133,10 @@ type PlayCostume struct {
 }
 
 type UnitList struct {
-	Smile   int         `json:"smile"`
-	Cute    int         `json:"cute"`
-	Cool    int         `json:"cool"`
-	Costume PlayCostume `json:"costume,omitempty"`
+	Smile int `json:"smile"`
+	Cute  int `json:"cute"`
+	Cool  int `json:"cool"`
+	// Costume PlayCostume `json:"costume,omitempty"`
 }
 
 type DeckInfo struct {
