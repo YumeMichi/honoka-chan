@@ -1,0 +1,54 @@
+{{ define "announce.tmpl" }}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=880, target-densitydpi=device-dpi, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>{{ .title }}</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/window.css">
+    <link rel="stylesheet" href="/static/css/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/static/css/ll-perfect-scrollbar.css">
+    <style>
+      h2 {
+        color: red;
+        font-size: 100%;
+      }
+
+      p + p {
+        margin-top: 1em;
+      }
+
+      .update-link {
+        color: #0be;
+        display: block;
+        font-size: 150%;
+        margin: 20px auto;
+        text-align: center;
+      }
+
+      .notice {
+        color: red;
+      }
+    </style>
+  </head>
+  <body class="no-back">
+    <div id="outer">
+      <div id="inner">
+        <div id="header">
+          <h1>{{ .title }}</h1>
+        </div>
+        <div id="body">
+          <p>{{ .content }}</p>
+        </div>
+      </div>
+    </div>
+    <script src="/static/js/perfect-scrollbar.min.js"></script>
+    <script>
+      new PerfectScrollbar('#body', {suppressScrollX: true});
+    </script>
+  </body>
+</html>
+{{ end }}

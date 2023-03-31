@@ -1,0 +1,80 @@
+@charset "utf-8";
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body {
+  box-sizing: border-box;
+  color: #191919;
+  font-family: sans-serif;
+  font-size: 22px;
+  width: 880px;
+  -webkit-text-size-adjust : 100%;
+}
+
+#body {
+  height: 542px;
+  position: relative;
+  width: 880px;
+}
+
+.with-scroll #body {
+  padding: 0 19px 0 13px;
+  width: 848px;
+}
+
+input, textarea {
+  -webkit-user-select: auto;
+}
+
+.clearfix {
+  clear: both;
+  content: ".";
+  display: block;
+  font-size: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.border1 {
+  background-image: url("../../img/common/border1.png?r=20220516");
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 34px;
+  min-width: 500px;
+}
+
+.table {
+  border-collapse: collapse;
+  margin: 10px;
+}
+
+.table th, .table td {
+  border: 1px solid #fc6399;
+  padding: 2px 5px;
+}
+
+.table th {
+  background-color: lightpink;
+}
+
+.table.table-striped > tbody > tr:nth-child(odd) {
+  background-color: white;
+}
+
+.table.table-striped > tbody > tr:nth-child(even) {
+  background-color: lightgray;
+}
+
+ul, ol, dl {
+  margin: 5px 0;
+}
+
+li {
+  margin-left: 1em;
+}

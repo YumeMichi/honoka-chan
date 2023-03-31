@@ -1,0 +1,31 @@
+.ps__rail-x,
+.ps__rail-y {
+  background-color: #ffd0e8 !important;
+  border-radius: 10px !important;
+  display: block !important;
+  opacity: 0.8 !important;
+}
+
+.ps__rail-x {
+  height: 6px !important;
+}
+.ps__rail-y {
+  width: 6px !important;
+}
+
+.ps__thumb-x,
+.ps__thumb-y {
+  background-color: #ff80af !important;
+  border-radius: 10px !important;
+  opacity: 0.8 !important;
+}
+
+.ps__thumb-x {
+  height: 6px !important;
+  bottom: 0;
+}
+
+.ps__thumb-y {
+  width: 6px !important;
+  right: 0;
+}

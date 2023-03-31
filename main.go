@@ -22,6 +22,8 @@ func main() {
 	} else {
 		// Router
 		r := gin.Default()
+		r.Static("/static", "static")
+		r.LoadHTMLGlob("static/*.tmpl")
 
 		// /
 		r.Any("/", func(ctx *gin.Context) {
@@ -77,7 +79,7 @@ func main() {
 			m.POST("/album/seriesAll", handler.AlbumSeriesAllHandler)
 
 		}
-		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler, middleware.KlabHeader)
+		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
 		// Server APIs
 
 		r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
