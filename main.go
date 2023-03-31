@@ -24,12 +24,26 @@ func main() {
 		r := gin.Default()
 		r.Use(middleware.KlabHeader)
 
+		// Private APIs
+		r.GET("/v1/basic/getcode", handler.GetCodeHandler)
+		r.POST("/v1/account/active", handler.ActiveHandler)
+		r.POST("/v1/basic/publickey", handler.PublicKeyHandler)
+		r.POST("/v1/basic/handshake", handler.HandshakeHandler)
+		r.POST("/v1/account/initialize", handler.InitializeHandler)
+		r.POST("/v1/account/login", handler.AccountLoginHandler)
+		r.POST("/v1/account/loginauto", handler.LoginAutoHandler)
+		r.POST("/v1/basic/loginarea", handler.LoginAreaHandler)
+		r.POST("/v1/account/reportRole", handler.ReportRoleHandler)
+		r.POST("/v1/basic/getProductList", handler.GetProductListHandler)
+		r.POST("/report/ge/app", handler.ReportLog)
+		r.GET("/agreement/all", handler.AgreementHandler)
+		r.GET("/integration/appReport/initialize", handler.ReportApp)
+		// Private APIs
+
 		r.Any("/", func(ctx *gin.Context) {
 			ctx.String(http.StatusOK, "Hello, world!")
 		})
-
 		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
-
 		r.POST("/main.php/login/authkey", handler.AuthKeyHandler)
 		r.POST("/main.php/login/login", handler.LoginHandler)
 		r.POST("/main.php/user/userInfo", handler.UserInfoHandler)
