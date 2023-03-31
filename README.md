@@ -6,19 +6,19 @@ LoveLive! 学园偶像祭自用私服
 
 1. 首先你需要一台电脑，在电脑上安装安卓模拟器（例如雷电模拟器），在模拟器中安装 SIF 国服官方客户端并登录自己的账号；
 2. 进入游戏右上角 `各种设置 - 批量下载`，将所有数据下载到本地，大约 11G 左右；
-3. 模拟器开启 root 权限，然后备份游戏数据 `/data/data/klb.android.lovelivecn/files` 以及 `/data/data/klb.android.lovelivecn/shared_prefs` 目录下的账号数据 `GameEngineActivity.xml` 和 `klb.android.lovelivecn_preferences.xml`；
+3. 模拟器开启 root 权限，然后备份游戏数据 `/data/data/klb.android.lovelivecn/files` ~~以及 `/data/data/klb.android.lovelivecn/shared_prefs` 目录下的账号数据 `GameEngineActivity.xml` 和 `klb.android.lovelivecn_preferences.xml`~~；
 4. 从登录开始的过程中使用 WireShark 等工具对游戏响应数据进行抓取，并尽可能地将所有功能都使用一遍，以便于给后续开发做参考；
-5. 反编译官方游戏安装包，替换客户端使用的公钥为你自己的，然后重新打包签名，这样我们才能在服务端解密数据包，可参考我的 [llsif-cn-client](https://github.com/YumeMichi/llsif-cn-client)；
+5. 反编译官方游戏安装包，替换客户端使用的公钥为你自己的，并替换盛趣相关的接口地址为本地或者远程服务器的地址，然后重新打包签名，这样我们才能在服务端解密数据包，可参考我的 [llsif-cn-client](https://github.com/YumeMichi/llsif-cn-client)；
 6. 都准备好后，现在需要一台有 root 权限的安卓手机（苹果 iOS 不了解）用于后续操作；
 7. 在手机上安装修改后的客户端，然后将第 3 步中备份的数据解压到对应的目录下，修复好权限（chown）；
 8. 修改游戏默认的请求地址，使用 [HonokaMiku](https://github.com/YumeMichi/HonokaMiku) 解密游戏目录下的服务器配置文件 `/data/data/klb.android.lovelivecn/files/external/config/server_info.json`，将其中的 `prod.game1.ll.sdo.com` 都替换为自己的服务器地址，然后重新加密后替换掉相应文件并修复权限（chown）；
 9. 上述步骤都操作完成后运行 `honoka-chan`（第一次运行会生成配置文件，根据自身情况进行配置）；
-10. 手机运行游戏，上述步骤如果都没有问题，从登录开始的请求都会转发到 `honoka-chan`；
+10. 手机运行游戏，使用账号密码登录，输入任意账号密码均可，上述步骤如果都没有问题，从登录开始的请求都会转发到 `honoka-chan`；
 11. 后续即可根据第 4 步中抓取的数据包进行相应的服务端功能开发。
 
 ## 注意事项
 
-1. 请备份账号数据后不要再通过官方客户端登录游戏，否则备份的账号信息会失效，后续登录需要填写验证码，该验证码通道可能会随着关服而关闭。
+1. ~~请备份账号数据后不要再通过官方客户端登录游戏，否则备份的账号信息会失效，后续登录需要填写验证码，该验证码通道可能会随着关服而关闭。~~
 2. 后续操作都在手机上进行的原因是我用的雷电模拟器，从 3669 开始往后地卡片，只要放入响应包中，游戏客户端都会崩溃。个人太懒了不想试其他模拟器了所以都在手机上进行操作。
 
 上述崩溃日志
