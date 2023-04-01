@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"honoka-chan/config"
 	"honoka-chan/database"
@@ -143,7 +144,12 @@ func ApiHandler(ctx *gin.Context) {
 			}
 		default:
 			// fmt.Println("Fuck you!")
-			// err = errors.New("invalid option")
+			fmt.Println(v)
+			err = errors.New("invalid option")
+		}
+
+		if err != nil {
+			panic(err)
 		}
 
 		res, err = database.LevelDb.Get([]byte(key))
