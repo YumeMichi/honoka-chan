@@ -84,6 +84,12 @@ func main() {
 		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
 		// Server APIs
 
+		// Web
+		// Manga
+		r.GET("/manga", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "manga.tmpl", gin.H{})
+		})
+
 		r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	}
 }
