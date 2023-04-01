@@ -58,7 +58,8 @@ func HandshakeHandler(ctx *gin.Context) {
 	randKey = params.Get("randkey")
 	// fmt.Println(randKey)
 
-	token := `{"token":"YUMEMICHI14104EF796D769AE404C1FC6"}`
+	token := strings.ToUpper(utils.RandomStr(33))
+	token = fmt.Sprintf(`{"token":"%s"}`, token)
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
 		panic(err)
@@ -92,6 +93,7 @@ func InitializeHandler(ctx *gin.Context) {
 	// }
 	// fmt.Println(string(decryptedBody))
 
+	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
@@ -132,6 +134,7 @@ func LoginAutoHandler(ctx *gin.Context) {
 	// }
 	// fmt.Println(string(decryptedBody))
 
+	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
@@ -176,6 +179,7 @@ func AccountLoginHandler(ctx *gin.Context) {
 	// }
 	// fmt.Println(string(decryptedBody))
 
+	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
@@ -216,6 +220,7 @@ func ReportRoleHandler(ctx *gin.Context) {
 	// }
 	// fmt.Println(decrypted)
 
+	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
