@@ -71,6 +71,8 @@ func main() {
 			m.POST("/payment/productList", handler.ProductListHandler)
 			m.POST("/live/partyList", handler.PartyListHandler)
 			m.POST("/live/play", handler.PlayLiveHandler)
+			m.POST("/live/preciseScore", handler.PlayScoreHandler)
+			m.POST("/live/reward", handler.PlayRewardHandler)
 			m.POST("/live/gameover", handler.GameOverHandler)
 			m.POST("/unit/setDisplayRank", handler.SetDisplayRankHandler)
 			m.POST("/unit/favorite", handler.SetDisplayRankHandler)
