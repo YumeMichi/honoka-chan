@@ -112,3 +112,10 @@ type ProductListResult struct {
 	SubscriptionList []SubscriptionList `json:"subscription_list"`
 	ShowPointShop    bool               `json:"show_point_shop"`
 }
+
+type ProductListResp struct {
+	Result     ProductListResult `json:"result"`
+	Status     int               `json:"status"`
+	CommandNum bool              `json:"commandNum"`
+	TimeStamp  int64             `json:"timeStamp"`
+}

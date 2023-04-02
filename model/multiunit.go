@@ -19,3 +19,10 @@ type MultiUnitScenarioStatusResult struct {
 	MultiUnitScenarioStatusList  []MultiUnitScenarioStatusList `json:"multi_unit_scenario_status_list"`
 	UnlockedMultiUnitScenarioIds []interface{}                 `json:"unlocked_multi_unit_scenario_ids"`
 }
+
+type MultiUnitScenarioStatusResp struct {
+	Result     MultiUnitScenarioStatusResult `json:"result"`
+	Status     int                           `json:"status"`
+	CommandNum bool                          `json:"commandNum"`
+	TimeStamp  int64                         `json:"timeStamp"`
+}

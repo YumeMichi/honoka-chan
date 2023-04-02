@@ -82,8 +82,8 @@ type UnitAllResp struct {
 
 // module: unit, action: deckInfo
 type UnitOwningUserIds struct {
-	Position         int   `json:"position"`
-	UnitOwningUserID int64 `json:"unit_owning_user_id"`
+	Position         int `json:"position"`
+	UnitOwningUserID int `json:"unit_owning_user_id"`
 }
 
 type UnitDeckInfo struct {
@@ -93,8 +93,11 @@ type UnitDeckInfo struct {
 	UnitOwningUserIds []UnitOwningUserIds `json:"unit_owning_user_ids"`
 }
 
-type UnitDeckInfoResult struct {
-	UnitDeckInfo []UnitDeckInfo
+type UnitDeckInfoResp struct {
+	Result     []UnitDeckInfo `json:"result"`
+	Status     int            `json:"status"`
+	CommandNum bool           `json:"commandNum"`
+	TimeStamp  int64          `json:"timeStamp"`
 }
 
 // module: unit, action: supporterAll
@@ -103,8 +106,33 @@ type UnitSupportList struct {
 	Amount int `json:"amount"`
 }
 
-type UnitSupporterAllResult struct {
+type UnitSupportResult struct {
 	UnitSupportList []UnitSupportList `json:"unit_support_list"`
 }
 
+type UnitSupportResp struct {
+	Result     UnitSupportResult `json:"result"`
+	Status     int               `json:"status"`
+	CommandNum bool              `json:"commandNum"`
+	TimeStamp  int64             `json:"timeStamp"`
+}
+
 // module: unit, action: removableSkillInfo
+type OwningInfo struct {
+	UnitRemovableSkillID int    `json:"unit_removable_skill_id"`
+	TotalAmount          int    `json:"total_amount"`
+	EquippedAmount       int    `json:"equipped_amount"`
+	InsertDate           string `json:"insert_date"`
+}
+
+type RemovableSkillResult struct {
+	OwningInfo    []OwningInfo  `json:"owning_info"`
+	EquipmentInfo []interface{} `json:"equipment_info"`
+}
+
+type RemovableSkillResp struct {
+	Result     RemovableSkillResult `json:"result"`
+	Status     int                  `json:"status"`
+	CommandNum bool                 `json:"commandNum"`
+	TimeStamp  int64                `json:"timeStamp"`
+}

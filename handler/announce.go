@@ -2,11 +2,11 @@ package handler
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"honoka-chan/config"
 	"honoka-chan/database"
 	"honoka-chan/encrypt"
-	"honoka-chan/resp"
 	"honoka-chan/utils"
 	"html/template"
 	"net/http"
@@ -14,6 +14,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+type AnnounceResp struct {
+	ResponseData AnnounceData  `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+type AnnounceData struct {
+	HasUnreadAnnounce bool  `json:"has_unread_announce"`
+	ServerTimestamp   int64 `json:"server_timestamp"`
+}
 
 func AnnounceIndexHandler(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "announce.tmpl", gin.H{
@@ -54,12 +64,24 @@ func AnnounceCheckStateHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	xms := encrypt.RSA_Sign_SHA1([]byte(resp.AnnounceState), "privatekey.pem")
+	announceResp := AnnounceResp{
+		ResponseData: AnnounceData{
+			HasUnreadAnnounce: false,
+			ServerTimestamp:   time.Now().Unix(),
+		},
+		ReleaseInfo: []interface{}{},
+		StatusCode:  200,
+	}
+	resp, err := json.Marshal(announceResp)
+	if err != nil {
+		panic(err)
+	}
+	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
 	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
 	ctx.Header("user_id", userId[0])
 	ctx.Header("authorize", newAuthorizeStr)
 	ctx.Header("X-Message-Sign", xms64)
-	ctx.String(http.StatusOK, resp.AnnounceState)
+	ctx.String(http.StatusOK, string(resp))
 }

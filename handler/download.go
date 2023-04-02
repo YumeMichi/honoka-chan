@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"honoka-chan/database"
 	"honoka-chan/encrypt"
@@ -11,6 +12,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+type DownloadResp struct {
+	ResponseData []interface{} `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
 
 func DownloadBatchHandler(ctx *gin.Context) {
 	reqTime := time.Now().Unix()
@@ -44,14 +51,22 @@ func DownloadBatchHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	resp := utils.ReadAllText("assets/batch.json")
-	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
+	batchResp := DownloadResp{
+		ResponseData: []interface{}{},
+		ReleaseInfo:  []interface{}{},
+		StatusCode:   200,
+	}
+	resp, err := json.Marshal(batchResp)
+	if err != nil {
+		panic(err)
+	}
+	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
 	ctx.Header("user_id", userId[0])
 	ctx.Header("authorize", newAuthorizeStr)
 	ctx.Header("X-Message-Sign", xms64)
-	ctx.String(http.StatusOK, resp)
+	ctx.String(http.StatusOK, string(resp))
 }
 
 func DownloadEventHandler(ctx *gin.Context) {
@@ -86,12 +101,20 @@ func DownloadEventHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	resp := utils.ReadAllText("assets/event.json")
-	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
+	eventResp := DownloadResp{
+		ResponseData: []interface{}{},
+		ReleaseInfo:  []interface{}{},
+		StatusCode:   200,
+	}
+	resp, err := json.Marshal(eventResp)
+	if err != nil {
+		panic(err)
+	}
+	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
 	ctx.Header("user_id", userId[0])
 	ctx.Header("authorize", newAuthorizeStr)
 	ctx.Header("X-Message-Sign", xms64)
-	ctx.String(http.StatusOK, resp)
+	ctx.String(http.StatusOK, string(resp))
 }

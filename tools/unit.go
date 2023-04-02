@@ -11,7 +11,7 @@ import (
 )
 
 func ListUnitData() {
-	db, err := sql.Open("sqlite3", "assets/unit.db")
+	db, err := sql.Open("sqlite3", "assets/main.db")
 	if err != nil {
 		panic(err)
 	}

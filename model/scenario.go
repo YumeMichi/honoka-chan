@@ -10,6 +10,13 @@ type ScenarioStatusResult struct {
 	ScenarioStatusList []ScenarioStatusList `json:"scenario_status_list"`
 }
 
+type ScenarioStatusResp struct {
+	Result     ScenarioStatusResult `json:"result"`
+	Status     int                  `json:"status"`
+	CommandNum bool                 `json:"commandNum"`
+	TimeStamp  int64                `json:"timeStamp"`
+}
+
 // module: subscenario, action: subscenarioStatus
 type SubscenarioStatusList struct {
 	SubscenarioID int `json:"subscenario_id"`
@@ -21,11 +28,18 @@ type SubscenarioStatusResult struct {
 	UnlockedSubscenarioIds []interface{}           `json:"unlocked_subscenario_ids"`
 }
 
+type SubscenarioStatusResp struct {
+	Result     SubscenarioStatusResult `json:"result"`
+	Status     int                     `json:"status"`
+	CommandNum bool                    `json:"commandNum"`
+	TimeStamp  int64                   `json:"timeStamp"`
+}
+
 // module: eventscenario, action: status
 type EventScenarioChapterList struct {
 	EventScenarioID int    `json:"event_scenario_id"`
 	Chapter         int    `json:"chapter"`
-	ChapterAsset    string `json:"chapter_asset"`
+	ChapterAsset    string `json:"chapter_asset,omitempty"`
 	Status          int    `json:"status"`
 	OpenFlashFlag   int    `json:"open_flash_flag"`
 	IsReward        bool   `json:"is_reward"`
@@ -43,4 +57,11 @@ type EventScenarioList struct {
 
 type EventScenarioStatusResult struct {
 	EventScenarioList []EventScenarioList `json:"event_scenario_list"`
+}
+
+type EventScenarioStatusResp struct {
+	Result     EventScenarioStatusResult `json:"result"`
+	Status     int                       `json:"status"`
+	CommandNum bool                      `json:"commandNum"`
+	TimeStamp  int64                     `json:"timeStamp"`
 }

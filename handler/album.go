@@ -18,7 +18,7 @@ import (
 )
 
 func AlbumSeriesAllHandler(ctx *gin.Context) {
-	db, err := sql.Open("sqlite3", "assets/unit.db")
+	db, err := sql.Open("sqlite3", "assets/main.db")
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	albumSeriesAllResp := []model.AlbumResponseData{}
+	albumSeriesAllResp := []model.AlbumSeriesResp{}
 	for seriesRows.Next() {
 		var series int
 		err = seriesRows.Scan(&series)
@@ -69,7 +69,7 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 			panic(err)
 		}
 
-		albumSeriesAll := []model.AlbumUnitList{}
+		albumSeriesAll := []model.AlbumResult{}
 		stmt, err := db.Prepare("SELECT unit_id,rarity FROM unit_m WHERE album_series_id = ?")
 		if err != nil {
 			panic(err)
@@ -87,7 +87,7 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 				panic(err)
 			}
 
-			albumSeries := model.AlbumUnitList{
+			albumSeries := model.AlbumResult{
 				UnitID:           unitId,
 				RankMaxFlag:      true,
 				LoveMaxFlag:      true,
@@ -142,7 +142,7 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 
 			albumSeriesAll = append(albumSeriesAll, albumSeries)
 		}
-		albumSeriesAllResp = append(albumSeriesAllResp, model.AlbumResponseData{
+		albumSeriesAllResp = append(albumSeriesAllResp, model.AlbumSeriesResp{
 			SeriesID: series,
 			UnitList: albumSeriesAll,
 		})

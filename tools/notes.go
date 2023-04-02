@@ -14,7 +14,7 @@ import (
 )
 
 func SyncNotesList() {
-	db, err := sql.Open("sqlite3", "assets/live.db")
+	db, err := sql.Open("sqlite3", "assets/main.db")
 	if err != nil {
 		panic(err)
 	}

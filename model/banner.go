@@ -18,3 +18,10 @@ type BannerListResult struct {
 	TimeLimit  string       `json:"time_limit"`
 	BannerList []BannerList `json:"banner_list"`
 }
+
+type BannerListResp struct {
+	Result     BannerListResult `json:"result"`
+	Status     int              `json:"status"`
+	CommandNum bool             `json:"commandNum"`
+	TimeStamp  int64            `json:"timeStamp"`
+}
