@@ -8,9 +8,16 @@ type MuseumInfoParameter struct {
 
 type MuseumInfo struct {
 	Parameter      MuseumInfoParameter `json:"parameter"`
-	ContentsIDList []interface{}       `json:"contents_id_list"`
+	ContentsIDList []int               `json:"contents_id_list"`
 }
 
 type MuseumInfoResult struct {
 	MuseumInfo MuseumInfo `json:"museum_info"`
+}
+
+type MuseumInfoResp struct {
+	Result     MuseumInfoResult `json:"result"`
+	Status     int              `json:"status"`
+	CommandNum bool             `json:"commandNum"`
+	TimeStamp  int64            `json:"timeStamp"`
 }

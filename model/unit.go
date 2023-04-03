@@ -6,6 +6,13 @@ type UnitAccessoryAllResult struct {
 	EspecialCreateFlag bool          `json:"especial_create_flag"`
 }
 
+type UnitAccessoryAllResp struct {
+	Result     UnitAccessoryAllResult `json:"result"`
+	Status     int                    `json:"status"`
+	CommandNum bool                   `json:"commandNum"`
+	TimeStamp  int64                  `json:"timeStamp"`
+}
+
 // module: unit, action: unitAll
 type Costume struct {
 	UnitID    int  `json:"unit_id"`

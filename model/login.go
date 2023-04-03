@@ -15,7 +15,7 @@ type TopInfoResult struct {
 	PresentCnt             int                `json:"present_cnt"`
 	SecretBoxBadgeFlag     bool               `json:"secret_box_badge_flag"`
 	ServerDatetime         string             `json:"server_datetime"`
-	ServerTimestamp        int                `json:"server_timestamp"`
+	ServerTimestamp        int64              `json:"server_timestamp"`
 	NoticeFriendDatetime   string             `json:"notice_friend_datetime"`
 	NoticeMailDatetime     string             `json:"notice_mail_datetime"`
 	FriendsApprovalWaitCnt int                `json:"friends_approval_wait_cnt"`
@@ -29,6 +29,13 @@ type TopInfoResult struct {
 	ExchangeBadgeCnt       []int              `json:"exchange_badge_cnt"`
 	AdFlag                 bool               `json:"ad_flag"`
 	HasAdReward            bool               `json:"has_ad_reward"`
+}
+
+type TopInfoResp struct {
+	Result     TopInfoResult `json:"result"`
+	Status     int           `json:"status"`
+	CommandNum bool          `json:"commandNum"`
+	TimeStamp  int64         `json:"timeStamp"`
 }
 
 type TopInfoOnceNotification struct {
@@ -55,4 +62,11 @@ type TopInfoOnceResult struct {
 	OpenAccessory                bool                    `json:"open_accessory"`
 	ArenaSiSkillUniqueCheck      bool                    `json:"arena_si_skill_unique_check"`
 	OpenV98                      bool                    `json:"open_v98"`
+}
+
+type TopInfoOnceResp struct {
+	Result     TopInfoOnceResult `json:"result"`
+	Status     int               `json:"status"`
+	CommandNum bool              `json:"commandNum"`
+	TimeStamp  int64             `json:"timeStamp"`
 }

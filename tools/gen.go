@@ -13,6 +13,146 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type DifficultyResult struct {
+	Difficulty int `json:"difficulty"`
+	ClearCnt   int `json:"clear_cnt"`
+}
+
+type DifficultyResp struct {
+	Result     []DifficultyResult `json:"result"`
+	Status     int                `json:"status"`
+	CommandNum bool               `json:"commandNum"`
+	TimeStamp  int64              `json:"timeStamp"`
+}
+
+type LoveResp struct {
+	Result     []interface{} `json:"result"`
+	Status     int           `json:"status"`
+	CommandNum bool          `json:"commandNum"`
+	TimeStamp  int64         `json:"timeStamp"`
+}
+
+type UserInfo struct {
+	UserID               int    `json:"user_id"`
+	Name                 string `json:"name"`
+	Level                int    `json:"level"`
+	CostMax              int    `json:"cost_max"`
+	UnitMax              int    `json:"unit_max"`
+	EnergyMax            int    `json:"energy_max"`
+	FriendMax            int    `json:"friend_max"`
+	UnitCnt              int    `json:"unit_cnt"`
+	InviteCode           string `json:"invite_code"`
+	ElapsedTimeFromLogin string `json:"elapsed_time_from_login"`
+	Introduction         string `json:"introduction"`
+}
+
+type AccessoryInfo struct {
+	AccessoryOwningUserID int  `json:"accessory_owning_user_id"`
+	AccessoryID           int  `json:"accessory_id"`
+	Exp                   int  `json:"exp"`
+	NextExp               int  `json:"next_exp"`
+	Level                 int  `json:"level"`
+	MaxLevel              int  `json:"max_level"`
+	RankUpCount           int  `json:"rank_up_count"`
+	FavoriteFlag          bool `json:"favorite_flag"`
+}
+
+type Costume struct {
+	UnitID    int  `json:"unit_id"`
+	IsRankMax bool `json:"is_rank_max"`
+	IsSigned  bool `json:"is_signed"`
+}
+
+type CenterUnitInfo struct {
+	UnitOwningUserID           int           `json:"unit_owning_user_id"`
+	UnitID                     int           `json:"unit_id"`
+	Exp                        int           `json:"exp"`
+	NextExp                    int           `json:"next_exp"`
+	Level                      int           `json:"level"`
+	LevelLimitID               int           `json:"level_limit_id"`
+	MaxLevel                   int           `json:"max_level"`
+	Rank                       int           `json:"rank"`
+	MaxRank                    int           `json:"max_rank"`
+	Love                       int           `json:"love"`
+	MaxLove                    int           `json:"max_love"`
+	UnitSkillLevel             int           `json:"unit_skill_level"`
+	MaxHp                      int           `json:"max_hp"`
+	FavoriteFlag               bool          `json:"favorite_flag"`
+	DisplayRank                int           `json:"display_rank"`
+	UnitSkillExp               int           `json:"unit_skill_exp"`
+	UnitRemovableSkillCapacity int           `json:"unit_removable_skill_capacity"`
+	Attribute                  int           `json:"attribute"`
+	Smile                      int           `json:"smile"`
+	Cute                       int           `json:"cute"`
+	Cool                       int           `json:"cool"`
+	IsLoveMax                  bool          `json:"is_love_max"`
+	IsLevelMax                 bool          `json:"is_level_max"`
+	IsRankMax                  bool          `json:"is_rank_max"`
+	IsSigned                   bool          `json:"is_signed"`
+	IsSkillLevelMax            bool          `json:"is_skill_level_max"`
+	SettingAwardID             int           `json:"setting_award_id"`
+	RemovableSkillIds          []int         `json:"removable_skill_ids"`
+	AccessoryInfo              AccessoryInfo `json:"accessory_info"`
+	Costume                    Costume       `json:"costume"`
+	TotalSmile                 int           `json:"total_smile"`
+	TotalCute                  int           `json:"total_cute"`
+	TotalCool                  int           `json:"total_cool"`
+	TotalHp                    int           `json:"total_hp"`
+}
+
+type NaviUnitInfo struct {
+	UnitOwningUserID            int    `json:"unit_owning_user_id"`
+	UnitID                      int    `json:"unit_id"`
+	Exp                         int    `json:"exp"`
+	NextExp                     int    `json:"next_exp"`
+	Level                       int    `json:"level"`
+	MaxLevel                    int    `json:"max_level"`
+	LevelLimitID                int    `json:"level_limit_id"`
+	Rank                        int    `json:"rank"`
+	MaxRank                     int    `json:"max_rank"`
+	Love                        int    `json:"love"`
+	MaxLove                     int    `json:"max_love"`
+	UnitSkillExp                int    `json:"unit_skill_exp"`
+	UnitSkillLevel              int    `json:"unit_skill_level"`
+	MaxHp                       int    `json:"max_hp"`
+	UnitRemovableSkillCapacity  int    `json:"unit_removable_skill_capacity"`
+	FavoriteFlag                bool   `json:"favorite_flag"`
+	DisplayRank                 int    `json:"display_rank"`
+	IsRankMax                   bool   `json:"is_rank_max"`
+	IsLoveMax                   bool   `json:"is_love_max"`
+	IsLevelMax                  bool   `json:"is_level_max"`
+	IsSigned                    bool   `json:"is_signed"`
+	IsSkillLevelMax             bool   `json:"is_skill_level_max"`
+	IsRemovableSkillCapacityMax bool   `json:"is_removable_skill_capacity_max"`
+	InsertDate                  string `json:"insert_date"`
+	TotalSmile                  int    `json:"total_smile"`
+	TotalCute                   int    `json:"total_cute"`
+	TotalCool                   int    `json:"total_cool"`
+	TotalHp                     int    `json:"total_hp"`
+	RemovableSkillIds           []int  `json:"removable_skill_ids"`
+}
+
+type ProfileResult struct {
+	UserInfo            UserInfo       `json:"user_info"`
+	CenterUnitInfo      CenterUnitInfo `json:"center_unit_info"`
+	NaviUnitInfo        NaviUnitInfo   `json:"navi_unit_info"`
+	IsAlliance          bool           `json:"is_alliance"`
+	FriendStatus        int            `json:"friend_status"`
+	SettingAwardID      int            `json:"setting_award_id"`
+	SettingBackgroundID int            `json:"setting_background_id"`
+}
+
+type ProfileResp struct {
+	Result     ProfileResult `json:"result"`
+	Status     int           `json:"status"`
+	CommandNum bool          `json:"commandNum"`
+	TimeStamp  int64         `json:"timeStamp"`
+}
+
+var (
+	CenterId int
+)
+
 func GenApi1Data() {
 	db, err := sql.Open("sqlite3", "assets/main.db")
 	if err != nil {
@@ -21,7 +161,6 @@ func GenApi1Data() {
 	defer db.Close()
 
 	// global
-	var centerId int
 	var respAll []interface{}
 
 	// live_status_result
@@ -236,7 +375,7 @@ func GenApi1Data() {
 
 		// 中心位成员
 		if uid == 3927 { // AC15 果
-			centerId = oId
+			CenterId = oId
 		}
 
 		switch album_series_id := album_series_id.(type) {
@@ -683,7 +822,7 @@ func GenApi1Data() {
 		Result: model.UserNaviResult{
 			User: model.User{
 				UserID:           9999999,
-				UnitOwningUserID: centerId,
+				UnitOwningUserID: CenterId,
 			},
 		},
 		Status:     200,
@@ -882,4 +1021,317 @@ func GenApi1Data() {
 	// fmt.Println(string(k))
 
 	utils.WriteAllText("assets/api1.json", string(k))
+}
+
+func GenApi2Data() {
+	db, err := sql.Open("sqlite3", "assets/main.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	// global
+	var respAll []interface{}
+
+	// login_topinfo_result
+	topInfoResp := model.TopInfoResp{
+		// _ = model.TopInfoResp{
+		Result: model.TopInfoResult{
+			FriendActionCnt:        0,
+			FriendGreetCnt:         0,
+			FriendVarietyCnt:       0,
+			FriendNewCnt:           0,
+			PresentCnt:             0,
+			SecretBoxBadgeFlag:     true,
+			ServerDatetime:         time.Now().Format("2006-01-02 15:04:05"),
+			ServerTimestamp:        time.Now().Unix(),
+			NoticeFriendDatetime:   time.Now().Format("2006-01-02 15:04:05"),
+			NoticeMailDatetime:     "2000-01-01 12:00:00",
+			FriendsApprovalWaitCnt: 0,
+			FriendsRequestCnt:      0,
+			IsTodayBirthday:        false,
+			LicenseInfo: model.TopInfoLicenseInfo{
+				LicenseList:  []interface{}{},
+				LicensedInfo: []interface{}{},
+				ExpiredInfo:  []interface{}{},
+				BadgeFlag:    false,
+			},
+			UsingBuffInfo:     []interface{}{},
+			IsKlabIDTaskFlag:  false,
+			KlabIDTaskCanSync: false,
+			HasUnreadAnnounce: false,
+			ExchangeBadgeCnt:  []int{0, 0, 0},
+			AdFlag:            false,
+			HasAdReward:       false,
+		},
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, topInfoResp)
+
+	// login_topinfo_once_result
+	topInfoOnceResp := model.TopInfoOnceResp{
+		// _ = model.TopInfoOnceResp{
+		Result: model.TopInfoOnceResult{
+			NewAchievementCnt:            0,
+			UnaccomplishedAchievementCnt: 0,
+			LiveDailyRewardExist:         false,
+			TrainingEnergy:               10,
+			TrainingEnergyMax:            10,
+			Notification: model.TopInfoOnceNotification{
+				Push:       false,
+				Lp:         false,
+				UpdateInfo: false,
+				Campaign:   false,
+				Live:       false,
+				Lbonus:     false,
+				Event:      false,
+				Secretbox:  false,
+				Birthday:   true,
+			},
+			OpenArena:               true,
+			CostumeStatus:           true,
+			OpenAccessory:           true,
+			ArenaSiSkillUniqueCheck: true,
+			OpenV98:                 true,
+		},
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, topInfoOnceResp)
+
+	// unit_accessory_result
+	unitAccResp := model.UnitAccessoryAllResp{
+		// _ = model.UnitAccessoryAllResp{
+		Result: model.UnitAccessoryAllResult{
+			AccessoryList:      []interface{}{},
+			WearingInfo:        []interface{}{},
+			EspecialCreateFlag: false,
+		},
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, unitAccResp)
+
+	// museum_result
+	sql := `SELECT museum_contents_id,smile_buff,pure_buff,cool_buff FROM museum_contents_m ORDER BY museum_contents_id ASC`
+	rows, err := db.Query(sql)
+	if err != nil {
+		panic(err)
+	}
+	var smileBuf, pureBuf, coolBuf int
+	var mIds []int
+	for rows.Next() {
+		var museum_contents_id, smile_buff, pure_buff, cool_buff int
+		err = rows.Scan(&museum_contents_id, &smile_buff, &pure_buff, &cool_buff)
+		if err != nil {
+			panic(err)
+		}
+		smileBuf += smile_buff
+		pureBuf += pure_buff
+		coolBuf += cool_buff
+		mIds = append(mIds, museum_contents_id)
+	}
+
+	museumInfoResp := model.MuseumInfoResp{
+		Result: model.MuseumInfoResult{
+			MuseumInfo: model.MuseumInfo{
+				Parameter: model.MuseumInfoParameter{
+					Smile: smileBuf,
+					Pure:  pureBuf,
+					Cool:  coolBuf,
+				},
+				ContentsIDList: mIds,
+			},
+		},
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, museumInfoResp)
+
+	// Final
+	k, err := json.Marshal(respAll)
+	if err != nil {
+		panic(err)
+	}
+	resp := model.Response{
+		ResponseData: k,
+		ReleaseInfo:  []interface{}{},
+		StatusCode:   200,
+	}
+	k, err = json.Marshal(resp)
+	if err != nil {
+		panic(err)
+	}
+	// fmt.Println(string(k))
+
+	utils.WriteAllText("assets/api2.json", string(k))
+}
+
+func GenApi3Data() {
+	// global
+	var respAll []interface{}
+
+	// profile_livecnt_result
+	difficultyResp := DifficultyResp{
+		// _ = DifficultyResp{
+		Result: []DifficultyResult{
+			{
+				Difficulty: 1,
+				ClearCnt:   315,
+			},
+			{
+				Difficulty: 2,
+				ClearCnt:   310,
+			},
+			{
+				Difficulty: 3,
+				ClearCnt:   314,
+			},
+			{
+				Difficulty: 4,
+				ClearCnt:   455,
+			},
+			{
+				Difficulty: 6,
+				ClearCnt:   233,
+			},
+		},
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, difficultyResp)
+
+	// profile_card_ranking_result
+	var result []interface{}
+	love := utils.ReadAllText("assets/love.json")
+	err := json.Unmarshal([]byte(love), &result)
+	if err != nil {
+		panic(err)
+	}
+	loveResp := LoveResp{
+		// _ = LoveResp{
+		Result:     result,
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, loveResp)
+
+	// profile_info_result
+	profileResp := ProfileResp{
+		Result: ProfileResult{
+			UserInfo: UserInfo{
+				UserID:               9999999, // 3241988
+				Name:                 "\u68a6\u8def @\u65c5\u7acb\u3061\u306e\u65e5\u306b",
+				Level:                1028,
+				CostMax:              100,
+				UnitMax:              5000,
+				EnergyMax:            417,
+				FriendMax:            99,
+				UnitCnt:              3898,
+				InviteCode:           "377385143",
+				ElapsedTimeFromLogin: "14\u5c0f\u65f6\u524d",
+				Introduction:         "\u5728\u4e0d\u77e5\u4e0d\u89c9\u4e2d \u65f6\u5149\u4ece\u4e0d\u505c\u7559\\n\u5982\u4eca\u7684\u6211\u4eec \u6bd5\u4e1a\u518d\u56de\u9996\\n\u8ffd\u68a6\u7684\u670b\u53cb\u4eec\u4e00\u540c \u8e0f\u4e0a\u4e86\u65b0\u7684\u5f81\u9014\\n\u5728\u4e0d\u4e45\u7684\u4eca\u540e \u5728\u672a\u77e5\u7684\u67d0\u5904\\n    \u6211\u4eec\u4e00\u5b9a\u4f1a\u518d\u4e00\u6b21\u9082\u9005\\n    \u8bf7\u4e0d\u8981\u5fd8\u8bb0\u6211\u4eec \u66fe\u7ecf\u7684\u7b11\u5bb9\r",
+			},
+			CenterUnitInfo: CenterUnitInfo{
+				UnitOwningUserID:           CenterId,
+				UnitID:                     3927,
+				Exp:                        79700,
+				NextExp:                    0,
+				Level:                      100,
+				LevelLimitID:               2,
+				MaxLevel:                   100,
+				Rank:                       2,
+				MaxRank:                    2,
+				Love:                       1000,
+				MaxLove:                    1000,
+				UnitSkillLevel:             8,
+				MaxHp:                      6,
+				FavoriteFlag:               true,
+				DisplayRank:                2,
+				UnitSkillExp:               29900,
+				UnitRemovableSkillCapacity: 8,
+				Attribute:                  1,
+				Smile:                      1,
+				Cute:                       1,
+				Cool:                       1,
+				IsLoveMax:                  true,
+				IsLevelMax:                 true,
+				IsRankMax:                  true,
+				IsSigned:                   true,
+				IsSkillLevelMax:            true,
+				SettingAwardID:             113,
+				RemovableSkillIds:          []int{},
+				AccessoryInfo:              AccessoryInfo{},
+				Costume:                    Costume{},
+				TotalSmile:                 1,
+				TotalCute:                  1,
+				TotalCool:                  1,
+				TotalHp:                    6,
+			},
+			NaviUnitInfo: NaviUnitInfo{
+				UnitOwningUserID:            CenterId,
+				UnitID:                      3927,
+				Exp:                         79700,
+				NextExp:                     0,
+				Level:                       100,
+				MaxLevel:                    100,
+				LevelLimitID:                2,
+				Rank:                        2,
+				MaxRank:                     2,
+				Love:                        1000,
+				MaxLove:                     1000,
+				UnitSkillExp:                29900,
+				UnitSkillLevel:              8,
+				MaxHp:                       6,
+				UnitRemovableSkillCapacity:  8,
+				FavoriteFlag:                true,
+				DisplayRank:                 2,
+				IsLoveMax:                   true,
+				IsLevelMax:                  true,
+				IsRankMax:                   true,
+				IsSigned:                    true,
+				IsSkillLevelMax:             true,
+				IsRemovableSkillCapacityMax: true,
+				InsertDate:                  "2016-10-11 10:33:03",
+				TotalSmile:                  1,
+				TotalCute:                   1,
+				TotalCool:                   1,
+				TotalHp:                     6,
+				RemovableSkillIds:           []int{},
+			},
+			IsAlliance:          false,
+			FriendStatus:        0,
+			SettingAwardID:      113,
+			SettingBackgroundID: 143,
+		},
+		Status:     200,
+		CommandNum: false,
+		TimeStamp:  time.Now().Unix(),
+	}
+	respAll = append(respAll, profileResp)
+
+	// Final
+	k, err := json.Marshal(respAll)
+	if err != nil {
+		panic(err)
+	}
+	resp := model.Response{
+		ResponseData: k,
+		ReleaseInfo:  []interface{}{},
+		StatusCode:   200,
+	}
+	k, err = json.Marshal(resp)
+	if err != nil {
+		panic(err)
+	}
+	// fmt.Println(string(k))
+
+	utils.WriteAllText("assets/api3.json", string(k))
 }

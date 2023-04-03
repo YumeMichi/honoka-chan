@@ -7,7 +7,7 @@ import (
 	"honoka-chan/utils"
 )
 
-func AnalysisApi1Data(path string) {
+func LoadApi1Data(path string) {
 	apiData := utils.ReadAllText(path)
 	if apiData != "" {
 		var obj model.Response
@@ -99,7 +99,7 @@ func AnalysisApi1Data(path string) {
 	}
 }
 
-func AnalysisApi2Data(path string) {
+func LoadApi2Data(path string) {
 	apiData := utils.ReadAllText(path)
 	if apiData != "" {
 		var obj model.Response
@@ -147,7 +147,7 @@ func AnalysisApi2Data(path string) {
 	}
 }
 
-func AnalysisApi3Data(path string) {
+func LoadApi3Data(path string) {
 	apiData := utils.ReadAllText(path)
 	if apiData != "" {
 		var obj model.Response

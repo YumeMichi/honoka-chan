@@ -82,7 +82,6 @@ func main() {
 			m.POST("/notice/noticeFriendVariety", handler.NoticeFriendVarietyHandler)
 			m.POST("/notice/noticeFriendGreeting", handler.NoticeFriendGreetingHandler)
 			m.POST("/notice/noticeUserGreetingHistory", handler.NoticeUserGreetingHandler)
-
 		}
 		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
 		// Server APIs
