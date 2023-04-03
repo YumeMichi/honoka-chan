@@ -79,6 +79,9 @@ func main() {
 			m.POST("/subscenario/startup", handler.SubScenarioStartupHandler)
 			m.POST("/subscenario/reward", handler.SubScenarioStartupHandler)
 			m.POST("/album/seriesAll", handler.AlbumSeriesAllHandler)
+			m.POST("/notice/noticeFriendVariety", handler.NoticeFriendVarietyHandler)
+			m.POST("/notice/noticeFriendGreeting", handler.NoticeFriendGreetingHandler)
+			m.POST("/notice/noticeUserGreetingHistory", handler.NoticeUserGreetingHandler)
 
 		}
 		r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
