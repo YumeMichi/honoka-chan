@@ -428,7 +428,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(mm))
+	// fmt.Println(string(mm))
 
 	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -503,27 +503,14 @@ func PlayRewardHandler(ctx *gin.Context) {
 		}
 	}
 
-	// HACK UnitList
 	unitsList := []model.PlayRewardUnitList{}
-	unitId := 3071290940
-	for i := 0; i < 9; i++ {
-		unitList := model.PlayRewardUnitList{
-			UnitOwningUserID: int64(unitId + i),
-			UnitID:           2122,
-			Position:         i + 1,
-			Level:            120,
-			LevelLimitID:     1,
-			DisplayRank:      2,
-			Love:             1000,
-			UnitSkillLevel:   8,
-			IsRankMax:        true,
-			IsLoveMax:        true,
-			IsLevelMax:       true,
-			IsSigned:         true,
-			BeforeLove:       1000,
-			MaxLove:          1000,
-		}
-		unitsList = append(unitsList, unitList)
+	deck, err := database.LevelDb.Get([]byte("deck_info"))
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(deck, &unitsList)
+	if err != nil {
+		panic(err)
 	}
 
 	totalScore := playRewardReq.ScoreSmile + playRewardReq.ScoreCool + playRewardReq.ScoreCute
@@ -689,7 +676,7 @@ func PlayRewardHandler(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(mm))
+	// fmt.Println(string(mm))
 
 	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)

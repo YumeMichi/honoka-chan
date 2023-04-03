@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"honoka-chan/database"
 	"honoka-chan/model"
 	"honoka-chan/utils"
 	"strings"
@@ -127,7 +128,7 @@ func GenApi1Data() {
 	oId := 3000000000 // 起始卡片 ID，随意设置
 	sdt := time.Now().Add(-time.Hour * 24 * 30)
 
-	defaultDeckUnits := []int{}
+	defaultDeckUnitList := []model.PlayRewardUnitList{}
 
 	for rows.Next() {
 		unitData := model.Active{}
@@ -242,7 +243,21 @@ func GenApi1Data() {
 		case int64:
 			if album_series_id == 615 {
 				// 仆光套
-				defaultDeckUnits = append(defaultDeckUnits, oId)
+				defaultDeckUnitList = append(defaultDeckUnitList, model.PlayRewardUnitList{
+					UnitOwningUserID: oId,
+					UnitID:           uid,
+					Level:            100,
+					LevelLimitID:     2,
+					DisplayRank:      2,
+					Love:             1000,
+					UnitSkillLevel:   8,
+					IsRankMax:        true,
+					IsLoveMax:        true,
+					IsLevelMax:       true,
+					IsSigned:         unitData.IsSigned,
+					BeforeLove:       1000,
+					MaxLove:          1000,
+				})
 			}
 		}
 	}
@@ -261,10 +276,12 @@ func GenApi1Data() {
 
 	// unit_deck_result
 	oUids := []model.UnitOwningUserIds{}
-	for k, v := range defaultDeckUnits[0:9] {
+	for k, v := range defaultDeckUnitList[0:9] {
+		position := k + 1
+		defaultDeckUnitList[k].Position = position
 		oUids = append(oUids, model.UnitOwningUserIds{
-			Position:         k + 1,
-			UnitOwningUserID: v,
+			Position:         position,
+			UnitOwningUserID: v.UnitOwningUserID,
 		})
 	}
 	unitDeckResp := model.UnitDeckInfoResp{
@@ -282,6 +299,16 @@ func GenApi1Data() {
 		TimeStamp:  time.Now().Unix(),
 	}
 	respAll = append(respAll, unitDeckResp)
+
+	// HACK 保存卡组信息
+	deck, err := json.Marshal(defaultDeckUnitList)
+	if err != nil {
+		panic(err)
+	}
+	err = database.LevelDb.Put([]byte("deck_info"), deck)
+	if err != nil {
+		panic(err)
+	}
 
 	// unit_support_result
 	unitSupportResp := model.UnitSupportResp{

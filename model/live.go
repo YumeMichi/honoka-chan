@@ -398,20 +398,20 @@ type EffortPoint struct {
 }
 
 type PlayRewardUnitList struct {
-	UnitOwningUserID int64 `json:"unit_owning_user_id"`
-	UnitID           int   `json:"unit_id"`
-	Position         int   `json:"position"`
-	Level            int   `json:"level"`
-	LevelLimitID     int   `json:"level_limit_id"`
-	DisplayRank      int   `json:"display_rank"`
-	Love             int   `json:"love"`
-	UnitSkillLevel   int   `json:"unit_skill_level"`
-	IsRankMax        bool  `json:"is_rank_max"`
-	IsLoveMax        bool  `json:"is_love_max"`
-	IsLevelMax       bool  `json:"is_level_max"`
-	IsSigned         bool  `json:"is_signed"`
-	BeforeLove       int   `json:"before_love"`
-	MaxLove          int   `json:"max_love"`
+	UnitOwningUserID int  `json:"unit_owning_user_id"`
+	UnitID           int  `json:"unit_id"`
+	Position         int  `json:"position"`
+	Level            int  `json:"level"`
+	LevelLimitID     int  `json:"level_limit_id"`
+	DisplayRank      int  `json:"display_rank"`
+	Love             int  `json:"love"`
+	UnitSkillLevel   int  `json:"unit_skill_level"`
+	IsRankMax        bool `json:"is_rank_max"`
+	IsLoveMax        bool `json:"is_love_max"`
+	IsLevelMax       bool `json:"is_level_max"`
+	IsSigned         bool `json:"is_signed"`
+	BeforeLove       int  `json:"before_love"`
+	MaxLove          int  `json:"max_love"`
 	// Costume Costume `json:"costume,omitempty"`
 }
 
