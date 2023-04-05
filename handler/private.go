@@ -59,7 +59,7 @@ func HandshakeHandler(ctx *gin.Context) {
 	// fmt.Println(randKey)
 
 	token := strings.ToUpper(utils.RandomStr(33))
-	token = fmt.Sprintf(`{"token":"%s"}`, token)
+	token = fmt.Sprintf(`{"message":"ok","result":0,"token":"%s"}`, token)
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
 		panic(err)
@@ -85,7 +85,7 @@ func InitializeHandler(ctx *gin.Context) {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	// // fmt.Println(string(body64))
+	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	// if err != nil {
@@ -93,9 +93,42 @@ func InitializeHandler(ctx *gin.Context) {
 	// }
 	// fmt.Println(string(decryptedBody))
 
-	// Unable to decrypt server data
-	token := `{"message":"Hello, world!"}`
-	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	data := `{
+		"brand_logo":"http://gskd.sdo.com/ghome/ztc/logo/og/logo_xhdpi.png",
+		"brand_name":"盛趣游戏",
+		"daoyu_clientid":"",
+		"daoyu_download_url":"http://a.sdo.com/u8000",
+		"device_feature":"",
+		"display_thirdaccout":0,
+		"force_show_agreement":1,
+		"greport_log_level":"off",
+		"guest_enable":0,
+		"is_match":0,
+		"log_level":"off",
+		"login_button":[
+			"official"
+		],
+		"login_icon":[],
+		"login_limit_enable":0,
+		"need_float_window_permission":1,
+		"new_device_id_server":"6695A4085F5141A6A26B05A6BA5A0576",
+		"qq_appId":"",
+		"qq_key":"",
+		"show_guest_confirm":1,
+		"voicetip_button":1,
+		"voicetip_one":"",
+		"voicetip_two":"",
+		"wegame_appid":"",
+		"wegame_appkey":"",
+		"wegame_clientid":"",
+		"wegame_companyId":"",
+		"wegame_loginUrl":"",
+		"weibo_appKey":"",
+		"weibo_redirectUrl":"",
+		"weixin_appId":"",
+		"weixin_key":""
+	}`
+	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(data), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
 		panic(err)
 	}
@@ -126,7 +159,7 @@ func LoginAutoHandler(ctx *gin.Context) {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	// // fmt.Println(string(body64))
+	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	// if err != nil {
@@ -152,7 +185,7 @@ func LoginAutoHandler(ctx *gin.Context) {
 func LoginAreaHandler(ctx *gin.Context) {
 	userId := ctx.PostForm("userid")
 	if userId != "" {
-		// fmt.Println(userId)
+		fmt.Println(userId)
 		resp := fmt.Sprintf(`{ "code": 0, "msg": "ok", "data": { "userid": "%s" } }`, userId)
 		ctx.Header("Content-Type", "text/html;charset=utf-8")
 		ctx.String(http.StatusOK, resp)
@@ -171,7 +204,7 @@ func AccountLoginHandler(ctx *gin.Context) {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	// // fmt.Println(string(body64))
+	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	// if err != nil {
@@ -179,9 +212,35 @@ func AccountLoginHandler(ctx *gin.Context) {
 	// }
 	// fmt.Println(string(decryptedBody))
 
-	// Unable to decrypt server data
-	token := `{"message":"Hello, world!"}`
-	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	// userid: 实际登录用的账号
+	// ticket: 实际登录用的密码（每次登录都会重新生成新的）
+	// 注意：更换设备（deviceId 发生变化）会重新生成 autokey
+	data := `{
+		"activation":0,
+		"autokey":"AUTOB36C64BA1CC84E37AC5694FD7BE6652F",
+		"captchaParams":"",
+		"checkCodeGuid":"",
+		"checkCodeUrl":"",
+		"hasExtendAccs":0,
+		"has_realInfo":1,
+		"imagecodeType":0,
+		"isNewUser":0,
+		"message":"ok",
+		"nextAction":0,
+		"prompt_msg":"",
+		"realInfoNotification":"",
+		"realInfo_force":1,
+		"realInfo_force_pay":0,
+		"realInfo_status":0,
+		"realInfo_status_pay":0,
+		"result":0,
+		"sdg_height":0,
+		"sdg_width":0,
+		"ticket":"810171225920071361680690948",
+		"userAttribute":"0",
+		"userid":"2592007136"
+	}`
+	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(data), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	if err != nil {
 		panic(err)
 	}
@@ -206,7 +265,7 @@ func ReportRoleHandler(ctx *gin.Context) {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	// // fmt.Println(string(body64))
+	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
 	// if err != nil {
@@ -227,7 +286,7 @@ func ReportRoleHandler(ctx *gin.Context) {
 		panic(err)
 	}
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
-	fmt.Println(encryptedToken64)
+	// fmt.Println(encryptedToken64)
 
 	resp := fmt.Sprintf(`{ "code": 0, "msg": "ok", "data": "%s" }`, encryptedToken64)
 
