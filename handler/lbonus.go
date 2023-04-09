@@ -21,24 +21,24 @@ func LBonusExecuteHandler(ctx *gin.Context) {
 	authorizeStr := ctx.Request.Header["Authorize"]
 	authToken, err := utils.GetAuthorizeToken(authorizeStr)
 	if err != nil {
-		ctx.String(http.StatusForbidden, "Fuck you!")
+		ctx.String(http.StatusForbidden, ErrorMsg)
 		return
 	}
 	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
 	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, "Fuck you!")
+		ctx.String(http.StatusForbidden, ErrorMsg)
 		return
 	}
 
 	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, "Fuck you!")
+		ctx.String(http.StatusForbidden, ErrorMsg)
 		return
 	}
 
 	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
 	if err != nil {
 		fmt.Println(err)
-		ctx.String(http.StatusForbidden, "Fuck you!")
+		ctx.String(http.StatusForbidden, ErrorMsg)
 		return
 	}
 	nonce++

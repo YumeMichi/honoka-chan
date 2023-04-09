@@ -88,7 +88,7 @@ func LoginHandler(ctx *gin.Context) {
 	authorizeStr := ctx.Request.Header["Authorize"]
 	// authToken, err := utils.GetAuthorizeToken(authorizeStr)
 	// if err != nil {
-	// 	ctx.String(http.StatusForbidden, "Fuck you!")
+	// 	ctx.String(http.StatusForbidden, ErrorMsg)
 	// 	return
 	// }
 
@@ -135,14 +135,14 @@ func LoginHandler(ctx *gin.Context) {
 	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
 	if err != nil {
 		fmt.Println(err)
-		ctx.String(http.StatusForbidden, "Fuck you!")
+		ctx.String(http.StatusForbidden, ErrorMsg)
 		return
 	}
 	nonce++
 
 	// userId, err := database.GetUid(string(keyDescrypted))
 	// if err != nil {
-	// 	ctx.String(http.StatusForbidden, "Fuck you!")
+	// 	ctx.String(http.StatusForbidden, ErrorMsg)
 	// 	return
 	// }
 	userId := 9999999
