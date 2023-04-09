@@ -10,5 +10,3 @@ log:
     log_save: true
 leveldb:
     data_path: ./data/honoka-chan.db
-sifcap:
-    enabled: false

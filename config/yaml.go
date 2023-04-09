@@ -18,7 +18,6 @@ type AppConfigs struct {
 	Server  ServerConfigs  `yaml:"server"`
 	Log     LogConfigs     `yaml:"log"`
 	LevelDb LevelDbConfigs `yaml:"leveldb"`
-	SifCap  SifCapConfigs  `yaml:"sifcap"`
 }
 
 type ServerConfigs struct {
@@ -38,10 +37,6 @@ type LevelDbConfigs struct {
 	DataPath string `yaml:"data_path"`
 }
 
-type SifCapConfigs struct {
-	Enabled bool `yaml:"enabled"`
-}
-
 func DefaultConfigs() *AppConfigs {
 	return &AppConfigs{
 		AppName: "LL! SIF Private Server",
@@ -58,9 +53,6 @@ func DefaultConfigs() *AppConfigs {
 		},
 		LevelDb: LevelDbConfigs{
 			DataPath: "./data/honoka-chan.db",
-		},
-		SifCap: SifCapConfigs{
-			Enabled: false,
 		},
 	}
 }
