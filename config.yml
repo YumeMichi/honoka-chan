@@ -10,3 +10,5 @@ log:
     log_save: true
 leveldb:
     data_path: ./data/honoka-chan.db
+cdn:
+    cdn_url: http://192.168.1.12:8081/static

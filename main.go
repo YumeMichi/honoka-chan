@@ -54,7 +54,9 @@ func main() {
 		m.POST("/gdpr/get", handler.GdprHandler)
 		m.POST("/personalnotice/get", handler.PersonalNoticeHandler)
 		m.POST("/tos/tosCheck", handler.TosCheckHandler)
+		m.POST("/download/additional", handler.DownloadAdditionalHandler)
 		m.POST("/download/batch", handler.DownloadBatchHandler)
+		m.POST("/download/update", handler.DownloadUpdateHandler)
 		m.POST("/download/event", handler.DownloadEventHandler)
 		m.POST("/lbonus/execute", handler.LBonusExecuteHandler)
 		m.POST("/api", handler.ApiHandler)
@@ -78,6 +80,7 @@ func main() {
 		m.POST("/notice/noticeFriendVariety", handler.NoticeFriendVarietyHandler)
 		m.POST("/notice/noticeFriendGreeting", handler.NoticeFriendGreetingHandler)
 		m.POST("/notice/noticeUserGreetingHistory", handler.NoticeUserGreetingHandler)
+		m.POST("/multiunit/scenarioStartup", handler.MultiUnitStartUpHandler)
 	}
 	r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
 	// Server APIs

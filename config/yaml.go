@@ -18,6 +18,7 @@ type AppConfigs struct {
 	Server  ServerConfigs  `yaml:"server"`
 	Log     LogConfigs     `yaml:"log"`
 	LevelDb LevelDbConfigs `yaml:"leveldb"`
+	Cdn     CdnConfigs     `yaml:"cdn"`
 }
 
 type ServerConfigs struct {
@@ -37,6 +38,10 @@ type LevelDbConfigs struct {
 	DataPath string `yaml:"data_path"`
 }
 
+type CdnConfigs struct {
+	CdnUrl string `yaml:"cdn_url"`
+}
+
 func DefaultConfigs() *AppConfigs {
 	return &AppConfigs{
 		AppName: "LL! SIF Private Server",
@@ -53,6 +58,9 @@ func DefaultConfigs() *AppConfigs {
 		},
 		LevelDb: LevelDbConfigs{
 			DataPath: "./data/honoka-chan.db",
+		},
+		Cdn: CdnConfigs{
+			CdnUrl: "",
 		},
 	}
 }

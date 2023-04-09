@@ -9,4 +9,5 @@ func init() {
 	LoadApi3Data("assets/api3.json")
 	// ListUnitData()
 	// go SyncNotesList()
+	// GenDownloadDb()
 }
