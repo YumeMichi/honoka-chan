@@ -10,6 +10,7 @@ import (
 	"honoka-chan/model"
 	"honoka-chan/utils"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -146,7 +147,15 @@ func DownloadBatchHandler(ctx *gin.Context) {
 	pkgList := []model.BatchResult{}
 	if downloadReq.ClientVersion == PackageVersion && CdnUrl != "" {
 		pkgType := downloadReq.PackageType
-		stmt, err := db.Prepare("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = ? ORDER BY pkg_id ASC, pkg_order ASC")
+		exPkgId := ""
+		if len(downloadReq.ExcludedPackageIds) > 0 {
+			// https://stackoverflow.com/a/37533144
+			exPkgId = strings.Trim(strings.Join(strings.Fields(fmt.Sprint(downloadReq.ExcludedPackageIds)), ","), "[]")
+
+			exPkgId = fmt.Sprintf("AND pkg_id NOT IN (%s)", exPkgId)
+		}
+		fmt.Println(exPkgId)
+		stmt, err := db.Prepare("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = ? " + exPkgId + " ORDER BY pkg_id ASC, pkg_order ASC")
 		if err != nil {
 			panic(err)
 		}

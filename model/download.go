@@ -23,11 +23,11 @@ type AdditionalResp struct {
 }
 
 type BatchReq struct {
-	ClientVersion      string        `json:"client_version"`
-	Os                 string        `json:"os"`
-	PackageType        int           `json:"package_type"`
-	ExcludedPackageIds []interface{} `json:"excluded_package_ids"`
-	CommandNum         string        `json:"commandNum"`
+	ClientVersion      string `json:"client_version"`
+	Os                 string `json:"os"`
+	PackageType        int    `json:"package_type"`
+	ExcludedPackageIds []int  `json:"excluded_package_ids"`
+	CommandNum         string `json:"commandNum"`
 }
 
 type BatchResult struct {
