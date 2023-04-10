@@ -78,7 +78,7 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 			}
 			pkgList = append(pkgList, model.AdditionalResult{
 				Size: pkgSize,
-				URL:  fmt.Sprintf("%s/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
+				URL:  fmt.Sprintf("%s/archives/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
 			})
 		}
 	}
@@ -154,7 +154,7 @@ func DownloadBatchHandler(ctx *gin.Context) {
 
 			exPkgId = fmt.Sprintf("AND pkg_id NOT IN (%s)", exPkgId)
 		}
-		fmt.Println(exPkgId)
+		// fmt.Println(exPkgId)
 		stmt, err := db.Prepare("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = ? " + exPkgId + " ORDER BY pkg_id ASC, pkg_order ASC")
 		if err != nil {
 			panic(err)
@@ -171,7 +171,7 @@ func DownloadBatchHandler(ctx *gin.Context) {
 			}
 			pkgList = append(pkgList, model.BatchResult{
 				Size: pkgSize,
-				URL:  fmt.Sprintf("%s/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
+				URL:  fmt.Sprintf("%s/archives/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
 			})
 		}
 	}
@@ -252,7 +252,7 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 			}
 			pkgList = append(pkgList, model.UpdateResult{
 				Size:    pkgSize,
-				URL:     fmt.Sprintf("%s/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
+				URL:     fmt.Sprintf("%s/archives/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
 				Version: PackageVersion,
 			})
 		}
@@ -264,6 +264,69 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(updateResp)
+	if err != nil {
+		panic(err)
+	}
+	// fmt.Println(string(resp))
+	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
+	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+
+	ctx.Header("user_id", userId[0])
+	ctx.Header("authorize", newAuthorizeStr)
+	ctx.Header("X-Message-Sign", xms64)
+	ctx.String(http.StatusOK, string(resp))
+}
+
+func DownloadUrlHandler(ctx *gin.Context) {
+	// Extract SQL: SELECT CAST(pkg_type AS TEXT) || '_' || CAST(pkg_id AS TEXT) || '_' || CAST(pkg_order AS TEXT) || '.zip' AS zip_name FROM download_db ORDER BY pkg_type ASC,pkg_id ASC, pkg_order ASC;
+	// Extract Cmd: cat list.txt | while read line; do; unzip -o $line; done
+	reqTime := time.Now().Unix()
+
+	authorizeStr := ctx.Request.Header["Authorize"]
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, ErrorMsg)
+		return
+	}
+	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
+	if len(userId) == 0 {
+		ctx.String(http.StatusForbidden, ErrorMsg)
+		return
+	}
+
+	if !database.MatchTokenUid(authToken, userId[0]) {
+		ctx.String(http.StatusForbidden, ErrorMsg)
+		return
+	}
+
+	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
+	if err != nil {
+		fmt.Println(err)
+		ctx.String(http.StatusForbidden, ErrorMsg)
+		return
+	}
+	nonce++
+
+	respTime := time.Now().Unix()
+	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
+	// fmt.Println(newAuthorizeStr)
+
+	downloadReq := model.UrlReq{}
+	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
+		panic(err)
+	}
+	urlList := []string{}
+	for _, v := range downloadReq.PathList {
+		urlList = append(urlList, fmt.Sprintf("%s/extracted/%s", CdnUrl, strings.ReplaceAll(v, "\\", "")))
+	}
+	urlResp := model.UrlResp{
+		ResponseData: model.UrlResult{
+			UrlList: urlList,
+		},
+		ReleaseInfo: []interface{}{},
+		StatusCode:  200,
+	}
+	resp, err := json.Marshal(urlResp)
 	if err != nil {
 		panic(err)
 	}

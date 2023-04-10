@@ -64,6 +64,24 @@ type UpdateResp struct {
 	StatusCode   int            `json:"status_code"`
 }
 
+type UrlReq struct {
+	Module   string   `json:"module"`
+	Os       string   `json:"os"`
+	Mgd      int      `json:"mgd"`
+	PathList []string `json:"path_list"`
+	Action   string   `json:"action"`
+}
+
+type UrlResult struct {
+	UrlList []string `json:"url_list"`
+}
+
+type UrlResp struct {
+	ResponseData UrlResult     `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+
 type EventResp struct {
 	ResponseData []interface{} `json:"response_data"`
 	ReleaseInfo  []interface{} `json:"release_info"`

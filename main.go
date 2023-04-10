@@ -56,6 +56,7 @@ func main() {
 		m.POST("/tos/tosCheck", handler.TosCheckHandler)
 		m.POST("/download/additional", handler.DownloadAdditionalHandler)
 		m.POST("/download/batch", handler.DownloadBatchHandler)
+		m.POST("/download/getUrl", handler.DownloadUrlHandler)
 		m.POST("/download/update", handler.DownloadUpdateHandler)
 		m.POST("/download/event", handler.DownloadEventHandler)
 		m.POST("/lbonus/execute", handler.LBonusExecuteHandler)
