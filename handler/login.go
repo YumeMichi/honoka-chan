@@ -137,7 +137,7 @@ func LoginHandler(ctx *gin.Context) {
 	sUserId := strconv.Itoa(userId)
 	authorizeToken := utils.RandomBase64Token(32)
 
-	err = database.LevelDb.Put([]byte(authorizeToken), []byte(sUserId))
+	err = database.LevelDb.Put([]byte(sUserId), []byte(authorizeToken))
 	CheckErr(err)
 
 	loginResp := model.LoginResp{}

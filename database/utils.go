@@ -8,11 +8,11 @@ func MatchTokenUid(token, uid string) bool {
 	// 	fmt.Println(k, v)
 	// 	fmt.Println()
 	// }
-	res, err := LevelDb.Get([]byte(token))
+	res, err := LevelDb.Get([]byte(uid))
 	if err != nil {
 		fmt.Println(err)
 		return false
 	}
 
-	return string(res) == uid
+	return string(res) == token
 }

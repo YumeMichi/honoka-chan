@@ -46,7 +46,7 @@ func main() {
 	// Private APIs
 
 	// Server APIs
-	m := r.Group("main.php").Use(middleware.KlabHeader)
+	m := r.Group("main.php").Use(middleware.CommonMid)
 	{
 		m.POST("/login/authkey", handler.AuthKeyHandler)
 		m.POST("/login/login", handler.LoginHandler)
