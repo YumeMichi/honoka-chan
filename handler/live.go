@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -103,11 +102,6 @@ func PlayLiveHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-	db.SetMaxOpenConns(1)
-
 	tDifficultyId := playReq.LiveDifficultyID
 	difficultyId, err := strconv.Atoi(tDifficultyId)
 	CheckErr(err)
@@ -116,15 +110,10 @@ func PlayLiveHandler(ctx *gin.Context) {
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT notes_setting_asset,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
-	rows, err := db.Query(sql, difficultyId, difficultyId)
-	CheckErr(err)
-
 	var notes_setting_asset string
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, ac_flag, swing_flag int
-	for rows.Next() {
-		err = rows.Scan(&notes_setting_asset, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
-		CheckErr(err)
-	}
+	err = MainEng.DB().QueryRow(sql, difficultyId, difficultyId).Scan(&notes_setting_asset, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
+	CheckErr(err)
 
 	// fmt.Println(notes_setting_asset)
 	// fmt.Println(c_rank_score, b_rank_score, a_rank_score, s_rank_score)
@@ -307,11 +296,6 @@ func PlayScoreHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-	db.SetMaxOpenConns(1)
-
 	tDifficultyId := playScoreReq.LiveDifficultyID
 	difficultyId, err := strconv.Atoi(tDifficultyId)
 	CheckErr(err)
@@ -319,15 +303,10 @@ func PlayScoreHandler(ctx *gin.Context) {
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT notes_setting_asset,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
-	rows, err := db.Query(sql, difficultyId, difficultyId)
-	CheckErr(err)
-
 	var notes_setting_asset string
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, ac_flag, swing_flag int
-	for rows.Next() {
-		err = rows.Scan(&notes_setting_asset, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
-		CheckErr(err)
-	}
+	err = MainEng.DB().QueryRow(sql, difficultyId, difficultyId).Scan(&notes_setting_asset, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
+	CheckErr(err)
 
 	// fmt.Println(notes_setting_asset)
 	// fmt.Println(c_rank_score, b_rank_score, a_rank_score, s_rank_score)
@@ -446,24 +425,14 @@ func PlayRewardHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-	db.SetMaxOpenConns(1)
-
 	difficultyId := playRewardReq.LiveDifficultyID
 
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT c_rank_score,b_rank_score,a_rank_score,s_rank_score,c_rank_combo,b_rank_combo,a_rank_combo,s_rank_combo,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
-	rows, err := db.Query(sql, difficultyId, difficultyId)
-	CheckErr(err)
-
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, c_rank_combo, b_rank_combo, a_rank_combo, s_rank_combo, ac_flag, swing_flag int
-	for rows.Next() {
-		err = rows.Scan(&c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &c_rank_combo, &b_rank_combo, &a_rank_combo, &s_rank_combo, &ac_flag, &swing_flag)
-		CheckErr(err)
-	}
+	err = MainEng.DB().QueryRow(sql, difficultyId, difficultyId).Scan(&c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &c_rank_combo, &b_rank_combo, &a_rank_combo, &s_rank_combo, &ac_flag, &swing_flag)
+	CheckErr(err)
 
 	unitsList := []model.PlayRewardUnitList{}
 	deck, err := database.LevelDb.Get([]byte("deck_info"))

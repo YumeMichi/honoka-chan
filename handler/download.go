@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -18,10 +17,6 @@ import (
 )
 
 func DownloadAdditionalHandler(ctx *gin.Context) {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
@@ -60,8 +55,9 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 	pkgList := []model.AdditionalResult{}
 	if CdnUrl != "" {
 		pkgType, pkgId := downloadReq.PackageType, downloadReq.PackageID
-		stmt, err := db.Prepare("SELECT pkg_order,pkg_size FROM download_db WHERE pkg_type = ? AND pkg_id = ? ORDER BY pkg_order ASC")
+		stmt, err := MainEng.DB().Prepare("SELECT pkg_order,pkg_size FROM download_db WHERE pkg_type = ? AND pkg_id = ? ORDER BY pkg_order ASC")
 		CheckErr(err)
+		defer stmt.Close()
 		rows, err := stmt.Query(pkgType, pkgId)
 		CheckErr(err)
 		for rows.Next() {
@@ -93,10 +89,6 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 }
 
 func DownloadBatchHandler(ctx *gin.Context) {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
@@ -143,8 +135,9 @@ func DownloadBatchHandler(ctx *gin.Context) {
 			exPkgId = fmt.Sprintf("AND pkg_id NOT IN (%s)", exPkgId)
 		}
 		// fmt.Println(exPkgId)
-		stmt, err := db.Prepare("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = ? " + exPkgId + " ORDER BY pkg_id ASC, pkg_order ASC")
+		stmt, err := MainEng.DB().Prepare("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = ? " + exPkgId + " ORDER BY pkg_id ASC, pkg_order ASC")
 		CheckErr(err)
+		defer stmt.Close()
 		rows, err := stmt.Query(pkgType)
 		CheckErr(err)
 		for rows.Next() {
@@ -176,10 +169,6 @@ func DownloadBatchHandler(ctx *gin.Context) {
 }
 
 func DownloadUpdateHandler(ctx *gin.Context) {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
@@ -218,7 +207,7 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 	pkgList := []model.UpdateResult{}
 	if downloadReq.ExternalVersion != PackageVersion && CdnUrl != "" {
 		pkgType := 99
-		rows, err := db.Query("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = 99 ORDER BY pkg_id ASC, pkg_order ASC")
+		rows, err := MainEng.DB().Query("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = 99 ORDER BY pkg_id ASC, pkg_order ASC")
 		CheckErr(err)
 		for rows.Next() {
 			var pkgId, pkgOrder, pkgSize int

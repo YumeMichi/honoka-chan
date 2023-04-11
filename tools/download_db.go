@@ -1,7 +1,6 @@
 package tools
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 	"strings"
@@ -19,10 +18,6 @@ func GenDownloadDb() {
 	// 	"pkg_size" integer,
 	// 	PRIMARY KEY ("id")
 	//   )`
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	fileLists, err := os.ReadDir("F:/sif_dl/list_CN_Android")
 	CheckErr(err)
 	for _, v := range fileLists {
@@ -37,8 +32,9 @@ func GenDownloadDb() {
 		pkgType, pkgId, pkgOrder := fileInfo[0], fileInfo[1], fileInfo[2]
 		fmt.Printf("%s - %s - %s - %d\n", pkgType, pkgId, pkgOrder, pkgSize)
 
-		stmt, err := db.Prepare("INSERT INTO download_db(pkg_type,pkg_id,pkg_order,pkg_size) VALUES (?,?,?,?)")
+		stmt, err := MainEng.DB().Prepare("INSERT INTO download_db(pkg_type,pkg_id,pkg_order,pkg_size) VALUES (?,?,?,?)")
 		CheckErr(err)
+		defer stmt.Close()
 
 		res, err := stmt.Exec(pkgType, pkgId, pkgOrder, pkgSize)
 		CheckErr(err)

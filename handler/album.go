@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -18,10 +17,6 @@ import (
 )
 
 func AlbumSeriesAllHandler(ctx *gin.Context) {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
@@ -53,26 +48,24 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
 	// fmt.Println(newAuthorizeStr)
 
-	//
-	sql := `SELECT album_series_id FROM album_series_m`
-	seriesRows, err := db.Query(sql)
+	var albumIds []int
+	err = MainEng.Table("album_series_m").Select("album_series_id").Find(&albumIds)
 	CheckErr(err)
-	albumSeriesAllResp := []model.AlbumSeriesResp{}
-	for seriesRows.Next() {
-		var series int
-		err = seriesRows.Scan(&series)
+	// fmt.Println(albumIds)
+
+	albumSeriesAllRes := []model.AlbumSeriesRes{}
+	for _, albumId := range albumIds {
+		AlbumStmt, err := MainEng.DB().Prepare("SELECT unit_id,rarity FROM unit_m WHERE album_series_id = ?")
+		CheckErr(err)
+		defer AlbumStmt.Close()
+
+		rows, err := AlbumStmt.Query(albumId)
 		CheckErr(err)
 
 		albumSeriesAll := []model.AlbumResult{}
-		stmt, err := db.Prepare("SELECT unit_id,rarity FROM unit_m WHERE album_series_id = ?")
-		CheckErr(err)
-
-		unitRows, err := stmt.Query(series)
-		CheckErr(err)
-
-		for unitRows.Next() {
+		for rows.Next() {
 			var unitId, rarity int
-			err = unitRows.Scan(&unitId, &rarity)
+			err = rows.Scan(&unitId, &rarity)
 			CheckErr(err)
 
 			albumSeries := model.AlbumResult{
@@ -105,17 +98,15 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 				albumSeries.HighestLovePerUnit = 1000
 
 				// IsSigned
-				stmt, err = db.Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
+				signStmt, err := MainEng.DB().Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
 				CheckErr(err)
-				signRows, err := stmt.Query(unitId)
+				defer signStmt.Close()
+
+				var count int
+				err = signStmt.QueryRow(unitId).Scan(&count)
 				CheckErr(err)
 
-				ct := 0
-				for signRows.Next() {
-					err = signRows.Scan(&ct)
-					CheckErr(err)
-				}
-				if ct > 0 {
+				if count > 0 {
 					albumSeries.SignFlag = true
 				} else {
 					albumSeries.SignFlag = false
@@ -124,15 +115,15 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 
 			albumSeriesAll = append(albumSeriesAll, albumSeries)
 		}
-		albumSeriesAllResp = append(albumSeriesAllResp, model.AlbumSeriesResp{
-			SeriesID: series,
+
+		albumSeriesAllRes = append(albumSeriesAllRes, model.AlbumSeriesRes{
+			SeriesID: albumId,
 			UnitList: albumSeriesAll,
 		})
 	}
-	rb, err := json.Marshal(albumSeriesAllResp)
-	CheckErr(err)
-	resp := model.Response{
-		ResponseData: rb,
+
+	resp := model.AlbumSeriesResp{
+		ResponseData: albumSeriesAllRes,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
 	}

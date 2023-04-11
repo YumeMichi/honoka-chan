@@ -1,7 +1,6 @@
 package tools
 
 import (
-	"database/sql"
 	"fmt"
 	"honoka-chan/utils"
 	"io"
@@ -17,17 +16,14 @@ import (
 )
 
 func SyncNotesList() {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
 	defer func() {
-		db.Close()
 		fmt.Println("Sync notes list done!")
 	}()
-	db.SetMaxOpenConns(1)
 
 	sql := `SELECT live_setting_id,notes_setting_asset FROM live_setting_m ORDER BY live_setting_id ASC`
-	rows, err := db.Query(sql)
+	rows, err := MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 
 	liveList := make(map[int]string)
 

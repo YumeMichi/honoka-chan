@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -222,19 +221,13 @@ func LoginAutoHandler(ctx *gin.Context) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "assets/account.db")
+	stmt, err := UserEng.DB().Prepare("SELECT userid,ticket AS ct FROM users WHERE autokey = ?")
 	CheckErr(err)
-	defer db.Close()
+	defer stmt.Close()
 
-	stmt, err := db.Prepare("SELECT userid,ticket AS ct FROM users WHERE autokey = ?")
-	CheckErr(err)
-	rows, err := stmt.Query(autoKey)
-	CheckErr(err)
 	var userid, ticket string
-	for rows.Next() {
-		err = rows.Scan(&userid, &ticket)
-		CheckErr(err)
-	}
+	err = stmt.QueryRow(autoKey).Scan(&userid, &ticket)
+	CheckErr(err)
 
 	var resp string
 	if userid != "" {
@@ -320,62 +313,62 @@ func AccountLoginHandler(ctx *gin.Context) {
 	// 	"userid" INTEGER,
 	// 	"key" INTEGER
 	//   );`
-	db, err := sql.Open("sqlite3", "assets/account.db")
+	stmt, err := UserEng.DB().Prepare("SELECT password,autokey,ticket,userid FROM users WHERE phone = ?")
 	CheckErr(err)
-	defer db.Close()
+	defer stmt.Close()
 
-	stmt, err := db.Prepare("SELECT password,autokey,ticket,userid FROM users WHERE phone = ?")
-	CheckErr(err)
-	rows, err := stmt.Query(phone)
-	CheckErr(err)
 	var pass, autokey, ticket, userid string
-	for rows.Next() {
-		err = rows.Scan(&pass, &autokey, &ticket, &userid)
-		CheckErr(err)
-	}
+	err = stmt.QueryRow(phone).Scan(&pass, &autokey, &ticket, &userid)
+	CheckErr(err)
+
 	loginResp := LoginResp{}
 	loginCode := 0
 	loginMsg := "ok"
 	loginTime := time.Now().Unix()
 	if pass == "" {
 		// 未注册 - 自动注册
-		trans, err := db.Begin()
-		if err != nil {
-			trans.Rollback()
+		session := UserEng.NewSession()
+		defer session.Close()
+
+		if err = session.Begin(); err != nil {
+			session.Rollback()
 			panic(err)
 		}
+
 		pass = openssl.Md5ToString(password)
 		autokey = "AUTO" + strings.ToUpper(utils.RandomStr(32))
 		userid = strconv.Itoa(int(loginTime))
 		ticket = "9999999" + userid + userid
-		stmt, err = trans.Prepare("INSERT INTO users(phone,password,autokey,ticket,userid,last_login_time) VALUES (?,?,?,?,?,?)")
+		userStmt, err := session.DB().Prepare("INSERT INTO users(phone,password,autokey,ticket,userid,last_login_time) VALUES (?,?,?,?,?,?)")
 		if err != nil {
-			trans.Rollback()
+			session.Rollback()
 			panic(err)
 		}
-		_, err = stmt.Exec(phone, pass, autokey, ticket, userid, loginTime)
+		defer userStmt.Close()
+
+		_, err = userStmt.Exec(phone, pass, autokey, ticket, userid, loginTime)
 		if err != nil {
-			trans.Rollback()
+			session.Rollback()
 			panic(err)
 		}
 		// id, _ := res.LastInsertId()
 		// fmt.Println("LastInsertId:", id)
 
-		stmt, err = trans.Prepare("INSERT INTO user_key(userid,key) VALUES(?,?)")
+		keyStmt, err := session.DB().Prepare("INSERT INTO user_key(userid,key) VALUES(?,?)")
 		if err != nil {
-			trans.Rollback()
+			session.Rollback()
 			panic(err)
 		}
 		// 方便起见初始化 userid 和 key 一样
 		// 注意：user_key 表中的 key 是上文生成的用于登录的 userid，而 userid 则是用于 Authorize Token 生成用的
-		_, err = stmt.Exec(userid, userid)
+		_, err = keyStmt.Exec(userid, userid)
 		if err != nil {
-			trans.Rollback()
+			session.Rollback()
 			panic(err)
 		}
 
-		if err = trans.Commit(); err != nil {
-			trans.Rollback()
+		if err = session.Commit(); err != nil {
+			session.Rollback()
 			panic(err)
 		}
 
@@ -401,9 +394,11 @@ func AccountLoginHandler(ctx *gin.Context) {
 			loginResp.Userid = userid // 实际登录用的账号
 
 			// 更新信息
-			stmt, err = db.Prepare("UPDATE users SET autokey=?,ticket=?,last_login_time=? WHERE userid=?")
+			userStmt, err := UserEng.DB().Prepare("UPDATE users SET autokey=?,ticket=?,last_login_time=? WHERE userid=?")
 			CheckErr(err)
-			_, err := stmt.Exec(autokey, ticket, loginTime, userid)
+			defer userStmt.Close()
+
+			_, err = userStmt.Exec(autokey, ticket, loginTime, userid)
 			CheckErr(err)
 			// aff, _ := res.RowsAffected()
 			// fmt.Println("RowsAffected:", aff)

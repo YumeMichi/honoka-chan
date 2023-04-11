@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -117,19 +116,13 @@ func LoginHandler(ctx *gin.Context) {
 	}
 	nonce++
 
-	db, err := sql.Open("sqlite3", "assets/account.db")
+	stmt, err := UserEng.DB().Prepare("SELECT userid FROM user_key WHERE key = ?")
 	CheckErr(err)
-	defer db.Close()
+	defer stmt.Close()
 
-	stmt, err := db.Prepare("SELECT userid FROM user_key WHERE key = ?")
-	CheckErr(err)
-	rows, err := stmt.Query(string(keyDescrypted))
-	CheckErr(err)
 	var userId int
-	for rows.Next() {
-		err = rows.Scan(&userId)
-		CheckErr(err)
-	}
+	err = stmt.QueryRow(string(keyDescrypted)).Scan(&userId)
+	CheckErr(err)
 
 	if userId == 0 {
 		userId = 9999999

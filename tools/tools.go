@@ -1,6 +1,20 @@
 package tools
 
+import (
+	"honoka-chan/config"
+
+	"xorm.io/xorm"
+)
+
+var (
+	MainEng *xorm.Engine
+	UserEng *xorm.Engine
+)
+
 func init() {
+	MainEng = config.MainEng
+	UserEng = config.UserEng
+
 	GenApi1Data()
 	GenApi2Data()
 	GenApi3Data()

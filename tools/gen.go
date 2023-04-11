@@ -1,7 +1,6 @@
 package tools
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"honoka-chan/database"
@@ -154,10 +153,6 @@ var (
 )
 
 func GenApi1Data() {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	// global
 	var respAll []interface{}
 
@@ -165,7 +160,7 @@ func GenApi1Data() {
 	var liveDifficultyId int
 	normalLives := []model.NormalLiveStatusList{}
 	sql := `SELECT live_difficulty_id FROM normal_live_m ORDER BY live_difficulty_id ASC`
-	rows, err := db.Query(sql)
+	rows, err := MainEng.DB().Query(sql)
 	CheckErr(err)
 	for rows.Next() {
 		err = rows.Scan(&liveDifficultyId)
@@ -185,7 +180,7 @@ func GenApi1Data() {
 
 	specialLives := []model.SpecialLiveStatusList{}
 	sql = `SELECT live_difficulty_id FROM special_live_m ORDER BY live_difficulty_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
 	for rows.Next() {
 		err = rows.Scan(&liveDifficultyId)
@@ -248,7 +243,7 @@ func GenApi1Data() {
 
 	// unit_list_result
 	sql = `SELECT unit_id,album_series_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140))) ORDER BY unit_number ASC;`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
 
 	unitsData := []model.Active{}
@@ -340,15 +335,15 @@ func GenApi1Data() {
 			unitData.UnitSkillExp = 29900
 			unitData.UnitRemovableSkillCapacity = 8
 
-			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
+			stmt, err := MainEng.DB().Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
+			CheckErr(err)
+			defer stmt.Close()
+
+			var count int
+			err = stmt.QueryRow(uid).Scan(&count)
 			CheckErr(err)
 
-			ct := 0
-			for rs.Next() {
-				err = rs.Scan(&ct)
-				CheckErr(err)
-			}
-			if ct > 0 {
+			if count > 0 {
 				unitData.IsSigned = true
 			} else {
 				unitData.IsSigned = false
@@ -469,8 +464,9 @@ func GenApi1Data() {
 	// album_unit_result
 	albumLists := []model.AlbumResult{}
 	sql = `SELECT unit_id,rarity FROM unit_m ORDER BY unit_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	for rows.Next() {
 		albumList := model.AlbumResult{
 			RankMaxFlag:      true,
@@ -502,15 +498,15 @@ func GenApi1Data() {
 			albumList.HighestLovePerUnit = 1000
 			albumList.TotalLove = 1000
 
-			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
+			stmt, err := MainEng.DB().Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
+			CheckErr(err)
+			defer stmt.Close()
+
+			var count int
+			err = stmt.QueryRow(uid).Scan(&count)
 			CheckErr(err)
 
-			ct := 0
-			for rs.Next() {
-				err = rs.Scan(&ct)
-				CheckErr(err)
-			}
-			if ct > 0 {
+			if count > 0 {
 				albumList.SignFlag = true
 			} else {
 				albumList.SignFlag = false
@@ -531,8 +527,9 @@ func GenApi1Data() {
 
 	// scenario_status_result
 	sql = `SELECT scenario_id FROM scenario_m ORDER BY scenario_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	scenarioLists := []model.ScenarioStatusList{}
 	for rows.Next() {
 		var sid int
@@ -556,8 +553,9 @@ func GenApi1Data() {
 
 	// subscenario_status_result
 	sql = `SELECT subscenario_id FROM subscenario_m ORDER BY subscenario_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	subScenarioLists := []model.SubscenarioStatusList{}
 	for rows.Next() {
 		var sid int
@@ -583,16 +581,18 @@ func GenApi1Data() {
 	// event_scenario_result
 	eventsList := []model.EventScenarioList{}
 	sql = `SELECT event_id FROM event_scenario_m GROUP BY event_id ORDER BY event_id DESC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	for rows.Next() {
 		var eventId int
 		err = rows.Scan(&eventId)
 		CheckErr(err)
 
 		sql = `SELECT event_scenario_id,chapter,chapter_asset,open_date FROM event_scenario_m WHERE event_id = ? ORDER BY chapter DESC`
-		chaps, err := db.Query(sql, eventId)
+		chaps, err := MainEng.DB().Query(sql, eventId)
 		CheckErr(err)
+		defer chaps.Close()
 		chapsList := []model.EventScenarioChapterList{}
 		var open_date string
 		for chaps.Next() {
@@ -647,8 +647,9 @@ func GenApi1Data() {
 
 	// multi_unit_scenario_result
 	sql = `SELECT multi_unit_id FROM multi_unit_scenario_m GROUP BY multi_unit_id ORDER BY multi_unit_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	var mId int
 	multiUnitsList := []model.MultiUnitScenarioStatusList{}
 	for rows.Next() {
@@ -656,8 +657,9 @@ func GenApi1Data() {
 		CheckErr(err)
 
 		sql = `SELECT multi_unit_scenario_btn_asset,open_date,multi_unit_scenario_id,chapter FROM multi_unit_scenario_m a LEFT JOIN multi_unit_scenario_open_m b ON a.multi_unit_id = b.multi_unit_id WHERE a.multi_unit_id = ?`
-		units, err := db.Query(sql, mId)
+		units, err := MainEng.DB().Query(sql, mId)
 		CheckErr(err)
+		defer units.Close()
 		var multi_unit_scenario_id, chapter int
 		var multi_unit_scenario_btn_asset, open_date string
 		for units.Next() {
@@ -793,8 +795,9 @@ func GenApi1Data() {
 
 	// award_result
 	sql = `SELECT award_id FROM award_m ORDER BY award_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	awardsList := []model.AwardInfo{}
 	for rows.Next() {
 		var aId int
@@ -823,8 +826,9 @@ func GenApi1Data() {
 
 	// background_result
 	sql = `SELECT background_id FROM background_m ORDER BY background_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	backgroundsList := []model.BackgroundInfo{}
 	for rows.Next() {
 		var bId int
@@ -861,8 +865,9 @@ func GenApi1Data() {
 
 	// exchange_point_result
 	sql = `SELECT exchange_point_id FROM exchange_point_m ORDER BY exchange_point_id ASC`
-	rows, err = db.Query(sql)
+	rows, err = MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	exPointsList := []model.ExchangePointList{}
 	for rows.Next() {
 		var eId int
@@ -952,10 +957,6 @@ func GenApi1Data() {
 }
 
 func GenApi2Data() {
-	db, err := sql.Open("sqlite3", "assets/main.db")
-	CheckErr(err)
-	defer db.Close()
-
 	// global
 	var respAll []interface{}
 
@@ -1044,8 +1045,9 @@ func GenApi2Data() {
 
 	// museum_result
 	sql := `SELECT museum_contents_id,smile_buff,pure_buff,cool_buff FROM museum_contents_m ORDER BY museum_contents_id ASC`
-	rows, err := db.Query(sql)
+	rows, err := MainEng.DB().Query(sql)
 	CheckErr(err)
+	defer rows.Close()
 	var smileBuf, pureBuf, coolBuf int
 	var mIds []int
 	for rows.Next() {

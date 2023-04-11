@@ -21,7 +21,13 @@ type AlbumResp struct {
 }
 
 // albumSeries
-type AlbumSeriesResp struct {
+type AlbumSeriesRes struct {
 	SeriesID int           `json:"series_id"`
 	UnitList []AlbumResult `json:"unit_list"`
+}
+
+type AlbumSeriesResp struct {
+	ResponseData []AlbumSeriesRes `json:"response_data"`
+	ReleaseInfo  []interface{}    `json:"release_info"`
+	StatusCode   int              `json:"status_code"`
 }
