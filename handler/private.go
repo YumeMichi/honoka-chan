@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"honoka-chan/database"
 	"honoka-chan/encrypt"
 	"honoka-chan/utils"
 	"io"
@@ -17,10 +18,6 @@ import (
 	"github.com/forgoer/openssl"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
-)
-
-var (
-	randKey string
 )
 
 type LoginResp struct {
@@ -57,7 +54,46 @@ type LoginAutoResp struct {
 	Ticket  string `json:"ticket"`
 }
 
+type InitializeResp struct {
+	BrandLogo                 string        `json:"brand_logo"`
+	BrandName                 string        `json:"brand_name"`
+	DaoyuClientid             string        `json:"daoyu_clientid"`
+	DaoyuDownloadURL          string        `json:"daoyu_download_url"`
+	DeviceFeature             string        `json:"device_feature"`
+	DisplayThirdaccout        int           `json:"display_thirdaccout"`
+	ForceShowAgreement        int           `json:"force_show_agreement"`
+	GreportLogLevel           string        `json:"greport_log_level"`
+	GuestEnable               int           `json:"guest_enable"`
+	IsMatch                   int           `json:"is_match"`
+	LogLevel                  string        `json:"log_level"`
+	LoginButton               []string      `json:"login_button"`
+	LoginIcon                 []interface{} `json:"login_icon"`
+	LoginLimitEnable          int           `json:"login_limit_enable"`
+	NeedFloatWindowPermission int           `json:"need_float_window_permission"`
+	NewDeviceIDServer         string        `json:"new_device_id_server"`
+	QqAppID                   string        `json:"qq_appId"`
+	QqKey                     string        `json:"qq_key"`
+	ShowGuestConfirm          int           `json:"show_guest_confirm"`
+	VoicetipButton            int           `json:"voicetip_button"`
+	VoicetipOne               string        `json:"voicetip_one"`
+	VoicetipTwo               string        `json:"voicetip_two"`
+	WegameAppid               string        `json:"wegame_appid"`
+	WegameAppkey              string        `json:"wegame_appkey"`
+	WegameClientid            string        `json:"wegame_clientid"`
+	WegameCompanyID           string        `json:"wegame_companyId"`
+	WegameLoginURL            string        `json:"wegame_loginUrl"`
+	WeiboAppKey               string        `json:"weibo_appKey"`
+	WeiboRedirectURL          string        `json:"weibo_redirectUrl"`
+	WeixinAppID               string        `json:"weixin_appId"`
+	WeixinKey                 string        `json:"weixin_key"`
+}
+
 func ActiveHandler(ctx *gin.Context) {
+	// body, err := io.ReadAll(ctx.Request.Body)
+	// CheckErr(err)
+	// defer ctx.Request.Body.Close()
+	// fmt.Println(string(body))
+
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, `{ "code": 0, "msg": "ok", "data": { "message": "ok", "result": 0 } }`)
 }
@@ -88,8 +124,13 @@ func HandshakeHandler(ctx *gin.Context) {
 
 	params, err := url.ParseQuery(string(decryptedBody))
 	CheckErr(err)
-	randKey = params.Get("randkey")
+	randKey := params.Get("randkey")
+	deviceId := params.Get("deviceid")
 	// fmt.Println(randKey)
+	// fmt.Println(deviceId)
+
+	err = database.LevelDb.Put([]byte(deviceId), []byte(randKey))
+	CheckErr(err)
 
 	token := strings.ToUpper(utils.RandomStr(33))
 	token = fmt.Sprintf(`{"message":"ok","result":0,"token":"%s"}`, token)
@@ -114,51 +155,34 @@ func InitializeHandler(ctx *gin.Context) {
 	// CheckErr(err)
 	// fmt.Println(string(body64))
 
-	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	deviceId := ctx.Request.Header.Get("X-DEVICEID")
+	randKey, err := database.LevelDb.Get([]byte(deviceId))
+	CheckErr(err)
+	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, randKey[0:24], openssl.PKCS7_PADDING)
 	// CheckErr(err)
 	// fmt.Println(string(decryptedBody))
 
-	data := `{
-		"brand_logo":"http://gskd.sdo.com/ghome/ztc/logo/og/logo_xhdpi.png",
-		"brand_name":"盛趣游戏",
-		"daoyu_clientid":"",
-		"daoyu_download_url":"http://a.sdo.com/u8000",
-		"device_feature":"",
-		"display_thirdaccout":0,
-		"force_show_agreement":1,
-		"greport_log_level":"off",
-		"guest_enable":0,
-		"is_match":0,
-		"log_level":"off",
-		"login_button":[
-			"official"
-		],
-		"login_icon":[],
-		"login_limit_enable":0,
-		"need_float_window_permission":1,
-		"new_device_id_server":"6695A4085F5141A6A26B05A6BA5A0576",
-		"qq_appId":"",
-		"qq_key":"",
-		"show_guest_confirm":1,
-		"voicetip_button":1,
-		"voicetip_one":"",
-		"voicetip_two":"",
-		"wegame_appid":"",
-		"wegame_appkey":"",
-		"wegame_clientid":"",
-		"wegame_companyId":"",
-		"wegame_loginUrl":"",
-		"weibo_appKey":"",
-		"weibo_redirectUrl":"",
-		"weixin_appId":"",
-		"weixin_key":""
-	}`
-	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(data), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	initResp := InitializeResp{
+		BrandLogo:                 "http://gskd.sdo.com/ghome/ztc/logo/og/logo_xhdpi.png",
+		BrandName:                 "盛趣游戏",
+		ForceShowAgreement:        1,
+		GreportLogLevel:           "off",
+		LogLevel:                  "off",
+		LoginButton:               []string{"official"},
+		LoginIcon:                 []interface{}{},
+		NeedFloatWindowPermission: 1,
+		NewDeviceIDServer:         strings.ToUpper(openssl.Md5ToString(deviceId)),
+		ShowGuestConfirm:          1,
+		VoicetipButton:            1,
+	}
+	data, err := json.Marshal(initResp)
 	CheckErr(err)
-	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
+	encryptedData, err := openssl.Des3ECBEncrypt([]byte(data), randKey[0:24], openssl.PKCS7_PADDING)
+	CheckErr(err)
+	encryptedData64 := base64.StdEncoding.EncodeToString(encryptedData)
 	// fmt.Println(encryptedToken64)
 
-	resp := fmt.Sprintf(`{ "code": 0, "msg": "ok", "data": "%s" }`, encryptedToken64)
+	resp := fmt.Sprintf(`{ "code": 0, "msg": "ok", "data": "%s" }`, encryptedData64)
 
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, resp)
@@ -180,10 +204,14 @@ func LoginAutoHandler(ctx *gin.Context) {
 	CheckErr(err)
 	// fmt.Println(string(body64))
 
-	decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	deviceId := ctx.Request.Header.Get("X-DEVICEID")
+	randKey, err := database.LevelDb.Get([]byte(deviceId))
+	CheckErr(err)
+
+	decryptedBody, err := openssl.Des3ECBDecrypt(body64, randKey[0:24], openssl.PKCS7_PADDING)
 	CheckErr(err)
 	queryStr := string(decryptedBody)
-	// fmt.Println(params)
+	// fmt.Println(queryStr)
 
 	params, err := url.ParseQuery(queryStr)
 	CheckErr(err)
@@ -220,7 +248,7 @@ func LoginAutoHandler(ctx *gin.Context) {
 		data, err := json.Marshal(autoResp)
 		// fmt.Println(string(data))
 		CheckErr(err)
-		encryptedData, err := openssl.Des3ECBEncrypt(data, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+		encryptedData, err := openssl.Des3ECBEncrypt(data, randKey[0:24], openssl.PKCS7_PADDING)
 		CheckErr(err)
 		encryptedData64 := base64.StdEncoding.EncodeToString(encryptedData)
 		// fmt.Println(encryptedData64)
@@ -228,7 +256,7 @@ func LoginAutoHandler(ctx *gin.Context) {
 		resp = fmt.Sprintf(`{ "code": 0, "msg": "ok", "data": "%s" }`, encryptedData64)
 	} else {
 		data := `{"message":"账号不存在或者登陆状态已过期！","result":31}`
-		encryptedData, err := openssl.Des3ECBEncrypt([]byte(data), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+		encryptedData, err := openssl.Des3ECBEncrypt([]byte(data), randKey[0:24], openssl.PKCS7_PADDING)
 		CheckErr(err)
 		encryptedData64 := base64.StdEncoding.EncodeToString(encryptedData)
 		// fmt.Println(encryptedData64)
@@ -260,7 +288,11 @@ func AccountLoginHandler(ctx *gin.Context) {
 	CheckErr(err)
 	// fmt.Println(string(body64))
 
-	decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	deviceId := ctx.Request.Header.Get("X-DEVICEID")
+	randKey, err := database.LevelDb.Get([]byte(deviceId))
+	CheckErr(err)
+
+	decryptedBody, err := openssl.Des3ECBDecrypt(body64, randKey[0:24], openssl.PKCS7_PADDING)
 	CheckErr(err)
 	queryStr, err := url.QueryUnescape(string(decryptedBody))
 	CheckErr(err)
@@ -385,7 +417,7 @@ func AccountLoginHandler(ctx *gin.Context) {
 	data, err := json.Marshal(loginResp)
 	CheckErr(err)
 	// fmt.Println(string(data))
-	encryptedData, err := openssl.Des3ECBEncrypt(data, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	encryptedData, err := openssl.Des3ECBEncrypt(data, randKey[0:24], openssl.PKCS7_PADDING)
 	CheckErr(err)
 	encryptedData64 := base64.StdEncoding.EncodeToString(encryptedData)
 	// fmt.Println(encryptedToken64)
@@ -406,7 +438,11 @@ func ReportRoleHandler(ctx *gin.Context) {
 	// CheckErr(err)
 	// fmt.Println(string(body64))
 
-	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	deviceId := ctx.Request.Header.Get("X-DEVICEID")
+	randKey, err := database.LevelDb.Get([]byte(deviceId))
+	CheckErr(err)
+
+	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, randKey[0:24], openssl.PKCS7_PADDING)
 	// CheckErr(err)
 	// fmt.Println(string(decryptedBody))
 
@@ -416,7 +452,7 @@ func ReportRoleHandler(ctx *gin.Context) {
 
 	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
-	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
+	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), randKey[0:24], openssl.PKCS7_PADDING)
 	CheckErr(err)
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
 	// fmt.Println(encryptedToken64)
