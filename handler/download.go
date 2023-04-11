@@ -19,9 +19,7 @@ import (
 
 func DownloadAdditionalHandler(ctx *gin.Context) {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	reqTime := time.Now().Unix()
@@ -63,19 +61,13 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 	if CdnUrl != "" {
 		pkgType, pkgId := downloadReq.PackageType, downloadReq.PackageID
 		stmt, err := db.Prepare("SELECT pkg_order,pkg_size FROM download_db WHERE pkg_type = ? AND pkg_id = ? ORDER BY pkg_order ASC")
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		rows, err := stmt.Query(pkgType, pkgId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		for rows.Next() {
 			var pkgOrder, pkgSize int
 			err = rows.Scan(&pkgOrder, &pkgSize)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 			pkgList = append(pkgList, model.AdditionalResult{
 				Size: pkgSize,
 				URL:  fmt.Sprintf("%s/archives/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
@@ -89,9 +81,7 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(addResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(resp))
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -104,9 +94,7 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 
 func DownloadBatchHandler(ctx *gin.Context) {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	reqTime := time.Now().Unix()
@@ -156,19 +144,13 @@ func DownloadBatchHandler(ctx *gin.Context) {
 		}
 		// fmt.Println(exPkgId)
 		stmt, err := db.Prepare("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = ? " + exPkgId + " ORDER BY pkg_id ASC, pkg_order ASC")
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		rows, err := stmt.Query(pkgType)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		for rows.Next() {
 			var pkgId, pkgOrder, pkgSize int
 			err = rows.Scan(&pkgId, &pkgOrder, &pkgSize)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 			pkgList = append(pkgList, model.BatchResult{
 				Size: pkgSize,
 				URL:  fmt.Sprintf("%s/archives/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
@@ -182,9 +164,7 @@ func DownloadBatchHandler(ctx *gin.Context) {
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(batchResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(resp))
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -197,9 +177,7 @@ func DownloadBatchHandler(ctx *gin.Context) {
 
 func DownloadUpdateHandler(ctx *gin.Context) {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	reqTime := time.Now().Unix()
@@ -241,15 +219,11 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 	if downloadReq.ExternalVersion != PackageVersion && CdnUrl != "" {
 		pkgType := 99
 		rows, err := db.Query("SELECT pkg_id,pkg_order,pkg_size FROM download_db WHERE pkg_type = 99 ORDER BY pkg_id ASC, pkg_order ASC")
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		for rows.Next() {
 			var pkgId, pkgOrder, pkgSize int
 			err = rows.Scan(&pkgId, &pkgOrder, &pkgSize)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 			pkgList = append(pkgList, model.UpdateResult{
 				Size:    pkgSize,
 				URL:     fmt.Sprintf("%s/archives/%d_%d_%d.zip", CdnUrl, pkgType, pkgId, pkgOrder),
@@ -264,9 +238,7 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(updateResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(resp))
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -327,9 +299,7 @@ func DownloadUrlHandler(ctx *gin.Context) {
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(urlResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(resp))
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -378,9 +348,7 @@ func DownloadEventHandler(ctx *gin.Context) {
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(eventResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 

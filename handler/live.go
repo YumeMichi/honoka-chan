@@ -72,9 +72,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 
 	playReq := model.PlayReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playReq)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	authorizeStr := ctx.Request.Header["Authorize"]
 	authToken, err := utils.GetAuthorizeToken(authorizeStr)
@@ -106,34 +104,26 @@ func PlayLiveHandler(ctx *gin.Context) {
 	// fmt.Println(newAuthorizeStr)
 
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 	db.SetMaxOpenConns(1)
 
 	tDifficultyId := playReq.LiveDifficultyID
 	difficultyId, err := strconv.Atoi(tDifficultyId)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	deckId := playReq.UnitDeckID
 
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT notes_list,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
 	rows, err := db.Query(sql, difficultyId, difficultyId)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	var notes_list string
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, ac_flag, swing_flag int
 	for rows.Next() {
 		err = rows.Scan(&notes_list, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 	}
 
 	// fmt.Println(len(notes_list))
@@ -141,9 +131,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 
 	notes := []model.NotesList{}
 	err = json.Unmarshal([]byte(notes_list), &notes)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	ranks := []model.RankInfo{}
 	ranks = append(ranks, model.RankInfo{
@@ -211,9 +199,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 	}
 
 	m, err := json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	res := model.Response{
 		ResponseData: m,
@@ -222,9 +208,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 	}
 
 	mm, err := json.Marshal(res)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
@@ -274,9 +258,7 @@ func GameOverHandler(ctx *gin.Context) {
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(overResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
@@ -292,9 +274,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 
 	playScoreReq := model.PlayScoreReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playScoreReq)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	authorizeStr := ctx.Request.Header["Authorize"]
 	authToken, err := utils.GetAuthorizeToken(authorizeStr)
@@ -326,33 +306,25 @@ func PlayScoreHandler(ctx *gin.Context) {
 	// fmt.Println(newAuthorizeStr)
 
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 	db.SetMaxOpenConns(1)
 
 	tDifficultyId := playScoreReq.LiveDifficultyID
 	difficultyId, err := strconv.Atoi(tDifficultyId)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT notes_list,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
 	rows, err := db.Query(sql, difficultyId, difficultyId)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	var notes_list string
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, ac_flag, swing_flag int
 	for rows.Next() {
 		err = rows.Scan(&notes_list, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 	}
 
 	// fmt.Println(len(notes_list))
@@ -360,9 +332,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 
 	notes := []model.NotesList{}
 	err = json.Unmarshal([]byte(notes_list), &notes)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	ranks := []model.RankInfo{}
 	ranks = append(ranks, model.RankInfo{
@@ -414,9 +384,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 	}
 
 	m, err := json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	res := model.Response{
 		ResponseData: m,
@@ -425,9 +393,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 	}
 
 	mm, err := json.Marshal(res)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(mm))
 
 	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
@@ -445,9 +411,7 @@ func PlayRewardHandler(ctx *gin.Context) {
 
 	playRewardReq := model.PlayRewardReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playRewardReq)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	authorizeStr := ctx.Request.Header["Authorize"]
 	authToken, err := utils.GetAuthorizeToken(authorizeStr)
@@ -479,9 +443,7 @@ func PlayRewardHandler(ctx *gin.Context) {
 	// fmt.Println(newAuthorizeStr)
 
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 	db.SetMaxOpenConns(1)
 
@@ -491,27 +453,19 @@ func PlayRewardHandler(ctx *gin.Context) {
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT c_rank_score,b_rank_score,a_rank_score,s_rank_score,c_rank_combo,b_rank_combo,a_rank_combo,s_rank_combo,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
 	rows, err := db.Query(sql, difficultyId, difficultyId)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, c_rank_combo, b_rank_combo, a_rank_combo, s_rank_combo, ac_flag, swing_flag int
 	for rows.Next() {
 		err = rows.Scan(&c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &c_rank_combo, &b_rank_combo, &a_rank_combo, &s_rank_combo, &ac_flag, &swing_flag)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 	}
 
 	unitsList := []model.PlayRewardUnitList{}
 	deck, err := database.LevelDb.Get([]byte("deck_info"))
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	err = json.Unmarshal(deck, &unitsList)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	totalScore := playRewardReq.ScoreSmile + playRewardReq.ScoreCool + playRewardReq.ScoreCute
 	resp := model.RewardResponseData{
@@ -662,9 +616,7 @@ func PlayRewardHandler(ctx *gin.Context) {
 	}
 
 	m, err := json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	res := model.Response{
 		ResponseData: m,
@@ -673,9 +625,7 @@ func PlayRewardHandler(ctx *gin.Context) {
 	}
 
 	mm, err := json.Marshal(res)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(mm))
 
 	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")

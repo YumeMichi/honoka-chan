@@ -15,9 +15,7 @@ import (
 
 func SyncNotesList() {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer func() {
 		db.Close()
 		fmt.Println("Sync notes list done!")
@@ -26,9 +24,7 @@ func SyncNotesList() {
 
 	sql := `SELECT live_setting_id,notes_setting_asset,notes_list FROM live_setting_m ORDER BY live_setting_id ASC`
 	rows, err := db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	liveList := make(map[int]string)
 

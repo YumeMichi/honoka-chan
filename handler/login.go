@@ -20,21 +20,15 @@ func AuthKeyHandler(ctx *gin.Context) {
 
 	authReq := model.AuthKeyReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &authReq)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	dummyToken64, err := base64.StdEncoding.DecodeString(authReq.DummyToken)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	dummyTokenDecrypted := encrypt.RSA_Decrypt(dummyToken64, "privatekey.pem")
 
 	// aesKey := dummyTokenDecrypted[0:16]
 	// data64, err := base64.StdEncoding.DecodeString(authReq.AuthData)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// dataDecrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(data64, aesKey))
 	// fmt.Println(string(dataDecrypted))
 
@@ -51,22 +45,16 @@ func AuthKeyHandler(ctx *gin.Context) {
 		"server_token": serverToken,
 	}
 	authJson, err := json.Marshal(authData)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	database.LevelDb.Put([]byte(authorizeToken), authJson)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	authResp := model.AuthKeyResp{}
 	authResp.ResponseData.DummyToken = serverToken
 	authResp.ResponseData.AuthorizeToken = authorizeToken
 	authResp.StatusCode = 200
 	resp, err := json.Marshal(authResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(resp))
 
 	respTime := time.Now().Unix()
@@ -94,39 +82,27 @@ func LoginHandler(ctx *gin.Context) {
 
 	// authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken).Result()
 	// authData, err := database.LevelDb.Get([]byte(authToken))
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(authData)
 
 	// clientToken, serverToken := authData["client_token"], authData["server_token"]
 	// clientToken := gjson.Get(string(authData), "client_token").String()
 	// serverToken := gjson.Get(string(authData), "server_token").String()
 	// clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// serverToken64, err := base64.RawStdEncoding.DecodeString(serverToken)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 
 	// xmcKey := utils.SliceXor([]byte(clientToken64), []byte(serverToken64))
 	// aesKey := xmcKey[0:16]
 
 	loginReq := model.LoginReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &loginReq)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// key64, err := base64.StdEncoding.DecodeString(loginReq.LoginKey)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// pass64, err := base64.StdEncoding.DecodeString(loginReq.LoginPasswd)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// keyDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(key64, aesKey))
 	// fmt.Println(string(keyDescrypted))
 	// passDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(pass64, aesKey))
@@ -151,9 +127,7 @@ func LoginHandler(ctx *gin.Context) {
 
 	// _, err = database.RedisCli.HSet(database.RedisCtx, "token_uid", authorizeToken, userId).Result()
 	err = database.LevelDb.Put([]byte(authorizeToken), []byte(sUserId))
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	loginResp := model.LoginResp{}
 	loginResp.ResponseData.AuthorizeToken = authorizeToken
@@ -162,9 +136,7 @@ func LoginHandler(ctx *gin.Context) {
 	loginResp.ResponseData.AdultFlag = 2
 	loginResp.StatusCode = 200
 	resp, err := json.Marshal(loginResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(resp))
 
 	respTime := time.Now().Unix()

@@ -12,16 +12,12 @@ import (
 
 func ListUnitData() {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	sql := `SELECT unit_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140))) ORDER BY unit_number ASC;`
 	rows, err := db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	unitsData := []model.Active{}
 	oId := 3071290948
@@ -110,16 +106,12 @@ func ListUnitData() {
 			unitData.UnitRemovableSkillCapacity = 8
 
 			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			ct := 0
 			for rs.Next() {
 				err = rs.Scan(&ct)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 			}
 			if ct > 0 {
 				unitData.IsSigned = true
@@ -132,8 +124,6 @@ func ListUnitData() {
 	}
 
 	data, err := json.Marshal(unitsData)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	fmt.Println(string(data))
 }

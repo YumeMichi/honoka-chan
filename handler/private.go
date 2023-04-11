@@ -37,33 +37,25 @@ func PublicKeyHandler(ctx *gin.Context) {
 
 func HandshakeHandler(ctx *gin.Context) {
 	body, err := io.ReadAll(ctx.Request.Body)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 
 	body64, err := base64.StdEncoding.DecodeString(string(body))
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	decryptedBody := encrypt.RSA_Decrypt(body64, "privatekey.pem")
 	// fmt.Println(decryptedBody)
 	// fmt.Println(string(decryptedBody))
 
 	params, err := url.ParseQuery(string(decryptedBody))
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	randKey = params.Get("randkey")
 	// fmt.Println(randKey)
 
 	token := strings.ToUpper(utils.RandomStr(33))
 	token = fmt.Sprintf(`{"message":"ok","result":0,"token":"%s"}`, token)
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
 	// fmt.Println(encryptedToken64)
 
@@ -75,22 +67,16 @@ func HandshakeHandler(ctx *gin.Context) {
 
 func InitializeHandler(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 
 	// body64, err := base64.StdEncoding.DecodeString(string(body))
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(decryptedBody))
 
 	data := `{
@@ -129,9 +115,7 @@ func InitializeHandler(ctx *gin.Context) {
 		"weixin_key":""
 	}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(data), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
 	// fmt.Println(encryptedToken64)
 
@@ -149,30 +133,22 @@ func GetCodeHandler(ctx *gin.Context) {
 
 func LoginAutoHandler(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 
 	// body64, err := base64.StdEncoding.DecodeString(string(body))
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(decryptedBody))
 
 	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
 	// fmt.Println(encryptedToken64)
 
@@ -194,22 +170,16 @@ func LoginAreaHandler(ctx *gin.Context) {
 
 func AccountLoginHandler(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 
 	// body64, err := base64.StdEncoding.DecodeString(string(body))
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(decryptedBody))
 
 	// userid: 实际登录用的账号
@@ -241,9 +211,7 @@ func AccountLoginHandler(ctx *gin.Context) {
 		"userid":"2592007136"
 	}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(data), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
 	// fmt.Println(encryptedToken64)
 
@@ -255,36 +223,26 @@ func AccountLoginHandler(ctx *gin.Context) {
 
 func ReportRoleHandler(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 
 	// body64, err := base64.StdEncoding.DecodeString(string(body))
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(body64))
 
 	// decryptedBody, err := openssl.Des3ECBDecrypt(body64, []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(string(decryptedBody))
 
 	// decrypted, err := url.QueryUnescape(string(decryptedBody))
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// fmt.Println(decrypted)
 
 	// Unable to decrypt server data
 	token := `{"message":"Hello, world!"}`
 	encryptedToken, err := openssl.Des3ECBEncrypt([]byte(token), []byte(randKey)[0:24], openssl.PKCS7_PADDING)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	encryptedToken64 := base64.StdEncoding.EncodeToString(encryptedToken)
 	// fmt.Println(encryptedToken64)
 
@@ -302,9 +260,7 @@ func GetProductListHandler(ctx *gin.Context) {
 
 func ReportLog(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
@@ -313,9 +269,7 @@ func ReportLog(ctx *gin.Context) {
 
 func ReportApp(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
 	// fmt.Println(string(body))
 	resp := `{ "code": 0, "msg": "", "data": { "needReport": 0 } }`

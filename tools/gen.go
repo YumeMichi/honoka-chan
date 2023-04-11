@@ -155,9 +155,7 @@ var (
 
 func GenApi1Data() {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	// global
@@ -168,14 +166,10 @@ func GenApi1Data() {
 	normalLives := []model.NormalLiveStatusList{}
 	sql := `SELECT live_difficulty_id FROM normal_live_m ORDER BY live_difficulty_id ASC`
 	rows, err := db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	for rows.Next() {
 		err = rows.Scan(&liveDifficultyId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		normalLive := model.NormalLiveStatusList{
 			LiveDifficultyID:   liveDifficultyId,
@@ -192,14 +186,10 @@ func GenApi1Data() {
 	specialLives := []model.SpecialLiveStatusList{}
 	sql = `SELECT live_difficulty_id FROM special_live_m ORDER BY live_difficulty_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	for rows.Next() {
 		err = rows.Scan(&liveDifficultyId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		specialLive := model.SpecialLiveStatusList{
 			LiveDifficultyID:   liveDifficultyId,
@@ -259,9 +249,7 @@ func GenApi1Data() {
 	// unit_list_result
 	sql = `SELECT unit_id,album_series_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140))) ORDER BY unit_number ASC;`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	unitsData := []model.Active{}
 	oId := 3000000000 // 起始卡片 ID，随意设置
@@ -353,16 +341,12 @@ func GenApi1Data() {
 			unitData.UnitRemovableSkillCapacity = 8
 
 			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			ct := 0
 			for rs.Next() {
 				err = rs.Scan(&ct)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 			}
 			if ct > 0 {
 				unitData.IsSigned = true
@@ -441,13 +425,9 @@ func GenApi1Data() {
 
 	// HACK 保存卡组信息
 	deck, err := json.Marshal(defaultDeckUnitList)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	err = database.LevelDb.Put([]byte("deck_info"), deck)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	// unit_support_result
 	unitSupportResp := model.UnitSupportResp{
@@ -490,9 +470,7 @@ func GenApi1Data() {
 	albumLists := []model.AlbumResult{}
 	sql = `SELECT unit_id,rarity FROM unit_m ORDER BY unit_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	for rows.Next() {
 		albumList := model.AlbumResult{
 			RankMaxFlag:      true,
@@ -503,9 +481,7 @@ func GenApi1Data() {
 		}
 		var uid, rit int
 		err = rows.Scan(&uid, &rit)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		albumList.UnitID = uid
 		if rit != 4 {
 			albumList.SignFlag = false
@@ -527,16 +503,12 @@ func GenApi1Data() {
 			albumList.TotalLove = 1000
 
 			rs, err := db.Query("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?", uid)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			ct := 0
 			for rs.Next() {
 				err = rs.Scan(&ct)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 			}
 			if ct > 0 {
 				albumList.SignFlag = true
@@ -560,16 +532,12 @@ func GenApi1Data() {
 	// scenario_status_result
 	sql = `SELECT scenario_id FROM scenario_m ORDER BY scenario_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	scenarioLists := []model.ScenarioStatusList{}
 	for rows.Next() {
 		var sid int
 		err = rows.Scan(&sid)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		scenarioLists = append(scenarioLists, model.ScenarioStatusList{
 			ScenarioID: sid,
 			Status:     2,
@@ -589,16 +557,12 @@ func GenApi1Data() {
 	// subscenario_status_result
 	sql = `SELECT subscenario_id FROM subscenario_m ORDER BY subscenario_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	subScenarioLists := []model.SubscenarioStatusList{}
 	for rows.Next() {
 		var sid int
 		err = rows.Scan(&sid)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		subScenarioLists = append(subScenarioLists, model.SubscenarioStatusList{
 			SubscenarioID: sid,
 			Status:        2,
@@ -620,30 +584,22 @@ func GenApi1Data() {
 	eventsList := []model.EventScenarioList{}
 	sql = `SELECT event_id FROM event_scenario_m GROUP BY event_id ORDER BY event_id DESC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	for rows.Next() {
 		var eventId int
 		err = rows.Scan(&eventId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		sql = `SELECT event_scenario_id,chapter,chapter_asset,open_date FROM event_scenario_m WHERE event_id = ? ORDER BY chapter DESC`
 		chaps, err := db.Query(sql, eventId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		chapsList := []model.EventScenarioChapterList{}
 		var open_date string
 		for chaps.Next() {
 			var event_scenario_id, chapter int
 			var chapter_asset interface{}
 			err = chaps.Scan(&event_scenario_id, &chapter, &chapter_asset, &open_date)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 			chapList := model.EventScenarioChapterList{
 				EventScenarioID: event_scenario_id,
 				Chapter:         chapter,
@@ -692,29 +648,21 @@ func GenApi1Data() {
 	// multi_unit_scenario_result
 	sql = `SELECT multi_unit_id FROM multi_unit_scenario_m GROUP BY multi_unit_id ORDER BY multi_unit_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	var mId int
 	multiUnitsList := []model.MultiUnitScenarioStatusList{}
 	for rows.Next() {
 		err = rows.Scan(&mId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		sql = `SELECT multi_unit_scenario_btn_asset,open_date,multi_unit_scenario_id,chapter FROM multi_unit_scenario_m a LEFT JOIN multi_unit_scenario_open_m b ON a.multi_unit_id = b.multi_unit_id WHERE a.multi_unit_id = ?`
 		units, err := db.Query(sql, mId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		var multi_unit_scenario_id, chapter int
 		var multi_unit_scenario_btn_asset, open_date string
 		for units.Next() {
 			err = units.Scan(&multi_unit_scenario_btn_asset, &open_date, &multi_unit_scenario_id, &chapter)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 		}
 
 		multiUnitsList = append(multiUnitsList, model.MultiUnitScenarioStatusList{
@@ -846,16 +794,12 @@ func GenApi1Data() {
 	// award_result
 	sql = `SELECT award_id FROM award_m ORDER BY award_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	awardsList := []model.AwardInfo{}
 	for rows.Next() {
 		var aId int
 		err = rows.Scan(&aId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		isSet := false
 		if aId == 113 { // 极推穗乃果
 			isSet = true
@@ -880,16 +824,12 @@ func GenApi1Data() {
 	// background_result
 	sql = `SELECT background_id FROM background_m ORDER BY background_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	backgroundsList := []model.BackgroundInfo{}
 	for rows.Next() {
 		var bId int
 		err = rows.Scan(&bId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		isSet := false
 		if bId == 143 { // 穗乃果的房间[情人节]
 			isSet = true
@@ -915,25 +855,19 @@ func GenApi1Data() {
 	stampResp := utils.ReadAllText("assets/stamp.json")
 	var mStampResp interface{}
 	err = json.Unmarshal([]byte(stampResp), &mStampResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// _ = utils.ReadAllText("assets/stamp.json")
 	respAll = append(respAll, mStampResp)
 
 	// exchange_point_result
 	sql = `SELECT exchange_point_id FROM exchange_point_m ORDER BY exchange_point_id ASC`
 	rows, err = db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	exPointsList := []model.ExchangePointList{}
 	for rows.Next() {
 		var eId int
 		err = rows.Scan(&eId)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		exPointsList = append(exPointsList, model.ExchangePointList{
 			Rarity:        eId,
 			ExchangePoint: 9999,
@@ -979,9 +913,7 @@ func GenApi1Data() {
 	// _ = utils.ReadAllText("assets/item.json")
 	var mItemResp interface{}
 	err = json.Unmarshal([]byte(itemResp), &mItemResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	respAll = append(respAll, mItemResp)
 
 	// marathon_result
@@ -1006,18 +938,14 @@ func GenApi1Data() {
 
 	// Final
 	k, err := json.Marshal(respAll)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	resp := model.Response{
 		ResponseData: k,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
 	}
 	k, err = json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(k))
 
 	utils.WriteAllText("assets/api1.json", string(k))
@@ -1025,9 +953,7 @@ func GenApi1Data() {
 
 func GenApi2Data() {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	// global
@@ -1119,17 +1045,13 @@ func GenApi2Data() {
 	// museum_result
 	sql := `SELECT museum_contents_id,smile_buff,pure_buff,cool_buff FROM museum_contents_m ORDER BY museum_contents_id ASC`
 	rows, err := db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	var smileBuf, pureBuf, coolBuf int
 	var mIds []int
 	for rows.Next() {
 		var museum_contents_id, smile_buff, pure_buff, cool_buff int
 		err = rows.Scan(&museum_contents_id, &smile_buff, &pure_buff, &cool_buff)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		smileBuf += smile_buff
 		pureBuf += pure_buff
 		coolBuf += cool_buff
@@ -1155,18 +1077,14 @@ func GenApi2Data() {
 
 	// Final
 	k, err := json.Marshal(respAll)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	resp := model.Response{
 		ResponseData: k,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
 	}
 	k, err = json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(k))
 
 	utils.WriteAllText("assets/api2.json", string(k))
@@ -1211,9 +1129,7 @@ func GenApi3Data() {
 	var result []interface{}
 	love := utils.ReadAllText("assets/love.json")
 	err := json.Unmarshal([]byte(love), &result)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	loveResp := LoveResp{
 		// _ = LoveResp{
 		Result:     result,
@@ -1319,18 +1235,14 @@ func GenApi3Data() {
 
 	// Final
 	k, err := json.Marshal(respAll)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	resp := model.Response{
 		ResponseData: k,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
 	}
 	k, err = json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(k))
 
 	utils.WriteAllText("assets/api3.json", string(k))

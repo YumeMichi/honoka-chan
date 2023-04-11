@@ -148,36 +148,26 @@ func ApiHandler(ctx *gin.Context) {
 			err = errors.New("invalid option")
 		}
 
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		res, err = database.LevelDb.Get([]byte(key))
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		var result interface{}
 		err = json.Unmarshal([]byte(res), &result)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		results = append(results, result)
 	}
 	// fmt.Println(results)
 	b, err := json.Marshal(results)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	rp := model.Response{
 		ResponseData: b,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
 	}
 	b, err = json.Marshal(rp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(b))
 
 	authorizeStr := ctx.Request.Header["Authorize"]

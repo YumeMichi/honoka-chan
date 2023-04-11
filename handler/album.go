@@ -19,9 +19,7 @@ import (
 
 func AlbumSeriesAllHandler(ctx *gin.Context) {
 	db, err := sql.Open("sqlite3", "assets/main.db")
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	defer db.Close()
 
 	reqTime := time.Now().Unix()
@@ -58,34 +56,24 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 	//
 	sql := `SELECT album_series_id FROM album_series_m`
 	seriesRows, err := db.Query(sql)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	albumSeriesAllResp := []model.AlbumSeriesResp{}
 	for seriesRows.Next() {
 		var series int
 		err = seriesRows.Scan(&series)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		albumSeriesAll := []model.AlbumResult{}
 		stmt, err := db.Prepare("SELECT unit_id,rarity FROM unit_m WHERE album_series_id = ?")
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		unitRows, err := stmt.Query(series)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		for unitRows.Next() {
 			var unitId, rarity int
 			err = unitRows.Scan(&unitId, &rarity)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			albumSeries := model.AlbumResult{
 				UnitID:           unitId,
@@ -118,20 +106,14 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 
 				// IsSigned
 				stmt, err = db.Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 				signRows, err := stmt.Query(unitId)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 
 				ct := 0
 				for signRows.Next() {
 					err = signRows.Scan(&ct)
-					if err != nil {
-						panic(err)
-					}
+					CheckErr(err)
 				}
 				if ct > 0 {
 					albumSeries.SignFlag = true
@@ -148,18 +130,14 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 		})
 	}
 	rb, err := json.Marshal(albumSeriesAllResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	resp := model.Response{
 		ResponseData: rb,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
 	}
 	respb, err := json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	// fmt.Println(string(respb))
 
 	xms := encrypt.RSA_Sign_SHA1(respb, "privatekey.pem")

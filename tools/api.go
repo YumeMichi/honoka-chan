@@ -12,13 +12,10 @@ func LoadApi1Data(path string) {
 	if apiData != "" {
 		var obj model.Response
 		err := json.Unmarshal([]byte(apiData), &obj)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		var data interface{}
-		err = json.Unmarshal(obj.ResponseData, &data)
-		if err != nil {
+		if err = json.Unmarshal(obj.ResponseData, &data); err != nil {
 			panic(err)
 		}
 		// resultType := reflect.TypeOf(data)
@@ -28,9 +25,7 @@ func LoadApi1Data(path string) {
 		result := data.([]interface{})
 		for k, v := range result {
 			m, err := json.Marshal(v)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			key := ""
 			switch k {
@@ -91,9 +86,7 @@ func LoadApi1Data(path string) {
 			if key != "" {
 				// database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
 				err = database.LevelDb.Put([]byte(key), m)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 			}
 		}
 	}
@@ -104,15 +97,11 @@ func LoadApi2Data(path string) {
 	if apiData != "" {
 		var obj model.Response
 		err := json.Unmarshal([]byte(apiData), &obj)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		var data interface{}
 		err = json.Unmarshal(obj.ResponseData, &data)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		// resultType := reflect.TypeOf(data)
 		// if resultType.Kind() == reflect.Map {
 		// 	data = data.(map[string]interface{})
@@ -120,9 +109,7 @@ func LoadApi2Data(path string) {
 		result := data.([]interface{})
 		for k, v := range result {
 			m, err := json.Marshal(v)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			key := ""
 			switch k {
@@ -139,9 +126,7 @@ func LoadApi2Data(path string) {
 			if key != "" {
 				// database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
 				err = database.LevelDb.Put([]byte(key), m)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 			}
 		}
 	}
@@ -152,15 +137,11 @@ func LoadApi3Data(path string) {
 	if apiData != "" {
 		var obj model.Response
 		err := json.Unmarshal([]byte(apiData), &obj)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 
 		var data interface{}
 		err = json.Unmarshal(obj.ResponseData, &data)
-		if err != nil {
-			panic(err)
-		}
+		CheckErr(err)
 		// resultType := reflect.TypeOf(data)
 		// if resultType.Kind() == reflect.Map {
 		// 	data = data.(map[string]interface{})
@@ -168,9 +149,7 @@ func LoadApi3Data(path string) {
 		result := data.([]interface{})
 		for k, v := range result {
 			m, err := json.Marshal(v)
-			if err != nil {
-				panic(err)
-			}
+			CheckErr(err)
 
 			key := ""
 			switch k {
@@ -185,9 +164,7 @@ func LoadApi3Data(path string) {
 			if key != "" {
 				// database.RedisCli.HSet(database.RedisCtx, "temp_dataset", key, string(m))
 				err = database.LevelDb.Put([]byte(key), m)
-				if err != nil {
-					panic(err)
-				}
+				CheckErr(err)
 			}
 		}
 	}

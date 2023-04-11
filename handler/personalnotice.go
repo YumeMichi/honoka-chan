@@ -74,9 +74,7 @@ func PersonalNoticeHandler(ctx *gin.Context) {
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(noticeResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 

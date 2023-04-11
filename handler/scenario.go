@@ -40,9 +40,7 @@ func ScenarioStartupHandler(ctx *gin.Context) {
 
 	startReq := ScenarioReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 
 	authorizeStr := ctx.Request.Header["Authorize"]
 	authToken, err := utils.GetAuthorizeToken(authorizeStr)
@@ -83,9 +81,7 @@ func ScenarioStartupHandler(ctx *gin.Context) {
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(startResp)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 

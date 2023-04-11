@@ -185,9 +185,7 @@ func LBonusExecuteHandler(ctx *gin.Context) {
 	}
 
 	resp, err := json.Marshal(res)
-	if err != nil {
-		panic(err)
-	}
+	CheckErr(err)
 	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
 	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
