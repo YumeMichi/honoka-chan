@@ -115,21 +115,23 @@ func PlayLiveHandler(ctx *gin.Context) {
 
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
-	sql := `SELECT notes_list,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
+	sql := `SELECT notes_setting_asset,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
 	rows, err := db.Query(sql, difficultyId, difficultyId)
 	CheckErr(err)
 
-	var notes_list string
+	var notes_setting_asset string
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, ac_flag, swing_flag int
 	for rows.Next() {
-		err = rows.Scan(&notes_list, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
+		err = rows.Scan(&notes_setting_asset, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
 		CheckErr(err)
 	}
 
-	// fmt.Println(len(notes_list))
+	// fmt.Println(notes_setting_asset)
 	// fmt.Println(c_rank_score, b_rank_score, a_rank_score, s_rank_score)
 
 	notes := []model.NotesList{}
+	fmt.Println("./assets/notes/" + notes_setting_asset)
+	notes_list := utils.ReadAllText("./assets/notes/" + notes_setting_asset)
 	err = json.Unmarshal([]byte(notes_list), &notes)
 	CheckErr(err)
 
@@ -316,21 +318,23 @@ func PlayScoreHandler(ctx *gin.Context) {
 
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
-	sql := `SELECT notes_list,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
+	sql := `SELECT notes_setting_asset,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
 	rows, err := db.Query(sql, difficultyId, difficultyId)
 	CheckErr(err)
 
-	var notes_list string
+	var notes_setting_asset string
 	var c_rank_score, b_rank_score, a_rank_score, s_rank_score, ac_flag, swing_flag int
 	for rows.Next() {
-		err = rows.Scan(&notes_list, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
+		err = rows.Scan(&notes_setting_asset, &c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &ac_flag, &swing_flag)
 		CheckErr(err)
 	}
 
-	// fmt.Println(len(notes_list))
+	// fmt.Println(notes_setting_asset)
 	// fmt.Println(c_rank_score, b_rank_score, a_rank_score, s_rank_score)
 
 	notes := []model.NotesList{}
+	fmt.Println("./assets/notes/" + notes_setting_asset)
+	notes_list := utils.ReadAllText("./assets/notes/" + notes_setting_asset)
 	err = json.Unmarshal([]byte(notes_list), &notes)
 	CheckErr(err)
 

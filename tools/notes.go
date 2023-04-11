@@ -3,8 +3,11 @@ package tools
 import (
 	"database/sql"
 	"fmt"
+	"honoka-chan/utils"
 	"io"
 	"net/http"
+	"os"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -22,7 +25,7 @@ func SyncNotesList() {
 	}()
 	db.SetMaxOpenConns(1)
 
-	sql := `SELECT live_setting_id,notes_setting_asset,notes_list FROM live_setting_m ORDER BY live_setting_id ASC`
+	sql := `SELECT live_setting_id,notes_setting_asset FROM live_setting_m ORDER BY live_setting_id ASC`
 	rows, err := db.Query(sql)
 	CheckErr(err)
 
@@ -31,24 +34,18 @@ func SyncNotesList() {
 	for rows.Next() {
 		var id int
 		var asset string
-		var notes interface{}
-		err = rows.Scan(&id, &asset, &notes)
+		err = rows.Scan(&id, &asset)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-
-		if notes != nil {
-			continue
-		}
-
 		liveList[id] = asset
 	}
 	rows.Close()
 
 	// fmt.Println(liveList)
 
-	for id, asset := range liveList {
+	for _, asset := range liveList {
 		url := "https://card.niconi.co.ni/live/" + asset
 		fmt.Println(url)
 
@@ -91,22 +88,13 @@ func SyncNotesList() {
 			continue
 		}
 
-		stmt, err := db.Prepare("UPDATE live_setting_m SET notes_list = ? WHERE live_setting_id = ?")
+		notesDir := "./assets/notes"
+		_, err = os.Stat(notesDir)
 		if err != nil {
-			fmt.Println(err)
-			continue
+			err = os.MkdirAll(notesDir, 0755)
+			CheckErr(err)
 		}
-		ret, err := stmt.Exec(notesList, id)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		r, err := ret.RowsAffected()
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		fmt.Println("RowsAffected:", r)
+		utils.WriteAllText(path.Join(notesDir, asset), notesList)
 
 		time.Sleep(time.Second)
 	}
