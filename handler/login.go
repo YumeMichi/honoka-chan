@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -13,6 +14,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/tidwall/gjson"
 )
 
 func AuthKeyHandler(ctx *gin.Context) {
@@ -74,36 +77,34 @@ func LoginHandler(ctx *gin.Context) {
 	reqTime := time.Now().Unix()
 
 	authorizeStr := ctx.Request.Header["Authorize"]
-	// authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	// if err != nil {
-	// 	ctx.String(http.StatusForbidden, ErrorMsg)
-	// 	return
-	// }
+	authToken, err := utils.GetAuthorizeToken(authorizeStr)
+	if err != nil {
+		ctx.String(http.StatusForbidden, ErrorMsg)
+		return
+	}
 
-	// authData, err := database.RedisCli.HGetAll(database.RedisCtx, authToken).Result()
-	// authData, err := database.LevelDb.Get([]byte(authToken))
-	// CheckErr(err)
+	authData, err := database.LevelDb.Get([]byte(authToken))
+	CheckErr(err)
 	// fmt.Println(authData)
 
-	// clientToken, serverToken := authData["client_token"], authData["server_token"]
-	// clientToken := gjson.Get(string(authData), "client_token").String()
-	// serverToken := gjson.Get(string(authData), "server_token").String()
-	// clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
-	// CheckErr(err)
-	// serverToken64, err := base64.RawStdEncoding.DecodeString(serverToken)
-	// CheckErr(err)
+	clientToken := gjson.Get(string(authData), "client_token").String()
+	serverToken := gjson.Get(string(authData), "server_token").String()
+	clientToken64, err := base64.RawStdEncoding.DecodeString(clientToken)
+	CheckErr(err)
+	serverToken64, err := base64.RawStdEncoding.DecodeString(serverToken)
+	CheckErr(err)
 
-	// xmcKey := utils.SliceXor([]byte(clientToken64), []byte(serverToken64))
-	// aesKey := xmcKey[0:16]
+	xmcKey := utils.SliceXor([]byte(clientToken64), []byte(serverToken64))
+	aesKey := xmcKey[0:16]
 
 	loginReq := model.LoginReq{}
-	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &loginReq)
+	err = json.Unmarshal([]byte(ctx.PostForm("request_data")), &loginReq)
 	CheckErr(err)
-	// key64, err := base64.StdEncoding.DecodeString(loginReq.LoginKey)
-	// CheckErr(err)
+	key64, err := base64.StdEncoding.DecodeString(loginReq.LoginKey)
+	CheckErr(err)
 	// pass64, err := base64.StdEncoding.DecodeString(loginReq.LoginPasswd)
 	// CheckErr(err)
-	// keyDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(key64, aesKey))
+	keyDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(key64, aesKey))
 	// fmt.Println(string(keyDescrypted))
 	// passDescrypted := utils.Sub16(encrypt.AES_CBC_Decrypt(pass64, aesKey))
 	// fmt.Println(string(passDescrypted))
@@ -116,16 +117,26 @@ func LoginHandler(ctx *gin.Context) {
 	}
 	nonce++
 
-	// userId, err := database.GetUid(string(keyDescrypted))
-	// if err != nil {
-	// 	ctx.String(http.StatusForbidden, ErrorMsg)
-	// 	return
-	// }
-	userId := 9999999
+	db, err := sql.Open("sqlite3", "assets/account.db")
+	CheckErr(err)
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT userid FROM user_key WHERE key = ?")
+	CheckErr(err)
+	rows, err := stmt.Query(string(keyDescrypted))
+	CheckErr(err)
+	var userId int
+	for rows.Next() {
+		err = rows.Scan(&userId)
+		CheckErr(err)
+	}
+
+	if userId == 0 {
+		userId = 9999999
+	}
 	sUserId := strconv.Itoa(userId)
 	authorizeToken := utils.RandomBase64Token(32)
 
-	// _, err = database.RedisCli.HSet(database.RedisCtx, "token_uid", authorizeToken, userId).Result()
 	err = database.LevelDb.Put([]byte(authorizeToken), []byte(sUserId))
 	CheckErr(err)
 

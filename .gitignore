@@ -6,6 +6,8 @@ publickey.pem
 data
 logs
 
+assets/account.db
+
 assets/api1.json
 assets/api2.json
 assets/api3.json
