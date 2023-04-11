@@ -397,22 +397,42 @@ type EffortPoint struct {
 	Rewards                  []Rewards `json:"rewards"`
 }
 
+// type PlayRewardUnitList struct {
+// 	UnitOwningUserID int  `json:"unit_owning_user_id"`
+// 	UnitID           int  `json:"unit_id"`
+// 	Position         int  `json:"position"`
+// 	Level            int  `json:"level"`
+// 	LevelLimitID     int  `json:"level_limit_id"`
+// 	DisplayRank      int  `json:"display_rank"`
+// 	Love             int  `json:"love"`
+// 	UnitSkillLevel   int  `json:"unit_skill_level"`
+// 	IsRankMax        bool `json:"is_rank_max"`
+// 	IsLoveMax        bool `json:"is_love_max"`
+// 	IsLevelMax       bool `json:"is_level_max"`
+// 	IsSigned         bool `json:"is_signed"`
+// 	BeforeLove       int  `json:"before_love"`
+// 	MaxLove          int  `json:"max_love"`
+// 	// Costume Costume `json:"costume,omitempty"`
+// }
+
 type PlayRewardUnitList struct {
-	UnitOwningUserID int  `json:"unit_owning_user_id"`
-	UnitID           int  `json:"unit_id"`
-	Position         int  `json:"position"`
-	Level            int  `json:"level"`
-	LevelLimitID     int  `json:"level_limit_id"`
-	DisplayRank      int  `json:"display_rank"`
-	Love             int  `json:"love"`
-	UnitSkillLevel   int  `json:"unit_skill_level"`
-	IsRankMax        bool `json:"is_rank_max"`
-	IsLoveMax        bool `json:"is_love_max"`
-	IsLevelMax       bool `json:"is_level_max"`
-	IsSigned         bool `json:"is_signed"`
-	BeforeLove       int  `json:"before_love"`
-	MaxLove          int  `json:"max_love"`
-	// Costume Costume `json:"costume,omitempty"`
+	ID               int   `xorm:"id pk autoincr" json:"-"`
+	UserDeckID       int   `xorm:"user_deck_id" json:"-"`
+	UnitOwningUserID int   `xorm:"unit_owning_user_id" json:"unit_owning_user_id"`
+	UnitID           int   `xorm:"unit_id" json:"unit_id"`
+	Position         int   `xorm:"position" json:"position"`
+	Level            int   `xorm:"level" json:"level"`
+	LevelLimitID     int   `xorm:"level_limit_id" json:"level_limit_id"`
+	DisplayRank      int   `xorm:"display_rank" json:"display_rank"`
+	Love             int   `xorm:"love" json:"love"`
+	UnitSkillLevel   int   `xorm:"unit_skill_level" json:"unit_skill_level"`
+	IsRankMax        bool  `xorm:"is_rank_max" json:"is_rank_max"`
+	IsLoveMax        bool  `xorm:"is_love_max" json:"is_love_max"`
+	IsLevelMax       bool  `xorm:"is_level_max" json:"is_level_max"`
+	IsSigned         bool  `xorm:"is_signed" json:"is_signed"`
+	BeforeLove       int   `xorm:"before_love" json:"before_love"`
+	MaxLove          int   `xorm:"max_love" json:"max_love"`
+	InsertData       int64 `xorm:"insert_date" json:"-"`
 }
 
 type BeforeUserInfo struct {

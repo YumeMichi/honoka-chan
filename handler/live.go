@@ -107,6 +107,11 @@ func PlayLiveHandler(ctx *gin.Context) {
 	CheckErr(err)
 	deckId := playReq.UnitDeckID
 
+	// Save Deck Id for /live/reward
+	key := "live_deck_" + userId[0]
+	err = database.LevelDb.Put([]byte(key), []byte(strconv.Itoa(deckId)))
+	CheckErr(err)
+
 	// Song type: normal / special
 	// sqlite3 doesn't support FULL OUTER JOIN so use UNION ALL here.
 	sql := `SELECT notes_setting_asset,c_rank_score,b_rank_score,a_rank_score,s_rank_score,ac_flag,swing_flag FROM live_setting_m WHERE live_setting_id IN (SELECT live_setting_id FROM normal_live_m WHERE live_difficulty_id = ? UNION ALL SELECT live_setting_id FROM special_live_m WHERE live_difficulty_id = ?)`
@@ -119,7 +124,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 	// fmt.Println(c_rank_score, b_rank_score, a_rank_score, s_rank_score)
 
 	notes := []model.NotesList{}
-	fmt.Println("./assets/notes/" + notes_setting_asset)
+	// fmt.Println("./assets/notes/" + notes_setting_asset)
 	notes_list := utils.ReadAllText("./assets/notes/" + notes_setting_asset)
 	err = json.Unmarshal([]byte(notes_list), &notes)
 	CheckErr(err)
@@ -312,7 +317,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 	// fmt.Println(c_rank_score, b_rank_score, a_rank_score, s_rank_score)
 
 	notes := []model.NotesList{}
-	fmt.Println("./assets/notes/" + notes_setting_asset)
+	// fmt.Println("./assets/notes/" + notes_setting_asset)
 	notes_list := utils.ReadAllText("./assets/notes/" + notes_setting_asset)
 	err = json.Unmarshal([]byte(notes_list), &notes)
 	CheckErr(err)
@@ -434,10 +439,13 @@ func PlayRewardHandler(ctx *gin.Context) {
 	err = MainEng.DB().QueryRow(sql, difficultyId, difficultyId).Scan(&c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &c_rank_combo, &b_rank_combo, &a_rank_combo, &s_rank_combo, &ac_flag, &swing_flag)
 	CheckErr(err)
 
-	unitsList := []model.PlayRewardUnitList{}
-	deck, err := database.LevelDb.Get([]byte("deck_info"))
+	key := "live_deck_" + userId[0]
+	deckId, err := database.LevelDb.Get([]byte(key))
 	CheckErr(err)
-	err = json.Unmarshal(deck, &unitsList)
+	unitsList := []model.PlayRewardUnitList{}
+	err = UserEng.Table("deck_unit_m").Select("*").
+		Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
+		Where("user_id = ? AND deck_id = ?", userId[0], string(deckId)).Find(&unitsList)
 	CheckErr(err)
 
 	totalScore := playRewardReq.ScoreSmile + playRewardReq.ScoreCool + playRewardReq.ScoreCute

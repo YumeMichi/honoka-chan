@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"honoka-chan/database"
 	"honoka-chan/encrypt"
+	"honoka-chan/tools"
 	"honoka-chan/utils"
 	"io"
 	"net/http"
@@ -318,8 +319,13 @@ func AccountLoginHandler(ctx *gin.Context) {
 	defer stmt.Close()
 
 	var pass, autokey, ticket, userid string
-	err = stmt.QueryRow(phone).Scan(&pass, &autokey, &ticket, &userid)
+	rows, err := stmt.Query(phone)
 	CheckErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&pass, &autokey, &ticket, &userid)
+		CheckErr(err)
+	}
 
 	loginResp := LoginResp{}
 	loginCode := 0
@@ -371,6 +377,8 @@ func AccountLoginHandler(ctx *gin.Context) {
 			session.Rollback()
 			panic(err)
 		}
+
+		tools.InitUserData(int(loginTime))
 
 		// Login Response
 		loginResp.Autokey = autokey

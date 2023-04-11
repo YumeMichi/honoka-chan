@@ -18,6 +18,7 @@ func CommonMid(ctx *gin.Context) {
 		res, _ := database.LevelDb.Get([]byte(userId[0]))
 		if authStr != string(res) {
 			ctx.String(http.StatusForbidden, handler.ErrorMsg)
+			ctx.Abort()
 			return
 		}
 	}
@@ -26,4 +27,6 @@ func CommonMid(ctx *gin.Context) {
 	ctx.Header("server_version", config.Conf.Server.VersionDate)
 	ctx.Header("version_up", config.Conf.Server.VersionUp)
 	ctx.Header("status_code", "200")
+
+	ctx.Next()
 }

@@ -3,7 +3,6 @@ package tools
 import (
 	"encoding/json"
 	"fmt"
-	"honoka-chan/database"
 	"honoka-chan/model"
 	"honoka-chan/utils"
 	"strings"
@@ -149,7 +148,7 @@ type ProfileResp struct {
 }
 
 var (
-	CenterId int
+	CenterId = 41674
 )
 
 func GenApi1Data() {
@@ -242,143 +241,19 @@ func GenApi1Data() {
 	respAll = append(respAll, liveListResp)
 
 	// unit_list_result
-	sql = `SELECT unit_id,album_series_id,rarity,rank_min,rank_max,hp_max,default_removable_skill_capacity FROM unit_m WHERE unit_id NOT IN (SELECT unit_id FROM unit_m WHERE unit_type_id IN (SELECT unit_type_id FROM unit_type_m WHERE image_button_asset IS NULL AND (background_color = 'dcdbe3' AND original_attribute_id IS NULL) OR (unit_type_id IN (10,110,127,128,129) OR unit_type_id BETWEEN 131 AND 140))) ORDER BY unit_number ASC;`
-	rows, err = MainEng.DB().Query(sql)
-	CheckErr(err)
-
 	unitsData := []model.Active{}
-	oId := 3000000000 // 起始卡片 ID，随意设置
-	sdt := time.Now().Add(-time.Hour * 24 * 30)
-
-	defaultDeckUnitList := []model.PlayRewardUnitList{}
-
-	for rows.Next() {
-		unitData := model.Active{}
-		var uid, rit, rank, max_rank, hp_max, skill_capacity int
-		var album_series_id interface{}
-		err = rows.Scan(&uid, &album_series_id, &rit, &rank, &max_rank, &hp_max, &skill_capacity)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		oId++
-		sdt = sdt.Add(time.Second * 3)
-
-		unitData.UnitOwningUserID = oId
-		unitData.UnitID = uid
-		unitData.NextExp = 0
-		unitData.Rank = rank
-		unitData.MaxRank = max_rank
-		unitData.MaxHp = hp_max
-		unitData.DisplayRank = 2
-		unitData.UnitSkillLevel = 8
-		unitData.FavoriteFlag = true
-		unitData.IsRankMax = true
-		unitData.IsLevelMax = true
-		unitData.IsLoveMax = true
-		unitData.IsSkillLevelMax = true
-		unitData.IsRemovableSkillCapacityMax = true
-		unitData.InsertDate = sdt.Local().Format("2006-01-02 03:04:05")
-		if rit != 4 {
-			unitData.LevelLimitID = 0
-			unitData.UnitRemovableSkillCapacity = skill_capacity
-			unitData.IsSigned = false
-			switch rit {
-			case 1:
-				// N
-				unitData.Exp = 8000
-				unitData.Level = 40
-				unitData.MaxLevel = 40
-				unitData.Love = 50
-				unitData.MaxLove = 50
-				unitData.UnitSkillExp = 0
-				unitData.UnitSkillLevel = 0
-				unitData.FavoriteFlag = false
-				unitData.IsRankMax = false
-				unitData.IsLevelMax = false
-				unitData.IsLoveMax = false
-				unitData.IsSkillLevelMax = false
-				unitData.IsRemovableSkillCapacityMax = false
-			case 2:
-				// R
-				unitData.Exp = 13500
-				unitData.Level = 60
-				unitData.MaxLevel = 60
-				unitData.Love = 200
-				unitData.MaxLove = 200
-				unitData.UnitSkillExp = 490
-			case 3:
-				// SR
-				unitData.Exp = 36800
-				unitData.Level = 80
-				unitData.MaxLevel = 80
-				unitData.Love = 500
-				unitData.MaxLove = 500
-				unitData.UnitSkillExp = 4900
-			case 5:
-				// SSR
-				unitData.Exp = 56657
-				unitData.Level = 90
-				unitData.MaxLevel = 90
-				unitData.Love = 750
-				unitData.MaxLove = 750
-				unitData.UnitSkillExp = 12700
-			}
-		} else {
-			// UR
-			unitData.Exp = 79700
-			unitData.Level = 100
-			unitData.MaxLevel = 100
-			unitData.LevelLimitID = 2
-			unitData.Love = 1000
-			unitData.MaxLove = 1000
-			unitData.UnitSkillExp = 29900
-			unitData.UnitRemovableSkillCapacity = 8
-
-			stmt, err := MainEng.DB().Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
-			CheckErr(err)
-			defer stmt.Close()
-
-			var count int
-			err = stmt.QueryRow(uid).Scan(&count)
-			CheckErr(err)
-
-			if count > 0 {
-				unitData.IsSigned = true
-			} else {
-				unitData.IsSigned = false
-			}
-		}
-
-		unitsData = append(unitsData, unitData)
-
-		// 中心位成员
-		if uid == 3927 { // AC15 果
-			CenterId = oId
-		}
-
-		switch album_series_id := album_series_id.(type) {
-		case int64:
-			if album_series_id == 615 {
-				// 仆光套
-				defaultDeckUnitList = append(defaultDeckUnitList, model.PlayRewardUnitList{
-					UnitOwningUserID: oId,
-					UnitID:           uid,
-					Level:            100,
-					LevelLimitID:     2,
-					DisplayRank:      2,
-					Love:             1000,
-					UnitSkillLevel:   8,
-					IsRankMax:        true,
-					IsLoveMax:        true,
-					IsLevelMax:       true,
-					IsSigned:         unitData.IsSigned,
-					BeforeLove:       1000,
-					MaxLove:          1000,
-				})
-			}
-		}
+	err = MainEng.Table("common_unit_m").Select("*").Find(&unitsData)
+	if err != nil {
+		panic(err)
 	}
+
+	userUnits := []model.Active{}
+	err = UserEng.Table("user_unit_m").Select("*").Find(&userUnits)
+	if err != nil {
+		panic(err)
+	}
+
+	unitsData = append(unitsData, userUnits...)
 
 	unitListResp := model.UnitAllResp{
 		// _ = model.UnitAllResp{
@@ -393,36 +268,44 @@ func GenApi1Data() {
 	respAll = append(respAll, unitListResp)
 
 	// unit_deck_result
-	oUids := []model.UnitOwningUserIds{}
-	for k, v := range defaultDeckUnitList[0:9] {
-		position := k + 1
-		defaultDeckUnitList[k].Position = position
-		oUids = append(oUids, model.UnitOwningUserIds{
-			Position:         position,
-			UnitOwningUserID: v.UnitOwningUserID,
+	uId := 1681205441 // Hardcode for now
+	userDeck := []UserDeckData{}
+	err = UserEng.Table("user_deck_m").Where("user_id = ?", uId).Asc("deck_id").Find(&userDeck)
+	CheckErr(err)
+
+	unitDeckInfo := []model.UnitDeckInfo{}
+	for _, deck := range userDeck {
+		deckUnit := []UnitDeckData{}
+		err = UserEng.Table("deck_unit_m").Where("user_deck_id = ?", deck.ID).Asc("position").Find(&deckUnit)
+		CheckErr(err)
+
+		oUids := []model.UnitOwningUserIds{}
+		for _, unit := range deckUnit {
+			oUids = append(oUids, model.UnitOwningUserIds{
+				Position:         unit.Position,
+				UnitOwningUserID: unit.UnitOwningUserID,
+			})
+		}
+
+		mainFlag := false
+		if deck.MainFlag == 1 {
+			mainFlag = true
+		}
+		unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfo{
+			UnitDeckID:        deck.DeckID,
+			MainFlag:          mainFlag,
+			DeckName:          deck.DeckName,
+			UnitOwningUserIds: oUids,
 		})
 	}
 	unitDeckResp := model.UnitDeckInfoResp{
 		// _ = model.UnitDeckInfoResp{
-		Result: []model.UnitDeckInfo{
-			{
-				UnitDeckID:        1,
-				MainFlag:          true,
-				DeckName:          "Future style",
-				UnitOwningUserIds: oUids,
-			},
-		},
+		Result:     unitDeckInfo,
 		Status:     200,
 		CommandNum: false,
 		TimeStamp:  time.Now().Unix(),
 	}
 	respAll = append(respAll, unitDeckResp)
-
-	// HACK 保存卡组信息
-	deck, err := json.Marshal(defaultDeckUnitList)
-	CheckErr(err)
-	err = database.LevelDb.Put([]byte("deck_info"), deck)
-	CheckErr(err)
 
 	// unit_support_result
 	unitSupportResp := model.UnitSupportResp{
@@ -969,7 +852,7 @@ func GenApi2Data() {
 			FriendVarietyCnt:       0,
 			FriendNewCnt:           0,
 			PresentCnt:             0,
-			SecretBoxBadgeFlag:     true,
+			SecretBoxBadgeFlag:     false,
 			ServerDatetime:         time.Now().Format("2006-01-02 15:04:05"),
 			ServerTimestamp:        time.Now().Unix(),
 			NoticeFriendDatetime:   time.Now().Format("2006-01-02 15:04:05"),
