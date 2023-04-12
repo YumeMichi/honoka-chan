@@ -110,207 +110,120 @@ func SetDeckHandler(ctx *gin.Context) {
 		panic(err)
 	}
 
-	UserEng.ShowSQL(true)
+	// 开始事务
+	// UserEng.ShowSQL(true)
 	session := UserEng.NewSession()
 	defer session.Close()
+	if err = session.Begin(); err != nil {
+		session.Rollback()
+		panic(err)
+	}
 
+	// 原有队伍信息
+	var userDeckId []int
+	err = session.Table("user_deck_m").Cols("id").Where("user_id = ?", uId).Find(&userDeckId)
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	// 删除全部原有队伍成员
+	_, err = session.Table("deck_unit_m").In("user_deck_id", userDeckId).Delete()
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	// 删除全部原有队伍
+	_, err = session.Table("user_deck_m").In("id", userDeckId).Delete()
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	// 遍历新队伍
 	for _, deck := range deckReq.UnitDeckList {
-		exists, err := UserEng.Table("user_deck_m").Where("user_id = ? AND deck_id = ?", uId, deck.UnitDeckID).Exist()
-		CheckErr(err)
+		// 新队伍信息
+		userDeck := tools.UserDeckData{
+			DeckID:     deck.UnitDeckID,
+			MainFlag:   deck.MainFlag,
+			DeckName:   deck.DeckName,
+			UserID:     uId,
+			InsertDate: time.Now().Unix(),
+		}
+		_, err = session.Table("user_deck_m").Insert(&userDeck)
+		if err != nil {
+			session.Rollback()
+			panic(err)
+		}
+		userDeckId := userDeck.ID
+		// fmt.Println("新队伍 ID:", userDeckId)
 
-		if exists { // 原队伍
-			// 原队伍信息
-			var userDeckId int
-			_, err = UserEng.Table("user_deck_m").Cols("id").Where("user_id = ? AND deck_id = ?", uId, deck.UnitDeckID).Get(&userDeckId)
-			CheckErr(err)
-
-			// fmt.Println(userDeckId)
-
-			// 事务
-			if err = session.Begin(); err != nil {
-				session.Rollback()
-				panic(err)
-			}
-			// 更新队伍信息
-			userDeck := tools.UserDeckData{
-				MainFlag: deck.MainFlag,
-				DeckName: deck.DeckName,
-			}
-			_, err := session.Table("user_deck_m").Update(&userDeck, &tools.UserDeckData{
-				UserID: uId,
-				DeckID: deck.UnitDeckID,
-			})
+		// 队伍成员信息
+		for _, unit := range deck.UnitDeckDetail {
+			// 成员信息
+			newUnitData := tools.UnitData{}
+			exists, err := session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
 			if err != nil {
 				session.Rollback()
 				panic(err)
 			}
-			// fmt.Println("Aff:", r)
-
-			// 更新队伍成员信息
-			for _, unit := range deck.UnitDeckDetail {
-				// 原队伍成员位置信息
-				unitDeckData := tools.UnitDeckData{}
-				_, err = session.Table("deck_unit_m").Where("user_deck_id = ? AND position = ?", userDeckId, unit.Position).Get(&unitDeckData)
+			if exists {
+				// fmt.Println("新成员为用户增加成员")
+				_, err = session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Get(&newUnitData)
 				if err != nil {
 					session.Rollback()
 					panic(err)
 				}
-
-				// 该位置成员信息不变
-				if unitDeckData.UnitOwningUserID == unit.UnitOwningUserID {
-					continue
-				}
-
-				// 新成员信息
-				// fmt.Printf("位置: %d 成员发生改变, %d -> %d\n", unit.Position, unitDeckData.UnitOwningUserID, unit.UnitOwningUserID)
-				newUnitData := tools.UnitData{}
-				exists, err := session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
+			} else {
+				exists, err := MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
 				if err != nil {
 					session.Rollback()
 					panic(err)
 				}
 				if exists {
-					// fmt.Println("新成员为用户增加成员")
-					_, err = session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Get(&newUnitData)
+					// fmt.Println("新成员为公共成员")
+					_, err = MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Get(&newUnitData)
 					if err != nil {
 						session.Rollback()
 						panic(err)
 					}
 				} else {
-					exists, err := MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
-					if err != nil {
-						session.Rollback()
-						panic(err)
-					}
-					if exists {
-						// fmt.Println("新成员为公共成员")
-						_, err = MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Get(&newUnitData)
-						if err != nil {
-							session.Rollback()
-							panic(err)
-						}
-					} else {
-						// fmt.Println("新成员不存在")
-						session.Rollback()
-						panic("wtf?")
-					}
-				}
-				// fmt.Println("新的成员信息:", newUnitData)
-
-				// 更新新成员信息
-				newUnitDeckData := tools.UnitDeckData{}
-				b, err := json.Marshal(newUnitData)
-				if err != nil {
+					// fmt.Println("新成员不存在")
 					session.Rollback()
-					panic(err)
+					panic("unexpected operation")
 				}
-				if err = json.Unmarshal(b, &newUnitDeckData); err != nil {
-					session.Rollback()
-					panic(err)
-				}
-				newUnitDeckData.BeforeLove = newUnitDeckData.MaxLove
-				newUnitDeckData.Position = unit.Position
-				newUnitDeckData.UserDeckID = userDeckId
-				newUnitDeckData.InsertData = time.Now().Unix()
+			}
+			// fmt.Println("新的成员信息:", newUnitData)
 
-				_, err = session.Table("deck_unit_m").Update(&newUnitDeckData, &tools.UnitDeckData{
-					ID: unitDeckData.ID,
-				})
-				if err != nil {
-					session.Rollback()
-					panic(err)
-				}
-			}
-			if err = session.Commit(); err != nil {
-				session.Rollback()
-				panic(err)
-			}
-		} else { // 新队伍
-			if err := session.Begin(); err != nil {
-				session.Rollback()
-				panic(err)
-			}
-
-			// 新队伍信息
-			userDeck := tools.UserDeckData{
-				DeckID:     deck.UnitDeckID,
-				MainFlag:   deck.MainFlag,
-				DeckName:   deck.DeckName,
-				UserID:     uId,
-				InsertDate: time.Now().Unix(),
-			}
-			_, err = session.Table("user_deck_m").Insert(&userDeck)
+			// 插入新成员信息
+			newUnitDeckData := tools.UnitDeckData{}
+			b, err := json.Marshal(newUnitData)
 			if err != nil {
 				session.Rollback()
 				panic(err)
 			}
-			userDeckId := userDeck.ID
-			// fmt.Println("新队伍 ID:", userDeckId)
-
-			// 队伍成员信息
-			for _, unit := range deck.UnitDeckDetail {
-				// 成员信息
-				newUnitData := tools.UnitData{}
-				exists, err := session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
-				if err != nil {
-					session.Rollback()
-					panic(err)
-				}
-				if exists {
-					// fmt.Println("新成员为用户增加成员")
-					_, err = session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Get(&newUnitData)
-					if err != nil {
-						session.Rollback()
-						panic(err)
-					}
-				} else {
-					exists, err := MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
-					if err != nil {
-						session.Rollback()
-						panic(err)
-					}
-					if exists {
-						// fmt.Println("新成员为公共成员")
-						_, err = MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Get(&newUnitData)
-						if err != nil {
-							session.Rollback()
-							panic(err)
-						}
-					} else {
-						// fmt.Println("新成员不存在")
-						session.Rollback()
-						panic("wtf?")
-					}
-				}
-				// fmt.Println("新的成员信息:", newUnitData)
-
-				// 插入新成员信息
-				newUnitDeckData := tools.UnitDeckData{}
-				b, err := json.Marshal(newUnitData)
-				if err != nil {
-					session.Rollback()
-					panic(err)
-				}
-				if err = json.Unmarshal(b, &newUnitDeckData); err != nil {
-					session.Rollback()
-					panic(err)
-				}
-				newUnitDeckData.BeforeLove = newUnitDeckData.MaxLove
-				newUnitDeckData.Position = unit.Position
-				newUnitDeckData.UserDeckID = userDeckId
-				newUnitDeckData.InsertData = time.Now().Unix()
-
-				_, err = session.Table("deck_unit_m").Insert(&newUnitDeckData)
-				if err != nil {
-					session.Rollback()
-					panic(err)
-				}
+			if err = json.Unmarshal(b, &newUnitDeckData); err != nil {
+				session.Rollback()
+				panic(err)
 			}
-			if err = session.Commit(); err != nil {
+			newUnitDeckData.BeforeLove = newUnitDeckData.MaxLove
+			newUnitDeckData.Position = unit.Position
+			newUnitDeckData.UserDeckID = userDeckId
+			newUnitDeckData.InsertData = time.Now().Unix()
+
+			_, err = session.Table("deck_unit_m").Insert(&newUnitDeckData)
+			if err != nil {
 				session.Rollback()
 				panic(err)
 			}
 		}
+	}
+
+	// 结束事务
+	if err = session.Commit(); err != nil {
+		session.Rollback()
+		panic(err)
 	}
 
 	dispResp := SetDisplayRankResp{
