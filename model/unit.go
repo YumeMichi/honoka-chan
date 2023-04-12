@@ -144,3 +144,34 @@ type RemovableSkillResp struct {
 	CommandNum bool                 `json:"commandNum"`
 	TimeStamp  int64                `json:"timeStamp"`
 }
+
+// module: unit, action: deck
+type UnitDeckReq struct {
+	Module       string         `json:"module"`
+	UnitDeckList []UnitDeckList `json:"unit_deck_list"`
+	Action       string         `json:"action"`
+	Mgd          int            `json:"mgd"`
+}
+
+type UnitDeckDetail struct {
+	Position         int `json:"position"`
+	UnitOwningUserID int `json:"unit_owning_user_id"`
+}
+
+type UnitDeckList struct {
+	UnitDeckDetail []UnitDeckDetail `json:"unit_deck_detail"`
+	UnitDeckID     int              `json:"unit_deck_id"`
+	MainFlag       int              `json:"main_flag"`
+	DeckName       string           `json:"deck_name"`
+}
+
+// module: unit, action: deckName
+type DeckNameReq struct {
+	Module     string `json:"module"`
+	UnitDeckID int    `json:"unit_deck_id"`
+	Action     string `json:"action"`
+	TimeStamp  int    `json:"timeStamp"`
+	Mgd        int    `json:"mgd"`
+	CommandNum string `json:"commandNum"`
+	DeckName   string `json:"deck_name"`
+}

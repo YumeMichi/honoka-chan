@@ -75,6 +75,8 @@ func main() {
 		m.POST("/live/gameover", handler.GameOverHandler)
 		m.POST("/unit/setDisplayRank", handler.SetDisplayRankHandler)
 		m.POST("/unit/favorite", handler.SetDisplayRankHandler)
+		m.POST("/unit/deck", handler.SetDeckHandler)
+		m.POST("/unit/deckName", handler.SetDeckNameHandler)
 		m.POST("/subscenario/startup", handler.SubScenarioStartupHandler)
 		m.POST("/subscenario/reward", handler.SubScenarioStartupHandler)
 		m.POST("/album/seriesAll", handler.AlbumSeriesAllHandler)
