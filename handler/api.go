@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"honoka-chan/config"
-	"honoka-chan/database"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
 	"honoka-chan/tools"
 	"honoka-chan/utils"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -19,15 +18,11 @@ import (
 )
 
 func ApiHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-	// fmt.Println(ctx.PostForm("request_data"))
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
+	userId, err := strconv.Atoi(ctx.GetString("userid"))
+	CheckErr(err)
+
 	var formdata []model.SifApi
-	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &formdata)
+	err = json.Unmarshal([]byte(ctx.PostForm("request_data")), &formdata)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -35,7 +30,6 @@ func ApiHandler(ctx *gin.Context) {
 	var results []interface{}
 	for _, v := range formdata {
 		var res []byte
-		var key string
 		var err error
 		// fmt.Println(v)
 		// fmt.Println(v.Module, v.Action)
@@ -43,10 +37,8 @@ func ApiHandler(ctx *gin.Context) {
 		switch v.Module {
 		case "login":
 			if v.Action == "topInfo" {
-				// fmt.Println("topInfo")
-				key = "login_topinfo_result"
+				// key = "login_topinfo_result"
 				topInfoResp := model.TopInfoResp{
-					// _ = model.TopInfoResp{
 					Result: model.TopInfoResult{
 						FriendActionCnt:        0,
 						FriendGreetCnt:         0,
@@ -82,10 +74,8 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(topInfoResp)
 				CheckErr(err)
 			} else if v.Action == "topInfoOnce" {
-				// fmt.Println("topInfoOnce")
-				key = "login_topinfo_once_result"
+				// key = "login_topinfo_once_result"
 				topInfoOnceResp := model.TopInfoOnceResp{
-					// _ = model.TopInfoOnceResp{
 					Result: model.TopInfoOnceResult{
 						NewAchievementCnt:            0,
 						UnaccomplishedAchievementCnt: 0,
@@ -118,8 +108,7 @@ func ApiHandler(ctx *gin.Context) {
 			}
 		case "live":
 			if v.Action == "liveStatus" {
-				// fmt.Println("liveStatus")
-				key = "live_status_result"
+				// key = "live_status_result"
 				var liveDifficultyId int
 				normalLives := []model.NormalLiveStatusList{}
 				sql := `SELECT live_difficulty_id FROM normal_live_m ORDER BY live_difficulty_id ASC`
@@ -162,7 +151,6 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				LiveStatusResp := model.LiveStatusResp{
-					// _ = model.LiveStatusResp{
 					Result: model.LiveStatusResult{
 						NormalLiveStatusList:   normalLives,
 						SpecialLiveStatusList:  specialLives,
@@ -178,8 +166,7 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(LiveStatusResp)
 				CheckErr(err)
 			} else if v.Action == "schedule" {
-				// fmt.Println("schedule")
-				key = "live_list_result"
+				// key = "live_list_result"
 				var liveDifficultyId int
 				specialLives := []model.SpecialLiveStatusList{}
 				sql := `SELECT live_difficulty_id FROM special_live_m ORDER BY live_difficulty_id ASC`
@@ -211,7 +198,6 @@ func ApiHandler(ctx *gin.Context) {
 					})
 				}
 				liveListResp := model.LiveScheduleResp{
-					// _ = model.LiveScheduleResp{
 					Result: model.LiveScheduleResult{
 						EventList:              []interface{}{},
 						LiveList:               livesList,
@@ -231,8 +217,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "unit":
 			switch v.Action {
 			case "unitAll":
-				// fmt.Println("unitAll")
-				key = "unit_list_result"
+				// key = "unit_list_result"
 				unitsData := []model.Active{}
 				err = MainEng.Table("common_unit_m").Select("*").Find(&unitsData)
 				if err != nil {
@@ -248,7 +233,6 @@ func ApiHandler(ctx *gin.Context) {
 				unitsData = append(unitsData, userUnits...)
 
 				unitListResp := model.UnitAllResp{
-					// _ = model.UnitAllResp{
 					Result: model.UnitAllResult{
 						Active:  unitsData,
 						Waiting: []model.Waiting{},
@@ -260,10 +244,9 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(unitListResp)
 				CheckErr(err)
 			case "deckInfo":
-				// fmt.Println("deckInfo")
-				key = "unit_deck_result"
+				// key = "unit_deck_result"
 				userDeck := []tools.UserDeckData{}
-				err = UserEng.Table("user_deck_m").Where("user_id = ?", userId[0]).Asc("deck_id").Find(&userDeck)
+				err = UserEng.Table("user_deck_m").Where("user_id = ?", userId).Asc("deck_id").Find(&userDeck)
 				CheckErr(err)
 
 				unitDeckInfo := []model.UnitDeckInfo{}
@@ -292,7 +275,6 @@ func ApiHandler(ctx *gin.Context) {
 					})
 				}
 				unitDeckResp := model.UnitDeckInfoResp{
-					// _ = model.UnitDeckInfoResp{
 					Result:     unitDeckInfo,
 					Status:     200,
 					CommandNum: false,
@@ -301,10 +283,8 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(unitDeckResp)
 				CheckErr(err)
 			case "supporterAll":
-				// fmt.Println("supporterAll")
-				key = "unit_support_result"
+				// key = "unit_support_result"
 				unitSupportResp := model.UnitSupportResp{
-					// _ = model.UnitSupportResp{
 					Result: model.UnitSupportResult{
 						UnitSupportList: []model.UnitSupportList{},
 					}, // 练习道具
@@ -315,10 +295,8 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(unitSupportResp)
 				CheckErr(err)
 			case "removableSkillInfo":
-				// fmt.Println("removableSkillInfo")
-				key = "owning_equip_result"
+				// key = "owning_equip_result"
 				rmSkillResp := model.RemovableSkillResp{
-					// _ = model.RemovableSkillResp{
 					Result: model.RemovableSkillResult{
 						OwningInfo:    []model.OwningInfo{},
 						EquipmentInfo: []interface{}{},
@@ -330,10 +308,8 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(rmSkillResp)
 				CheckErr(err)
 			case "accessoryAll":
-				// fmt.Println("accessoryAll")
-				key = "unit_accessory_result"
+				// key = "unit_accessory_result"
 				unitAccResp := model.UnitAccessoryAllResp{
-					// _ = model.UnitAccessoryAllResp{
 					Result: model.UnitAccessoryAllResult{
 						AccessoryList:      []interface{}{},
 						WearingInfo:        []interface{}{},
@@ -347,10 +323,8 @@ func ApiHandler(ctx *gin.Context) {
 				CheckErr(err)
 			}
 		case "costume":
-			// fmt.Println("costumeList")
-			key = "costume_list_result"
+			// key = "costume_list_result"
 			costumeListResp := model.CostumeListResp{
-				// _ = model.CostumeListResp{
 				Result: model.CostumeListResult{
 					CostumeList: []model.CostumeList{},
 				},
@@ -361,8 +335,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(costumeListResp)
 			CheckErr(err)
 		case "album":
-			// fmt.Println("albumAll")
-			key = "album_unit_result"
+			// key = "album_unit_result"
 			albumLists := []model.AlbumResult{}
 			sql := `SELECT unit_id,rarity FROM unit_m ORDER BY unit_id ASC`
 			rows, err := MainEng.DB().Query(sql)
@@ -417,7 +390,6 @@ func ApiHandler(ctx *gin.Context) {
 			}
 
 			albumResp := model.AlbumResp{
-				// _ = model.AlbumResp{
 				Result:     albumLists,
 				Status:     200,
 				CommandNum: false,
@@ -426,8 +398,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(albumResp)
 			CheckErr(err)
 		case "scenario":
-			// fmt.Println("scenarioStatus")
-			key = "scenario_status_result"
+			// key = "scenario_status_result"
 			sql := `SELECT scenario_id FROM scenario_m ORDER BY scenario_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -443,7 +414,6 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			scenarioResp := model.ScenarioStatusResp{
-				// _ = model.ScenarioStatusResp{
 				Result: model.ScenarioStatusResult{
 					ScenarioStatusList: scenarioLists,
 				},
@@ -454,8 +424,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(scenarioResp)
 			CheckErr(err)
 		case "subscenario":
-			// fmt.Println("subscenarioStatus")
-			key = "subscenario_status_result"
+			// key = "subscenario_status_result"
 			sql := `SELECT subscenario_id FROM subscenario_m ORDER BY subscenario_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -471,7 +440,6 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			subScenarioResp := model.SubscenarioStatusResp{
-				// _ = model.SubscenarioStatusResp{
 				Result: model.SubscenarioStatusResult{
 					SubscenarioStatusList:  subScenarioLists,
 					UnlockedSubscenarioIds: []interface{}{},
@@ -483,8 +451,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(subScenarioResp)
 			CheckErr(err)
 		case "eventscenario":
-			// fmt.Println("status")
-			key = "event_scenario_result"
+			// key = "event_scenario_result"
 			eventsList := []model.EventScenarioList{}
 			sql := `SELECT event_id FROM event_scenario_m GROUP BY event_id ORDER BY event_id DESC`
 			rows, err := MainEng.DB().Query(sql)
@@ -541,7 +508,6 @@ func ApiHandler(ctx *gin.Context) {
 				eventsList = append(eventsList, eventList)
 			}
 			eventScenarioResp := model.EventScenarioStatusResp{
-				// _ = model.EventScenarioStatusResp{
 				Result: model.EventScenarioStatusResult{
 					EventScenarioList: eventsList, //
 				},
@@ -552,8 +518,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(eventScenarioResp)
 			CheckErr(err)
 		case "multiunit":
-			// fmt.Println("multiunitscenarioStatus")
-			key = "multi_unit_scenario_result"
+			// key = "multi_unit_scenario_result"
 			sql := `SELECT multi_unit_id FROM multi_unit_scenario_m GROUP BY multi_unit_id ORDER BY multi_unit_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -590,7 +555,6 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			unitsResp := model.MultiUnitScenarioStatusResp{
-				// _ = model.MultiUnitScenarioStatusResp{
 				Result: model.MultiUnitScenarioStatusResult{
 					MultiUnitScenarioStatusList:  multiUnitsList,
 					UnlockedMultiUnitScenarioIds: []interface{}{},
@@ -602,10 +566,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(unitsResp)
 			CheckErr(err)
 		case "payment":
-			// fmt.Println("productList")
-			key = "product_result"
+			// key = "product_result"
 			productResp := model.ProductListResp{
-				// _ = model.ProductListResp{
 				Result: model.ProductListResult{
 					RestrictionInfo: model.RestrictionInfo{
 						Restricted: false,
@@ -628,10 +590,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(productResp)
 			CheckErr(err)
 		case "banner":
-			// fmt.Println("bannerList")
-			key = "banner_result"
+			// key = "banner_result"
 			bannerResp := model.BannerListResp{
-				// _ = model.BannerListResp{
 				Result: model.BannerListResult{
 					TimeLimit: "2037-12-31 23:59:59",
 					BannerList: []model.BannerList{
@@ -666,10 +626,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(bannerResp)
 			CheckErr(err)
 		case "notice":
-			// fmt.Println("noticeMarquee")
-			key = "item_marquee_result"
+			// key = "item_marquee_result"
 			marqueeResp := model.NoticeMarqueeResp{
-				// _ = model.NoticeMarqueeResp{
 				Result: model.NoticeMarqueeResult{
 					ItemCount:   0,
 					MarqueeList: []interface{}{},
@@ -681,10 +639,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(marqueeResp)
 			CheckErr(err)
 		case "user":
-			// fmt.Println("getNavi")
-			key = "user_intro_result"
+			// key = "user_intro_result"
 			userIntroResp := model.UserNaviResp{
-				// _ = model.UserNaviResp{
 				Result: model.UserNaviResult{
 					User: model.User{
 						UserID:           9999999,
@@ -698,10 +654,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(userIntroResp)
 			CheckErr(err)
 		case "navigation":
-			// fmt.Println("specialCutin")
-			key = "special_cutin_result"
+			// key = "special_cutin_result"
 			cutinResp := model.SpecialCutinResp{
-				// _ = model.SpecialCutinResp{
 				Result: model.SpecialCutinResult{
 					SpecialCutinList: []interface{}{},
 				},
@@ -712,8 +666,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(cutinResp)
 			CheckErr(err)
 		case "award":
-			// fmt.Println("awardInfo")
-			key = "award_result"
+			// key = "award_result"
 			sql := `SELECT award_id FROM award_m ORDER BY award_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -734,7 +687,6 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			awardResp := model.AwardInfoResp{
-				// _ = model.AwardInfoResp{
 				Result: model.AwardInfoResult{
 					AwardInfo: awardsList,
 				},
@@ -745,8 +697,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(awardResp)
 			CheckErr(err)
 		case "background":
-			// fmt.Println("backgroundInfo")
-			key = "background_result"
+			// key = "background_result"
 			sql := `SELECT background_id FROM background_m ORDER BY background_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -767,7 +718,6 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			backgroundResp := model.BackgroundInfoResp{
-				// _ = model.BackgroundInfoResp{
 				Result: model.BackgroundInfoResult{
 					BackgroundInfo: backgroundsList,
 				},
@@ -778,8 +728,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(backgroundResp)
 			CheckErr(err)
 		case "stamp":
-			// fmt.Println("stampInfo")
-			key = "stamp_result"
+			// key = "stamp_result"
 			stampResp := utils.ReadAllText("assets/stamp.json")
 			var mStampResp interface{}
 			err = json.Unmarshal([]byte(stampResp), &mStampResp)
@@ -787,8 +736,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(mStampResp)
 			CheckErr(err)
 		case "exchange":
-			// fmt.Println("owningPoint")
-			key = "exchange_point_result"
+			// key = "exchange_point_result"
 			sql := `SELECT exchange_point_id FROM exchange_point_m ORDER BY exchange_point_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -804,7 +752,6 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			exPointsResp := model.ExchangePointResp{
-				// _ = model.ExchangePointResp{
 				Result: model.ExchangePointResult{
 					ExchangePointList: exPointsList,
 				},
@@ -815,10 +762,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(exPointsResp)
 			CheckErr(err)
 		case "livese":
-			// fmt.Println("liveseInfo")
-			key = "live_se_result"
+			// key = "live_se_result"
 			liveSeResp := model.LiveSeInfoResp{
-				// _ = model.LiveSeInfoResp{
 				Result: model.LiveSeInfoResult{
 					LiveSeList: []int{1, 2, 3},
 				},
@@ -829,10 +774,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(liveSeResp)
 			CheckErr(err)
 		case "liveicon":
-			// fmt.Println("liveiconInfo")
-			key = "live_icon_result"
+			// key = "live_icon_result"
 			liveIconResp := model.LiveIconInfoResp{
-				// _ = model.LiveIconInfoResp{
 				Result: model.LiveIconInfoResult{
 					LiveNotesIconList: []int{1, 2, 3},
 				},
@@ -843,20 +786,16 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(liveIconResp)
 			CheckErr(err)
 		case "item":
-			// fmt.Println("list")
-			key = "item_list_result"
+			// key = "item_list_result"
 			itemResp := utils.ReadAllText("assets/item.json")
-			// _ = utils.ReadAllText("assets/item.json")
 			var mItemResp interface{}
 			err = json.Unmarshal([]byte(itemResp), &mItemResp)
 			CheckErr(err)
 			res, err = json.Marshal(mItemResp)
 			CheckErr(err)
 		case "marathon":
-			// fmt.Println("marathonInfo")
-			key = "marathon_result"
+			// key = "marathon_result"
 			marathonResp := model.MarathonInfoResp{
-				// _ = model.MarathonInfoResp{
 				Result:     []interface{}{},
 				Status:     200,
 				CommandNum: false,
@@ -865,10 +804,8 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(marathonResp)
 			CheckErr(err)
 		case "challenge":
-			// fmt.Println("challengeInfo")
-			key = "challenge_result"
+			// key = "challenge_result"
 			challengeResp := model.ChallengeInfoResp{
-				// _ = model.ChallengeInfoResp{
 				Result:     []interface{}{},
 				Status:     200,
 				CommandNum: false,
@@ -877,8 +814,7 @@ func ApiHandler(ctx *gin.Context) {
 			res, err = json.Marshal(challengeResp)
 			CheckErr(err)
 		case "museum":
-			// fmt.Println("info")
-			key = "museum_result"
+			// key = "museum_result"
 			sql := `SELECT museum_contents_id,smile_buff,pure_buff,cool_buff FROM museum_contents_m ORDER BY museum_contents_id ASC`
 			rows, err := MainEng.DB().Query(sql)
 			CheckErr(err)
@@ -914,10 +850,8 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "profile":
 			if v.Action == "liveCnt" {
-				// fmt.Println("liveCnt")
-				key = "profile_livecnt_result"
+				// key = "profile_livecnt_result"
 				difficultyResp := tools.DifficultyResp{
-					// _ = DifficultyResp{
 					Result: []tools.DifficultyResult{
 						{
 							Difficulty: 1,
@@ -947,14 +881,12 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(difficultyResp)
 				CheckErr(err)
 			} else if v.Action == "cardRanking" {
-				// fmt.Println("cardRanking")
-				key = "profile_card_ranking_result"
+				// key = "profile_card_ranking_result"
 				var result []interface{}
 				love := utils.ReadAllText("assets/love.json")
 				err := json.Unmarshal([]byte(love), &result)
 				CheckErr(err)
 				loveResp := tools.LoveResp{
-					// _ = LoveResp{
 					Result:     result,
 					Status:     200,
 					CommandNum: false,
@@ -963,8 +895,7 @@ func ApiHandler(ctx *gin.Context) {
 				res, err = json.Marshal(loveResp)
 				CheckErr(err)
 			} else if v.Action == "profileInfo" {
-				// fmt.Println("profileInfo")
-				key = "profile_info_result"
+				// key = "profile_info_result"
 				profileResp := tools.ProfileResp{
 					Result: tools.ProfileResult{
 						UserInfo: tools.UserInfo{
@@ -1066,14 +997,6 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		}
 
-		// fmt.Println(key)
-		_ = key
-
-		// if key != "login_topinfo_result" && key != "login_topinfo_once_result" {
-		// 	res, err = database.LevelDb.Get([]byte(key))
-		// 	CheckErr(err)
-		// }
-
 		var result interface{}
 		err = json.Unmarshal([]byte(res), &result)
 		CheckErr(err)
@@ -1089,38 +1012,13 @@ func ApiHandler(ctx *gin.Context) {
 	}
 	b, err = json.Marshal(rp)
 	CheckErr(err)
-	// fmt.Println(string(b))
 
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
+	nonce := ctx.GetInt("nonce")
 	nonce++
 
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(b, "privatekey.pem")))
 
-	xms := encrypt.RSA_Sign_SHA1(b, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
-
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
 	ctx.String(http.StatusOK, string(b))
 }

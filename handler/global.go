@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	nonce          = 0
+	// nonce          = 0
 	PackageVersion = "97.4.6"
 	CdnUrl         string
 	ErrorMsg       = `{"code":20001,"message":""}`

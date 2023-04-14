@@ -73,37 +73,8 @@ func SetDisplayRankHandler(ctx *gin.Context) {
 }
 
 func SetDeckHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	uId, _ := strconv.Atoi(userId[0])
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
+	userId, err := strconv.Atoi(ctx.GetString("userid"))
+	CheckErr(err)
 
 	deckReq := model.UnitDeckReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &deckReq); err != nil {
@@ -114,14 +85,14 @@ func SetDeckHandler(ctx *gin.Context) {
 	// UserEng.ShowSQL(true)
 	session := UserEng.NewSession()
 	defer session.Close()
-	if err = session.Begin(); err != nil {
+	if err := session.Begin(); err != nil {
 		session.Rollback()
 		panic(err)
 	}
 
 	// 原有队伍信息
 	var userDeckId []int
-	err = session.Table("user_deck_m").Cols("id").Where("user_id = ?", uId).Find(&userDeckId)
+	err = session.Table("user_deck_m").Cols("id").Where("user_id = ?", userId).Find(&userDeckId)
 	if err != nil {
 		session.Rollback()
 		panic(err)
@@ -148,7 +119,7 @@ func SetDeckHandler(ctx *gin.Context) {
 			DeckID:     deck.UnitDeckID,
 			MainFlag:   deck.MainFlag,
 			DeckName:   deck.DeckName,
-			UserID:     uId,
+			UserID:     userId,
 			InsertDate: time.Now().Unix(),
 		}
 		_, err = session.Table("user_deck_m").Insert(&userDeck)
@@ -233,55 +204,27 @@ func SetDeckHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(dispResp)
 	CheckErr(err)
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
 
 func SetDeckNameHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	uId, _ := strconv.Atoi(userId[0])
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
+	userId, err := strconv.Atoi(ctx.GetString("userid"))
+	CheckErr(err)
 
 	deckReq := model.DeckNameReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &deckReq); err != nil {
 		panic(err)
 	}
 
-	exists, err := UserEng.Table("user_deck_m").Where("user_id = ? AND deck_id = ?", uId, deckReq.UnitDeckID).Exist()
+	exists, err := UserEng.Table("user_deck_m").Where("user_id = ? AND deck_id = ?", userId, deckReq.UnitDeckID).Exist()
 	CheckErr(err)
 	if !exists {
 		ctx.String(http.StatusForbidden, ErrorMsg)
@@ -291,7 +234,7 @@ func SetDeckNameHandler(ctx *gin.Context) {
 		DeckName: deckReq.DeckName,
 	}
 	_, err = UserEng.Table("user_deck_m").Update(&userDeck, &tools.UserDeckData{
-		UserID: uId,
+		UserID: userId,
 		DeckID: deckReq.UnitDeckID,
 	})
 	CheckErr(err)
@@ -303,12 +246,13 @@ func SetDeckNameHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(dispResp)
 	CheckErr(err)
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }

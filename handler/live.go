@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"honoka-chan/config"
 	"honoka-chan/database"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
@@ -24,83 +23,22 @@ type GameOverResp struct {
 }
 
 func PartyListHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
+	resp := utils.ReadAllText("assets/partylist.json")
 
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
+	nonce := ctx.GetInt("nonce")
 	nonce++
 
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")))
 
-	resp := utils.ReadAllText("assets/partylist.json")
-	xms := encrypt.RSA_Sign_SHA1([]byte(resp), "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
-
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
 	ctx.String(http.StatusOK, resp)
 }
 
 func PlayLiveHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
 	playReq := model.PlayReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playReq)
 	CheckErr(err)
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
 
 	tDifficultyId := playReq.LiveDifficultyID
 	difficultyId, err := strconv.Atoi(tDifficultyId)
@@ -108,7 +46,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 	deckId := playReq.UnitDeckID
 
 	// Save Deck Id for /live/reward
-	key := "live_deck_" + userId[0]
+	key := "live_deck_" + ctx.GetString("userid")
 	err = database.LevelDb.Put([]byte(key), []byte(strconv.Itoa(deckId)))
 	CheckErr(err)
 
@@ -206,48 +144,17 @@ func PlayLiveHandler(ctx *gin.Context) {
 	mm, err := json.Marshal(res)
 	CheckErr(err)
 
-	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+	nonce := ctx.GetInt("nonce")
+	nonce++
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(mm))
 }
 
 func GameOverHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
 	overResp := GameOverResp{
 		ResponseData: []interface{}{},
 		ReleaseInfo:  []interface{}{},
@@ -255,51 +162,21 @@ func GameOverHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(overResp)
 	CheckErr(err)
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
 
 func PlayScoreHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
 	playScoreReq := model.PlayScoreReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playScoreReq)
 	CheckErr(err)
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
 
 	tDifficultyId := playScoreReq.LiveDifficultyID
 	difficultyId, err := strconv.Atoi(tDifficultyId)
@@ -384,51 +261,20 @@ func PlayScoreHandler(ctx *gin.Context) {
 	CheckErr(err)
 	// fmt.Println(string(mm))
 
-	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+	nonce := ctx.GetInt("nonce")
+	nonce++
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(mm))
 }
 
 func PlayRewardHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
 	playRewardReq := model.PlayRewardReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playRewardReq)
 	CheckErr(err)
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
 
 	difficultyId := playRewardReq.LiveDifficultyID
 
@@ -439,13 +285,13 @@ func PlayRewardHandler(ctx *gin.Context) {
 	err = MainEng.DB().QueryRow(sql, difficultyId, difficultyId).Scan(&c_rank_score, &b_rank_score, &a_rank_score, &s_rank_score, &c_rank_combo, &b_rank_combo, &a_rank_combo, &s_rank_combo, &ac_flag, &swing_flag)
 	CheckErr(err)
 
-	key := "live_deck_" + userId[0]
+	key := "live_deck_" + ctx.GetString("userid")
 	deckId, err := database.LevelDb.Get([]byte(key))
 	CheckErr(err)
 	unitsList := []model.PlayRewardUnitList{}
 	err = UserEng.Table("deck_unit_m").Select("*").
 		Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
-		Where("user_id = ? AND deck_id = ?", userId[0], string(deckId)).Find(&unitsList)
+		Where("user_id = ? AND deck_id = ?", ctx.GetString("userid"), string(deckId)).Find(&unitsList)
 	CheckErr(err)
 
 	totalScore := playRewardReq.ScoreSmile + playRewardReq.ScoreCool + playRewardReq.ScoreCute
@@ -609,12 +455,12 @@ func PlayRewardHandler(ctx *gin.Context) {
 	CheckErr(err)
 	// fmt.Println(string(mm))
 
-	xms := encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
+	nonce := ctx.GetInt("nonce")
+	nonce++
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(mm))
 }

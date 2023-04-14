@@ -4,10 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"honoka-chan/database"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
-	"honoka-chan/utils"
 	"net/http"
 	"strings"
 	"time"
@@ -17,37 +15,6 @@ import (
 )
 
 func DownloadAdditionalHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
 	downloadReq := model.AdditionalReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
@@ -78,48 +45,18 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(addResp)
 	CheckErr(err)
-	// fmt.Println(string(resp))
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
 
 func DownloadBatchHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
 	downloadReq := model.BatchReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
@@ -158,48 +95,18 @@ func DownloadBatchHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(batchResp)
 	CheckErr(err)
-	// fmt.Println(string(resp))
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
 
 func DownloadUpdateHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
 	downloadReq := model.UpdateReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
@@ -228,50 +135,20 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(updateResp)
 	CheckErr(err)
-	// fmt.Println(string(resp))
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
 
 func DownloadUrlHandler(ctx *gin.Context) {
 	// Extract SQL: SELECT CAST(pkg_type AS TEXT) || '_' || CAST(pkg_id AS TEXT) || '_' || CAST(pkg_order AS TEXT) || '.zip' AS zip_name FROM download_db ORDER BY pkg_type ASC,pkg_id ASC, pkg_order ASC;
 	// Extract Cmd: cat list.txt | while read line; do; unzip -o $line; done
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
 	downloadReq := model.UrlReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
@@ -289,48 +166,18 @@ func DownloadUrlHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(urlResp)
 	CheckErr(err)
-	// fmt.Println(string(resp))
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
 
 func DownloadEventHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
-
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
 	eventResp := model.EventResp{
 		ResponseData: []interface{}{},
 		ReleaseInfo:  []interface{}{},
@@ -338,11 +185,13 @@ func DownloadEventHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(eventResp)
 	CheckErr(err)
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }

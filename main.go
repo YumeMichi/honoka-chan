@@ -46,10 +46,10 @@ func main() {
 	// Private APIs
 
 	// Server APIs
-	m := r.Group("main.php").Use(middleware.CommonMid)
+	m := r.Group("main.php").Use(middleware.Common)
 	{
-		m.POST("/login/authkey", handler.AuthKeyHandler)
-		m.POST("/login/login", handler.LoginHandler)
+		m.POST("/login/authkey", middleware.AuthKey, handler.AuthKey)
+		m.POST("/login/login", middleware.Login, handler.Login)
 		m.POST("/user/userInfo", handler.UserInfoHandler)
 		m.POST("/gdpr/get", handler.GdprHandler)
 		m.POST("/personalnotice/get", handler.PersonalNoticeHandler)

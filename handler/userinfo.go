@@ -4,105 +4,23 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"honoka-chan/config"
-	"honoka-chan/database"
 	"honoka-chan/encrypt"
-	"honoka-chan/utils"
+	"honoka-chan/model"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-type UserInfoResp struct {
-	ResponseData UserInfoData  `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
-}
-
-type LpRecoveryItem struct {
-	ItemID int `json:"item_id"`
-	Amount int `json:"amount"`
-}
-
-type User struct {
-	UserID                         int              `json:"user_id"`
-	Name                           string           `json:"name"`
-	Level                          int              `json:"level"`
-	Exp                            int              `json:"exp"`
-	PreviousExp                    int              `json:"previous_exp"`
-	NextExp                        int              `json:"next_exp"`
-	GameCoin                       int              `json:"game_coin"`
-	SnsCoin                        int              `json:"sns_coin"`
-	FreeSnsCoin                    int              `json:"free_sns_coin"`
-	PaidSnsCoin                    int              `json:"paid_sns_coin"`
-	SocialPoint                    int              `json:"social_point"`
-	UnitMax                        int              `json:"unit_max"`
-	WaitingUnitMax                 int              `json:"waiting_unit_max"`
-	EnergyMax                      int              `json:"energy_max"`
-	EnergyFullTime                 string           `json:"energy_full_time"`
-	LicenseLiveEnergyRecoverlyTime int              `json:"license_live_energy_recoverly_time"`
-	EnergyFullNeedTime             int              `json:"energy_full_need_time"`
-	OverMaxEnergy                  int              `json:"over_max_energy"`
-	TrainingEnergy                 int              `json:"training_energy"`
-	TrainingEnergyMax              int              `json:"training_energy_max"`
-	FriendMax                      int              `json:"friend_max"`
-	InviteCode                     string           `json:"invite_code"`
-	InsertDate                     string           `json:"insert_date"`
-	UpdateDate                     string           `json:"update_date"`
-	TutorialState                  int              `json:"tutorial_state"`
-	DiamondCoin                    int              `json:"diamond_coin"`
-	CrystalCoin                    int              `json:"crystal_coin"`
-	LpRecoveryItem                 []LpRecoveryItem `json:"lp_recovery_item"`
-}
-
-type Birth struct {
-	BirthMonth int `json:"birth_month"`
-	BirthDay   int `json:"birth_day"`
-}
-
-type UserInfoData struct {
-	User            User  `json:"user"`
-	Birth           Birth `json:"birth"`
-	ServerTimestamp int64 `json:"server_timestamp"`
-}
-
 func UserInfoHandler(ctx *gin.Context) {
-	reqTime := time.Now().Unix()
+	userId, err := strconv.Atoi(ctx.GetString("userid"))
+	CheckErr(err)
 
-	authorizeStr := ctx.Request.Header["Authorize"]
-	authToken, err := utils.GetAuthorizeToken(authorizeStr)
-	if err != nil {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	userId := ctx.Request.Header[http.CanonicalHeaderKey("User-ID")]
-	if len(userId) == 0 {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	if !database.MatchTokenUid(authToken, userId[0]) {
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-
-	nonce, err := utils.GetAuthorizeNonce(authorizeStr)
-	if err != nil {
-		fmt.Println(err)
-		ctx.String(http.StatusForbidden, ErrorMsg)
-		return
-	}
-	nonce++
-
-	respTime := time.Now().Unix()
-	newAuthorizeStr := fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", respTime, authToken, nonce, userId[0], reqTime)
-	// fmt.Println(newAuthorizeStr)
-
-	userResp := UserInfoResp{
-		ResponseData: UserInfoData{
-			User: User{
-				UserID:                         9999999,
+	userResp := model.UserInfoResp{
+		ResponseData: model.UserInfoRes{
+			User: model.UserInfo{
+				UserID:                         userId,
 				Name:                           "\u68a6\u8def @\u65c5\u7acb\u3061\u306e\u65e5\u306b",
 				Level:                          1028,
 				Exp:                            28824396,
@@ -129,9 +47,9 @@ func UserInfoHandler(ctx *gin.Context) {
 				TutorialState:                  -1,
 				DiamondCoin:                    0,
 				CrystalCoin:                    0,
-				LpRecoveryItem:                 []LpRecoveryItem{},
+				LpRecoveryItem:                 []model.LpRecoveryItem{},
 			},
-			Birth: Birth{
+			Birth: model.Birth{
 				BirthMonth: 10,
 				BirthDay:   18,
 			},
@@ -142,12 +60,13 @@ func UserInfoHandler(ctx *gin.Context) {
 	}
 	resp, err := json.Marshal(userResp)
 	CheckErr(err)
-	xms := encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")
-	xms64 := base64.RawStdEncoding.EncodeToString(xms)
 
-	ctx.Header("Server-Version", config.Conf.Server.VersionNumber)
-	ctx.Header("user_id", userId[0])
-	ctx.Header("authorize", newAuthorizeStr)
-	ctx.Header("X-Message-Sign", xms64)
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
 	ctx.String(http.StatusOK, string(resp))
 }
