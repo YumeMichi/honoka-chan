@@ -916,8 +916,8 @@ func GenApi2Data() {
 	unitAccResp := model.UnitAccessoryAllResp{
 		// _ = model.UnitAccessoryAllResp{
 		Result: model.UnitAccessoryAllResult{
-			AccessoryList:      []interface{}{},
-			WearingInfo:        []interface{}{},
+			AccessoryList:      []model.AccessoryList{},
+			WearingInfo:        []model.WearingInfo{},
 			EspecialCreateFlag: false,
 		},
 		Status:     200,

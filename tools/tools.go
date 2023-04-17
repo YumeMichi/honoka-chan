@@ -26,6 +26,7 @@ func init() {
 	// GenDownloadDb()
 	// GenCommonUnitData()
 	InitUserData(0)
+	// ProcessAccessoryData()
 }
 
 func CheckErr(err error) {

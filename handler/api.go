@@ -32,7 +32,7 @@ func ApiHandler(ctx *gin.Context) {
 		var res []byte
 		var err error
 		// fmt.Println(v)
-		// fmt.Println(v.Module, v.Action)
+		fmt.Println(v.Module, v.Action)
 
 		switch v.Module {
 		case "login":
@@ -309,10 +309,23 @@ func ApiHandler(ctx *gin.Context) {
 				CheckErr(err)
 			case "accessoryAll":
 				// key = "unit_accessory_result"
+				accessoryList := []model.AccessoryList{}
+				err := MainEng.Table("common_accessory_m").Find(&accessoryList)
+				CheckErr(err)
+				for k, _ := range accessoryList {
+					accessoryList[k].NextExp = 0
+					accessoryList[k].Level = 8
+					accessoryList[k].MaxLevel = 8
+					accessoryList[k].RankUpCount = 4
+					accessoryList[k].FavoriteFlag = true
+				}
+				wearingInfo := []model.WearingInfo{}
+				err = UserEng.Table("accessory_wear_m").Where("user_id = ?", ctx.GetString("userid")).Find(&wearingInfo)
+				CheckErr(err)
 				unitAccResp := model.UnitAccessoryAllResp{
 					Result: model.UnitAccessoryAllResult{
-						AccessoryList:      []interface{}{},
-						WearingInfo:        []interface{}{},
+						AccessoryList:      accessoryList,
+						WearingInfo:        wearingInfo,
 						EspecialCreateFlag: false,
 					},
 					Status:     200,
@@ -320,6 +333,11 @@ func ApiHandler(ctx *gin.Context) {
 					TimeStamp:  time.Now().Unix(),
 				}
 				res, err = json.Marshal(unitAccResp)
+				CheckErr(err)
+			// case "accessoryTab":
+			// case "accessoryMaterialAll":
+			default:
+				err = errors.New("invalid option")
 				CheckErr(err)
 			}
 		case "costume":

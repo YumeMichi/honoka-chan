@@ -256,3 +256,64 @@ func SetDeckNameHandler(ctx *gin.Context) {
 
 	ctx.String(http.StatusOK, string(resp))
 }
+
+func WearAccessory(ctx *gin.Context) {
+	fmt.Println(ctx.PostForm("request_data"))
+	req := model.WearAccessoryReq{}
+	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &req); err != nil {
+		panic(err)
+	}
+
+	UserEng.ShowSQL(true)
+	// 开始事务
+	session := UserEng.NewSession()
+	defer session.Close()
+	if err := session.Begin(); err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	// 取下饰品
+	for _, v := range req.Remove {
+		fmt.Println("Remove:", v.AccessoryOwningUserID, v.UnitOwningUserID)
+		_, err := session.Table("accessory_wear_m").
+			Where("accessory_owning_user_id = ? AND unit_owning_user_id = ? AND user_id = ?", v.AccessoryOwningUserID, v.UnitOwningUserID, ctx.GetString("userid")).
+			Delete()
+		if err != nil {
+			session.Rollback()
+			panic(err)
+		}
+	}
+	// 佩戴饰品
+	for _, v := range req.Wear {
+		fmt.Println("Wear:", v.AccessoryOwningUserID, v.UnitOwningUserID)
+		data := model.AccessoryWearData{
+			AccessoryOwningUserID: v.AccessoryOwningUserID,
+			UnitOwningUserID:      v.UnitOwningUserID,
+			UserId:                ctx.GetString("userid"),
+		}
+		_, err := session.Table("accessory_wear_m").Insert(&data)
+		CheckErr(err)
+	}
+	if err := session.Commit(); err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	wearResp := model.AwardSetResp{
+		ResponseData: []interface{}{},
+		ReleaseInfo:  []interface{}{},
+		StatusCode:   200,
+	}
+	resp, err := json.Marshal(wearResp)
+	CheckErr(err)
+
+	nonce := ctx.GetInt("nonce")
+	nonce++
+
+	ctx.Header("user_id", ctx.GetString("userid"))
+	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
+
+	ctx.String(http.StatusOK, string(resp))
+}

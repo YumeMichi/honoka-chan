@@ -1,16 +1,74 @@
 package model
 
-type UnitAccessoryAllResult struct {
-	AccessoryList      []interface{} `json:"accessory_list"`
-	WearingInfo        []interface{} `json:"wearing_info"`
-	EspecialCreateFlag bool          `json:"especial_create_flag"`
+// AccessoryList ...
+type AccessoryList struct {
+	AccessoryOwningUserID int  `json:"accessory_owning_user_id" xorm:"accessory_owning_user_id"`
+	AccessoryID           int  `json:"accessory_id" xorm:"accessory_id"`
+	Exp                   int  `json:"exp" xorm:"exp"`
+	NextExp               int  `json:"next_exp" xorm:"-"`
+	Level                 int  `json:"level" xorm:"-"`
+	MaxLevel              int  `json:"max_level" xorm:"-"`
+	RankUpCount           int  `json:"rank_up_count" xorm:"-"`
+	FavoriteFlag          bool `json:"favorite_flag" xorm:"-"`
 }
 
+// WearingInfo
+type WearingInfo struct {
+	UnitOwningUserID      int `json:"unit_owning_user_id" xorm:"unit_owning_user_id"`
+	AccessoryOwningUserID int `json:"accessory_owning_user_id" xorm:"accessory_owning_user_id"`
+}
+
+// UnitAccessoryAllResult ...
+type UnitAccessoryAllResult struct {
+	AccessoryList      []AccessoryList `json:"accessory_list"`
+	WearingInfo        []WearingInfo   `json:"wearing_info"`
+	EspecialCreateFlag bool            `json:"especial_create_flag"`
+}
+
+// UnitAccessoryAllResp ...
 type UnitAccessoryAllResp struct {
 	Result     UnitAccessoryAllResult `json:"result"`
 	Status     int                    `json:"status"`
 	CommandNum bool                   `json:"commandNum"`
 	TimeStamp  int64                  `json:"timeStamp"`
+}
+
+// WearAccessoryReq ...
+type WearAccessoryReq struct {
+	Module     string   `json:"module"`
+	Remove     []Remove `json:"remove"`
+	Action     string   `json:"action"`
+	TimeStamp  int      `json:"timeStamp"`
+	Wear       []Wear   `json:"wear"`
+	Mgd        int      `json:"mgd"`
+	CommandNum string   `json:"commandNum"`
+}
+
+// Remove ...
+type Remove struct {
+	AccessoryOwningUserID int `json:"accessory_owning_user_id"`
+	UnitOwningUserID      int `json:"unit_owning_user_id"`
+}
+
+// Wear ...
+type Wear struct {
+	AccessoryOwningUserID int `json:"accessory_owning_user_id"`
+	UnitOwningUserID      int `json:"unit_owning_user_id"`
+}
+
+// AccessoryWearData ...
+type AccessoryWearData struct {
+	Id                    int    `xorm:"id pk autoincr"`
+	AccessoryOwningUserID int    `xorm:"accessory_owning_user_id"`
+	UnitOwningUserID      int    `xorm:"unit_owning_user_id"`
+	UserId                string `xorm:"user_id"`
+}
+
+// AccessoryWearResp ...
+type AccessoryWearResp struct {
+	ResponseData []interface{} `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
 }
 
 // module: unit, action: unitAll
