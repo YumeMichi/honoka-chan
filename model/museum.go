@@ -1,23 +1,23 @@
 package model
 
-type MuseumInfoParameter struct {
+type MuseumResp struct {
+	ResponseData MuseumRes     `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+
+type MuseumParameter struct {
 	Smile int `json:"smile"`
 	Pure  int `json:"pure"`
 	Cool  int `json:"cool"`
 }
 
-type MuseumInfo struct {
-	Parameter      MuseumInfoParameter `json:"parameter"`
-	ContentsIDList []int               `json:"contents_id_list"`
+type Museum struct {
+	Parameter      MuseumParameter `json:"parameter"`
+	ContentsIDList []int           `json:"contents_id_list"`
 }
 
-type MuseumInfoResult struct {
-	MuseumInfo MuseumInfo `json:"museum_info"`
-}
-
-type MuseumInfoResp struct {
-	Result     MuseumInfoResult `json:"result"`
-	Status     int              `json:"status"`
-	CommandNum bool             `json:"commandNum"`
-	TimeStamp  int64            `json:"timeStamp"`
+type MuseumRes struct {
+	MuseumInfo      Museum `json:"museum_info"`
+	ServerTimestamp int64  `json:"server_timestamp"`
 }

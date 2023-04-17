@@ -69,6 +69,7 @@ func main() {
 		m.POST("/login/authkey", middleware.AuthKey, handler.AuthKey)
 		m.POST("/login/login", middleware.Login, handler.Login)
 		m.POST("/multiunit/scenarioStartup", handler.MultiUnitStartUpHandler)
+		m.POST("/museum/info", handler.MuseumInfo)
 		m.POST("/notice/noticeFriendGreeting", handler.NoticeFriendGreetingHandler)
 		m.POST("/notice/noticeFriendVariety", handler.NoticeFriendVarietyHandler)
 		m.POST("/notice/noticeUserGreetingHistory", handler.NoticeUserGreetingHandler)
