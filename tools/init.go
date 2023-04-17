@@ -40,6 +40,10 @@ func InitUserData(userId int) {
 	session := UserEng.NewSession()
 	defer session.Close()
 
+	if err := session.Begin(); err != nil {
+		panic(err)
+	}
+
 	for _, user := range userList {
 		// 检查用户配置
 		exists, err := UserEng.Table("user_preference_m").Where("user_id = ?", user.UserID).Exist()
@@ -61,13 +65,9 @@ func InitUserData(userId int) {
 				UserDesc:         "你好。",
 				UpdateTime:       time.Now().Unix(),
 			}
-			_, err = UserEng.Table("user_preference_m").Insert(&userPref)
+			_, err = session.Table("user_preference_m").Insert(&userPref)
 			CheckErr(err)
 			fmt.Println("UserPref ID", userPref.ID)
-		} else {
-			userPref := UserPref{}
-			_, err = UserEng.Table("user_preference_m").Where("user_id = ?", user.UserID).Get(&userPref)
-			CheckErr(err)
 		}
 
 		// 检查用户卡组配置
@@ -82,10 +82,6 @@ func InitUserData(userId int) {
 				DeckName:   "队伍A",
 				UserID:     user.UserID,
 				InsertDate: time.Now().Unix(),
-			}
-
-			if err = session.Begin(); err != nil {
-				panic(err)
 			}
 
 			// 默认队伍

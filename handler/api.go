@@ -896,20 +896,27 @@ func ApiHandler(ctx *gin.Context) {
 				CheckErr(err)
 			} else if v.Action == "profileInfo" {
 				// key = "profile_info_result"
+				pref := tools.UserPref{}
+				exists, err := UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Get(&pref)
+				CheckErr(err)
+				if !exists {
+					ctx.String(http.StatusForbidden, ErrorMsg)
+					return
+				}
 				profileResp := tools.ProfileResp{
 					Result: tools.ProfileResult{
 						UserInfo: tools.UserInfo{
-							UserID:               9999999, // 3241988
-							Name:                 "\u68a6\u8def @\u65c5\u7acb\u3061\u306e\u65e5\u306b",
-							Level:                1028,
+							UserID:               pref.UserID,
+							Name:                 pref.UserName,
+							Level:                pref.UserLevel,
 							CostMax:              100,
 							UnitMax:              5000,
-							EnergyMax:            417,
+							EnergyMax:            1000,
 							FriendMax:            99,
 							UnitCnt:              3898,
-							InviteCode:           "377385143",
+							InviteCode:           strconv.Itoa(pref.UserID),
 							ElapsedTimeFromLogin: "14\u5c0f\u65f6\u524d",
-							Introduction:         "\u5728\u4e0d\u77e5\u4e0d\u89c9\u4e2d \u65f6\u5149\u4ece\u4e0d\u505c\u7559\\n\u5982\u4eca\u7684\u6211\u4eec \u6bd5\u4e1a\u518d\u56de\u9996\\n\u8ffd\u68a6\u7684\u670b\u53cb\u4eec\u4e00\u540c \u8e0f\u4e0a\u4e86\u65b0\u7684\u5f81\u9014\\n\u5728\u4e0d\u4e45\u7684\u4eca\u540e \u5728\u672a\u77e5\u7684\u67d0\u5904\\n    \u6211\u4eec\u4e00\u5b9a\u4f1a\u518d\u4e00\u6b21\u9082\u9005\\n    \u8bf7\u4e0d\u8981\u5fd8\u8bb0\u6211\u4eec \u66fe\u7ecf\u7684\u7b11\u5bb9\r",
+							Introduction:         pref.UserDesc,
 						},
 						CenterUnitInfo: tools.CenterUnitInfo{
 							UnitOwningUserID:           41674,
