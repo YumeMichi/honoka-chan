@@ -219,13 +219,13 @@ func ApiHandler(ctx *gin.Context) {
 			case "unitAll":
 				// key = "unit_list_result"
 				unitsData := []model.Active{}
-				err = MainEng.Table("common_unit_m").Select("*").Find(&unitsData)
+				err = MainEng.Table("common_unit_m").Find(&unitsData)
 				if err != nil {
 					panic(err)
 				}
 
 				userUnits := []model.Active{}
-				err = UserEng.Table("user_unit_m").Select("*").Find(&userUnits)
+				err = UserEng.Table("user_unit_m").Find(&userUnits)
 				if err != nil {
 					panic(err)
 				}
@@ -705,11 +705,14 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "user":
 			// key = "user_intro_result"
+			var uId, oId int
+			_, err := UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Cols("user_id,unit_owning_user_id").Get(&uId, &oId)
+			CheckErr(err)
 			userIntroResp := model.UserNaviResp{
 				Result: model.UserNaviResult{
 					User: model.User{
-						UserID:           9999999,
-						UnitOwningUserID: 41674,
+						UserID:           uId,
+						UnitOwningUserID: oId,
 					},
 				},
 				Status:     200,
@@ -732,25 +735,26 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "award":
 			// key = "award_result"
-			sql := `SELECT award_id FROM award_m ORDER BY award_id ASC`
-			rows, err := MainEng.DB().Query(sql)
+			var aIdList []int
+			err := MainEng.Table("award_m").Cols("award_id").Find(&aIdList)
 			CheckErr(err)
-			defer rows.Close()
+			var aId int
+			_, err = UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Cols("award_id").Get(&aId)
+			CheckErr(err)
+
 			awardsList := []model.AwardInfo{}
-			for rows.Next() {
-				var aId int
-				err = rows.Scan(&aId)
-				CheckErr(err)
+			for _, id := range aIdList {
 				isSet := false
-				if aId == 113 { // 极推穗乃果
+				if id == aId {
 					isSet = true
 				}
 				awardsList = append(awardsList, model.AwardInfo{
-					AwardID:    aId,
+					AwardID:    id,
 					IsSet:      isSet,
 					InsertDate: time.Now().Format("2006-01-02 03:04:05"),
 				})
 			}
+
 			awardResp := model.AwardInfoResp{
 				Result: model.AwardInfoResult{
 					AwardInfo: awardsList,
@@ -763,25 +767,26 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "background":
 			// key = "background_result"
-			sql := `SELECT background_id FROM background_m ORDER BY background_id ASC`
-			rows, err := MainEng.DB().Query(sql)
+			var bIdList []int
+			err := MainEng.Table("background_m").Cols("background_id").Find(&bIdList)
 			CheckErr(err)
-			defer rows.Close()
+			var bId int
+			_, err = UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Cols("background_id").Get(&bId)
+			CheckErr(err)
+
 			backgroundsList := []model.BackgroundInfo{}
-			for rows.Next() {
-				var bId int
-				err = rows.Scan(&bId)
-				CheckErr(err)
+			for _, id := range bIdList {
 				isSet := false
-				if bId == 143 { // 穗乃果的房间[情人节]
+				if id == bId {
 					isSet = true
 				}
 				backgroundsList = append(backgroundsList, model.BackgroundInfo{
-					BackgroundID: bId,
+					BackgroundID: id,
 					IsSet:        isSet,
 					InsertDate:   time.Now().Format("2006-01-02 03:04:05"),
 				})
 			}
+
 			backgroundResp := model.BackgroundInfoResp{
 				Result: model.BackgroundInfoResult{
 					BackgroundInfo: backgroundsList,
@@ -968,6 +973,63 @@ func ApiHandler(ctx *gin.Context) {
 					ctx.String(http.StatusForbidden, ErrorMsg)
 					return
 				}
+
+				commonUnit, err := MainEng.Table("common_unit_m").Count()
+				CheckErr(err)
+				userUnit, err := UserEng.Table("user_unit_m").Where("user_id = ?", ctx.GetString("userid")).Count()
+				CheckErr(err)
+
+				unitData := tools.UnitData{}
+				exists, err = MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", pref.UnitOwningUserID).Get(&unitData)
+				CheckErr(err)
+				isCommon := true
+				if !exists {
+					_, err = UserEng.Table("user_unit_m").
+						Where("unit_owning_user_id = ? AND user_id = ?", pref.UnitOwningUserID, ctx.GetString("userid")).Get(&unitData)
+					CheckErr(err)
+					isCommon = false
+				}
+
+				var attrId, maxHp, baseSmile, basePure, baseCool int
+				var smileMax, pureMax, coolMax int
+				if isCommon {
+					// 公共卡片仅为100级属性
+					_, err = MainEng.Table("unit_m").Where("unit_id = ?", unitData.UnitID).
+						Cols("attribute_id,hp_max,smile_max,pure_max,cool_max").Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool)
+					CheckErr(err)
+
+					// 偷懒起见不计算饰品、宝石、回忆画廊等属性加成
+					smileMax = baseSmile
+					pureMax = basePure
+					coolMax = baseCool
+					// } else {
+					// 	// 用户卡片需要根据等级计算属性
+					// 	// TODO
+				}
+
+				var accessoryOwningId, accessoryId, exp int
+				_, err = UserEng.Table("accessory_wear_m").Where("unit_owning_user_id = ? AND user_id = ?", pref.UnitOwningUserID, ctx.GetString("userid")).
+					Cols("accessory_owning_user_id").Get(&accessoryOwningId)
+				CheckErr(err)
+				_, err = MainEng.Table("common_accessory_m").Where("accessory_owning_user_id = ?", accessoryOwningId).
+					Cols("accessory_id,exp").Get(&accessoryId, &exp)
+				CheckErr(err)
+				accessoryInfo := tools.AccessoryInfo{
+					AccessoryOwningUserID: accessoryOwningId,
+					AccessoryID:           accessoryId,
+					Exp:                   exp,
+					NextExp:               0,
+					Level:                 8,
+					MaxLevel:              8,
+					RankUpCount:           4,
+					FavoriteFlag:          true,
+				}
+
+				removeSkillIds := []int{}
+				err = UserEng.Table("skill_equip_m").Where("unit_owning_user_id = ? AND user_id = ?", pref.UnitOwningUserID, ctx.GetString("userid")).
+					Cols("unit_removable_skill_id").Find(&removeSkillIds)
+				CheckErr(err)
+
 				profileResp := tools.ProfileResp{
 					Result: tools.ProfileResult{
 						UserInfo: tools.UserInfo{
@@ -978,77 +1040,77 @@ func ApiHandler(ctx *gin.Context) {
 							UnitMax:              5000,
 							EnergyMax:            1000,
 							FriendMax:            99,
-							UnitCnt:              3898,
+							UnitCnt:              int(commonUnit + userUnit),
 							InviteCode:           strconv.Itoa(pref.UserID),
 							ElapsedTimeFromLogin: "14\u5c0f\u65f6\u524d",
 							Introduction:         pref.UserDesc,
 						},
 						CenterUnitInfo: tools.CenterUnitInfo{
-							UnitOwningUserID:           41674,
-							UnitID:                     3927,
-							Exp:                        79700,
-							NextExp:                    0,
-							Level:                      100,
-							LevelLimitID:               2,
-							MaxLevel:                   100,
-							Rank:                       2,
-							MaxRank:                    2,
-							Love:                       1000,
-							MaxLove:                    1000,
-							UnitSkillLevel:             8,
-							MaxHp:                      6,
-							FavoriteFlag:               true,
-							DisplayRank:                2,
-							UnitSkillExp:               29900,
-							UnitRemovableSkillCapacity: 8,
-							Attribute:                  1,
-							Smile:                      1,
-							Cute:                       1,
-							Cool:                       1,
-							IsLoveMax:                  true,
-							IsLevelMax:                 true,
-							IsRankMax:                  true,
-							IsSigned:                   true,
-							IsSkillLevelMax:            true,
-							SettingAwardID:             113,
-							RemovableSkillIds:          []int{},
-							AccessoryInfo:              tools.AccessoryInfo{},
+							UnitOwningUserID:           unitData.UnitOwningUserID,
+							UnitID:                     unitData.UnitID,
+							Exp:                        unitData.Exp,
+							NextExp:                    unitData.NextExp,
+							Level:                      unitData.Level,
+							LevelLimitID:               unitData.LevelLimitID,
+							MaxLevel:                   unitData.MaxLevel,
+							Rank:                       unitData.Rank,
+							MaxRank:                    unitData.MaxRank,
+							Love:                       unitData.Love,
+							MaxLove:                    unitData.MaxLove,
+							UnitSkillLevel:             unitData.UnitSkillLevel,
+							MaxHp:                      unitData.MaxHp,
+							FavoriteFlag:               unitData.FavoriteFlag,
+							DisplayRank:                unitData.DisplayRank,
+							UnitSkillExp:               unitData.UnitSkillExp,
+							UnitRemovableSkillCapacity: unitData.UnitRemovableSkillCapacity,
+							Attribute:                  attrId,
+							Smile:                      baseSmile,
+							Cute:                       basePure,
+							Cool:                       baseCool,
+							IsLoveMax:                  unitData.IsLoveMax,
+							IsLevelMax:                 unitData.IsLevelMax,
+							IsRankMax:                  unitData.IsRankMax,
+							IsSigned:                   unitData.IsSigned,
+							IsSkillLevelMax:            unitData.IsSkillLevelMax,
+							SettingAwardID:             pref.AwardID,
+							RemovableSkillIds:          removeSkillIds,
+							AccessoryInfo:              accessoryInfo,
 							Costume:                    tools.Costume{},
-							TotalSmile:                 1,
-							TotalCute:                  1,
-							TotalCool:                  1,
-							TotalHp:                    6,
+							TotalSmile:                 smileMax,
+							TotalCute:                  pureMax,
+							TotalCool:                  coolMax,
+							TotalHp:                    maxHp,
 						},
 						NaviUnitInfo: tools.NaviUnitInfo{
-							UnitOwningUserID:            41674,
-							UnitID:                      3927,
-							Exp:                         79700,
-							NextExp:                     0,
-							Level:                       100,
-							MaxLevel:                    100,
-							LevelLimitID:                2,
-							Rank:                        2,
-							MaxRank:                     2,
-							Love:                        1000,
-							MaxLove:                     1000,
-							UnitSkillExp:                29900,
-							UnitSkillLevel:              8,
-							MaxHp:                       6,
-							UnitRemovableSkillCapacity:  8,
-							FavoriteFlag:                true,
-							DisplayRank:                 2,
-							IsLoveMax:                   true,
-							IsLevelMax:                  true,
-							IsRankMax:                   true,
-							IsSigned:                    true,
-							IsSkillLevelMax:             true,
-							IsRemovableSkillCapacityMax: true,
+							UnitOwningUserID:            unitData.UnitOwningUserID,
+							UnitID:                      unitData.UnitID,
+							Exp:                         unitData.Exp,
+							NextExp:                     unitData.NextExp,
+							Level:                       unitData.Level,
+							MaxLevel:                    unitData.MaxLevel,
+							LevelLimitID:                unitData.LevelLimitID,
+							Rank:                        unitData.Rank,
+							MaxRank:                     unitData.MaxRank,
+							Love:                        unitData.Love,
+							MaxLove:                     unitData.MaxLove,
+							UnitSkillExp:                unitData.UnitSkillExp,
+							UnitSkillLevel:              unitData.UnitSkillLevel,
+							MaxHp:                       unitData.MaxHp,
+							UnitRemovableSkillCapacity:  unitData.UnitRemovableSkillCapacity,
+							FavoriteFlag:                unitData.FavoriteFlag,
+							DisplayRank:                 unitData.DisplayRank,
+							IsLoveMax:                   unitData.IsLoveMax,
+							IsLevelMax:                  unitData.IsLevelMax,
+							IsRankMax:                   unitData.IsRankMax,
+							IsSigned:                    unitData.IsSigned,
+							IsSkillLevelMax:             unitData.IsSkillLevelMax,
+							IsRemovableSkillCapacityMax: unitData.IsRemovableSkillCapacityMax,
 							InsertDate:                  "2016-10-11 10:33:03",
-							TotalSmile:                  1,
-							TotalCute:                   1,
-							TotalCool:                   1,
-							TotalHp:                     6,
-							RemovableSkillIds:           []int{},
+							TotalSmile:                  smileMax,
+							TotalCute:                   pureMax,
+							TotalCool:                   coolMax,
+							TotalHp:                     maxHp,
+							RemovableSkillIds:           removeSkillIds,
 						},
 						IsAlliance:          false,
 						FriendStatus:        0,
