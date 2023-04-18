@@ -296,10 +296,57 @@ func ApiHandler(ctx *gin.Context) {
 				CheckErr(err)
 			case "removableSkillInfo":
 				// key = "owning_equip_result"
+				var skillEquipCount []model.SkillEquipCount
+				err := UserEng.Table("skill_equip_m").Where("user_id = ?", ctx.GetString("userid")).Select("unit_removable_skill_id,COUNT(*) AS ct").
+					GroupBy("unit_removable_skill_id").Find(&skillEquipCount)
+				CheckErr(err)
+
+				var rmSkillIds []int
+				err = MainEng.Table("unit_removable_skill_m").Where("effect_range = 1").Cols("unit_removable_skill_id").Find(&rmSkillIds)
+				CheckErr(err)
+
+				owingInfo := []model.OwningInfo{}
+				for _, id := range rmSkillIds {
+					info := model.OwningInfo{
+						UnitRemovableSkillID: id,
+						TotalAmount:          9,
+						EquippedAmount:       0,
+						InsertDate:           "2023-01-01 12:00:00",
+					}
+					for _, sk := range skillEquipCount {
+						if id == sk.UnitRemovableSkillId {
+							info.EquippedAmount = sk.Count
+							break
+						}
+					}
+					owingInfo = append(owingInfo, info)
+				}
+
+				// equipInfo := []model.SkillEquip{}
+				// err = UserEng.Table("skill_equip_m").Where("user_id = ?", ctx.GetString("userid")).Cols("unit_removable_skill_id,unit_owning_user_id").Find(&equipInfo)
+				// CheckErr(err)
+
+				var unitOwningIds []int
+				err = UserEng.Table("skill_equip_m").Where("user_id = ?", ctx.GetString("userid")).Cols("unit_owning_user_id").GroupBy("unit_owning_user_id").Find(&unitOwningIds)
+				CheckErr(err)
+
+				equipInfo := map[int]interface{}{}
+				for _, v := range unitOwningIds {
+					detail := []model.SkillEquipDetail{}
+					err = UserEng.Table("skill_equip_m").Where("user_id = ? AND unit_owning_user_id = ?", ctx.GetString("userid"), v).
+						Cols("unit_removable_skill_id").Find(&detail)
+					CheckErr(err)
+
+					equipInfo[v] = model.SkillEquipList{
+						UnitOwningUserID: v,
+						Detail:           detail,
+					}
+				}
+
 				rmSkillResp := model.RemovableSkillResp{
 					Result: model.RemovableSkillResult{
-						OwningInfo:    []model.OwningInfo{},
-						EquipmentInfo: []interface{}{},
+						OwningInfo:    owingInfo,
+						EquipmentInfo: equipInfo,
 					}, // 宝石
 					Status:     200,
 					CommandNum: false,
@@ -312,7 +359,7 @@ func ApiHandler(ctx *gin.Context) {
 				accessoryList := []model.AccessoryList{}
 				err := MainEng.Table("common_accessory_m").Find(&accessoryList)
 				CheckErr(err)
-				for k, _ := range accessoryList {
+				for k := range accessoryList {
 					accessoryList[k].NextExp = 0
 					accessoryList[k].Level = 8
 					accessoryList[k].MaxLevel = 8

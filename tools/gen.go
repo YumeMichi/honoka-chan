@@ -324,7 +324,7 @@ func GenApi1Data() {
 		// _ = model.RemovableSkillResp{
 		Result: model.RemovableSkillResult{
 			OwningInfo:    []model.OwningInfo{},
-			EquipmentInfo: []interface{}{},
+			EquipmentInfo: map[int]interface{}{},
 		}, // 宝石
 		Status:     200,
 		CommandNum: false,

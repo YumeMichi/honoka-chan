@@ -84,6 +84,7 @@ func main() {
 		m.POST("/unit/deck", handler.SetDeckHandler)
 		m.POST("/unit/deckName", handler.SetDeckNameHandler)
 		m.POST("/unit/favorite", handler.SetDisplayRankHandler)
+		m.POST("/unit/removableSkillEquipment", handler.RemoveSkillEquip)
 		m.POST("/unit/setDisplayRank", handler.SetDisplayRankHandler)
 		m.POST("/unit/wearAccessory", handler.WearAccessory)
 		m.POST("/user/changeName", handler.ChangeNameHandler)

@@ -71,6 +71,61 @@ type AccessoryWearResp struct {
 	StatusCode   int           `json:"status_code"`
 }
 
+// SkillEquipReq ...
+type SkillEquipReq struct {
+	Module     string        `json:"module"`
+	Remove     []SkillRemove `json:"remove"`
+	Action     string        `json:"action"`
+	TimeStamp  int           `json:"timeStamp"`
+	Equip      []SkillEquip  `json:"equip"`
+	Mgd        int           `json:"mgd"`
+	CommandNum string        `json:"commandNum"`
+}
+
+// SkillRemove ...
+type SkillRemove struct {
+	UnitRemovableSkillID int `json:"unit_removable_skill_id"`
+	UnitOwningUserID     int `json:"unit_owning_user_id"`
+}
+
+// SkillEquip ...
+type SkillEquip struct {
+	UnitRemovableSkillID int `json:"unit_removable_skill_id"`
+	UnitOwningUserID     int `json:"unit_owning_user_id"`
+}
+
+// SkillEquipCount ...
+type SkillEquipCount struct {
+	UnitRemovableSkillId int `xorm:"unit_removable_skill_id"`
+	Count                int `xorm:"ct"`
+}
+
+// SkillEquipData ...
+type SkillEquipData struct {
+	Id                   int    `xorm:"id pk autoincr"`
+	UnitRemovableSkillId int    `xorm:"unit_removable_skill_id"`
+	UnitOwningUserID     int    `xorm:"unit_owning_user_id"`
+	UserId               string `xorm:"user_id"`
+}
+
+// SkillEquipDetail ...
+type SkillEquipDetail struct {
+	UnitRemovableSkillID int `json:"unit_removable_skill_id" xorm:"unit_removable_skill_id"`
+}
+
+// SkillEquipList ...
+type SkillEquipList struct {
+	UnitOwningUserID int                `json:"unit_owning_user_id"`
+	Detail           []SkillEquipDetail `json:"detail"`
+}
+
+// SkillEquipResp ...
+type SkillEquipResp struct {
+	ResponseData []interface{} `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+
 // module: unit, action: unitAll
 type Costume struct {
 	UnitID    int  `json:"unit_id"`
@@ -192,8 +247,8 @@ type OwningInfo struct {
 }
 
 type RemovableSkillResult struct {
-	OwningInfo    []OwningInfo  `json:"owning_info"`
-	EquipmentInfo []interface{} `json:"equipment_info"`
+	OwningInfo    []OwningInfo        `json:"owning_info"`
+	EquipmentInfo map[int]interface{} `json:"equipment_info"`
 }
 
 type RemovableSkillResp struct {
