@@ -95,7 +95,7 @@ func ListUnitData() {
 			unitData.Exp = 79700
 			unitData.Level = 100
 			unitData.MaxLevel = 100
-			unitData.LevelLimitID = 2
+			unitData.LevelLimitID = 1
 			unitData.Love = 1000
 			unitData.MaxLove = 1000
 			unitData.UnitSkillExp = 29900

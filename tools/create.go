@@ -174,7 +174,7 @@ func GenCommonUnitData2() {
 			unitData.Exp = 79700
 			unitData.Level = 100
 			unitData.MaxLevel = 100
-			unitData.LevelLimitID = 2
+			unitData.LevelLimitID = 1
 			unitData.Love = 1000
 			unitData.MaxLove = 1000
 			unitData.UnitSkillExp = 29900
@@ -207,7 +207,7 @@ func GenCommonUnitData2() {
 				UnitID:           v.UnitID,
 				Position:         position,
 				Level:            100,
-				LevelLimitID:     2,
+				LevelLimitID:     1,
 				DisplayRank:      2,
 				Love:             1000,
 				UnitSkillLevel:   8,

@@ -117,7 +117,7 @@ func InitUserData(userId int) {
 					UnitID:           unit.UnitID,
 					Position:         position,
 					Level:            100,
-					LevelLimitID:     2,
+					LevelLimitID:     1,
 					DisplayRank:      2,
 					Love:             1000,
 					UnitSkillLevel:   8,
