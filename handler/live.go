@@ -15,6 +15,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/tidwall/gjson"
 )
 
 type GameOverResp struct {
@@ -37,6 +38,7 @@ func PartyListHandler(ctx *gin.Context) {
 }
 
 func PlayLiveHandler(ctx *gin.Context) {
+	fmt.Println(ctx.PostForm("request_data"))
 	playReq := model.PlayReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playReq)
 	CheckErr(err)
@@ -107,14 +109,14 @@ func PlayLiveHandler(ctx *gin.Context) {
 		exists, err := MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", owningId).Cols("unit_id").Get(&uId)
 		CheckErr(err)
 
-		var maxHp, attrId int
+		var maxHp, attrId, unitTypeId int
 		var baseSmile, basePure, baseCool, smileMax, pureMax, coolMax float64
 		if exists {
 			// 公共卡片仅为100级属性
 			_, err = MainEng.Table("unit_m").Where("unit_id = ?", uId).
 				Join("LEFT", "unit_rarity_m", "unit_m.rarity = unit_rarity_m.rarity").
-				Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max").
-				Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove)
+				Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max,unit_type_id").
+				Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove, &unitTypeId)
 			CheckErr(err)
 		} else {
 			// 用户卡片暂时固定为满级350级
@@ -125,8 +127,8 @@ func PlayLiveHandler(ctx *gin.Context) {
 				// 卡片100级基础属性
 				_, err = MainEng.Table("unit_m").Where("unit_id = ?", uId).
 					Join("LEFT", "unit_rarity_m", "unit_m.rarity = unit_rarity_m.rarity").
-					Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max").
-					Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove)
+					Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max,unit_type_id").
+					Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove, &unitTypeId)
 				CheckErr(err)
 
 				// 增量属性
@@ -160,7 +162,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 		baseSmile += smileAccessory
 		basePure += pureAccessory
 		baseCool += coolAccessory
-		fmt.Println("饰品属性加成:", smileAccessory, pureAccessory, coolAccessory)
+		// fmt.Println("饰品属性加成:", smileAccessory, pureAccessory, coolAccessory)
 		// fmt.Println("饰品属性加成后的基础属性:", baseSmile, basePure, baseCool)
 
 		// 回忆画廊属性加成（该加成会影响个宝等百分比宝石属性加成的计算，故先计算。）
@@ -187,6 +189,8 @@ func PlayLiveHandler(ctx *gin.Context) {
 		// 宝石属性加成
 		var kissSmile, kissPure, kissCool float64
 		var skillSmile, skillPure, skillCool float64
+		// var mainCenterSmile, mainCenterPure, mainCenterCool float64
+		// var secCenterSmile, secCenterPure, secCenterCool float64
 
 		// 宝石加成（满级）
 		removableSkillIds := []int{}
@@ -250,17 +254,121 @@ func PlayLiveHandler(ctx *gin.Context) {
 		pureMax = basePure + kissPure + skillPure
 		coolMax = baseCool + kissCool + skillCool
 
+		// 主唱技能加成
+		var myCenterUnitId int
+		_, err = UserEng.Table("deck_unit_m").Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
+			Where("user_deck_m.deck_id = ? AND user_deck_m.user_id = ? AND deck_unit_m.position = 5", playReq.UnitDeckID, ctx.GetString("userid")).
+			Cols("deck_unit_m.unit_id").Get(&myCenterUnitId)
+		CheckErr(err)
+
+		// 主唱技能加成：主C技能（这里不使用新C技能，即以某属性的百分比提升另一属性）
+		var myAttrId int
+		var myEffectValue float64
+		_, err = MainEng.Table("unit_m").
+			Join("LEFT", "unit_leader_skill_m", "unit_m.default_leader_skill_id = unit_leader_skill_m.unit_leader_skill_id").
+			Where("unit_m.unit_id = ?", myCenterUnitId).
+			Cols("unit_m.attribute_id,unit_leader_skill_m.effect_value").Get(&myAttrId, &myEffectValue)
+		CheckErr(err)
+		var myCenterSmile, myCenterPure, myCenterCool float64
+		if myAttrId == 1 {
+			myCenterSmile = math.Ceil(smileMax * (myEffectValue / 100))
+		} else if myAttrId == 2 {
+			myCenterPure = math.Ceil(pureMax * (myEffectValue / 100))
+		} else if myAttrId == 3 {
+			myCenterCool = math.Ceil(coolMax * (myEffectValue / 100))
+		}
+		// fmt.Println("主C技能属性加成:", myCenterSmile, myCenterPure, myCenterCool)
+
+		// 主唱技能加成：副C技能
+		var mySubEffectValue float64
+		var myMemberTagId int
+		_, err = MainEng.Table("unit_m").
+			Join("LEFT", "unit_leader_skill_extra_m", "unit_m.default_leader_skill_id = unit_leader_skill_extra_m.unit_leader_skill_id").
+			Where("unit_m.unit_id = ?", myCenterUnitId).
+			Cols("unit_leader_skill_extra_m.effect_value,unit_leader_skill_extra_m.member_tag_id").Get(&mySubEffectValue, &myMemberTagId)
+		CheckErr(err)
+
+		exists, err = MainEng.Table("unit_type_member_tag_m").
+			Where("unit_type_id = ? AND member_tag_id = ?", unitTypeId, myMemberTagId).Exist()
+		CheckErr(err)
+		var mySubSmile, mySubPure, mySubCool float64
+		if exists {
+			if myAttrId == 1 {
+				mySubSmile = math.Ceil(smileMax * (mySubEffectValue / 100))
+			} else if myAttrId == 2 {
+				mySubPure = math.Ceil(pureMax * (mySubEffectValue / 100))
+			} else if myAttrId == 3 {
+				mySubCool = math.Ceil(coolMax * (mySubEffectValue / 100))
+			}
+			// fmt.Println("副C技能属性加成:", mySubSmile, mySubPure, mySubCool)
+		}
+
+		// 好友主唱技能加成
+		// TODO 好友支援存入数据库
+		var tomoUnitId int64
+		partyList := gjson.Parse(utils.ReadAllText("assets/partylist.json")).Get("response_data.party_list")
+		partyList.ForEach(func(key, value gjson.Result) bool {
+			if value.Get("user_info.user_id").Int() == playReq.PartyUserID {
+				tomoUnitId = value.Get("center_unit_info.unit_id").Int()
+				return false
+			}
+			return true
+		})
+		// fmt.Println("好友UnitID:", tomoUnitId)
+
+		// 好友主唱技能加成：主C技能（这里不使用新C技能，即以某属性的百分比提升另一属性）
+		var tomoAttrId int
+		var tomoEffectValue float64
+		_, err = MainEng.Table("unit_m").
+			Join("LEFT", "unit_leader_skill_m", "unit_m.default_leader_skill_id = unit_leader_skill_m.unit_leader_skill_id").
+			Where("unit_m.unit_id = ?", tomoUnitId).
+			Cols("unit_m.attribute_id,unit_leader_skill_m.effect_value").Get(&tomoAttrId, &tomoEffectValue)
+		CheckErr(err)
+		var tomoCenterSmile, tomoCenterPure, tomoCenterCool float64
+		if myAttrId == 1 {
+			tomoCenterSmile = math.Ceil(smileMax * (tomoEffectValue / 100))
+		} else if myAttrId == 2 {
+			tomoCenterPure = math.Ceil(pureMax * (tomoEffectValue / 100))
+		} else if myAttrId == 3 {
+			tomoCenterCool = math.Ceil(coolMax * (tomoEffectValue / 100))
+		}
+		// fmt.Println("好友主C技能属性加成:", tomoCenterSmile, tomoCenterPure, tomoCenterCool)
+
+		// 好友主唱技能加成：副C技能
+		var tomoSubEffectValue float64
+		var tomoMemberTagId int
+		_, err = MainEng.Table("unit_m").
+			Join("LEFT", "unit_leader_skill_extra_m", "unit_m.default_leader_skill_id = unit_leader_skill_extra_m.unit_leader_skill_id").
+			Where("unit_m.unit_id = ?", tomoUnitId).
+			Cols("unit_leader_skill_extra_m.effect_value,unit_leader_skill_extra_m.member_tag_id").Get(&tomoSubEffectValue, &tomoMemberTagId)
+		CheckErr(err)
+
+		exists, err = MainEng.Table("unit_type_member_tag_m").
+			Where("unit_type_id = ? AND member_tag_id = ?", unitTypeId, tomoMemberTagId).Exist()
+		CheckErr(err)
+		var tomoSubSmile, tomoSubPure, tomoSubCool float64
+		if exists {
+			if myAttrId == 1 {
+				tomoSubSmile = math.Ceil(smileMax * (tomoSubEffectValue / 100))
+			} else if myAttrId == 2 {
+				tomoSubPure = math.Ceil(pureMax * (tomoSubEffectValue / 100))
+			} else if myAttrId == 3 {
+				tomoSubCool = math.Ceil(coolMax * (tomoSubEffectValue / 100))
+			}
+			// fmt.Println("好友副C技能属性加成:", tomoSubSmile, tomoSubPure, tomoSubCool)
+		}
+
 		// 全部卡属性
-		totalSmile += smileMax
-		totalPure += pureMax
-		totalCool += coolMax
+		totalSmile += smileMax + myCenterSmile + mySubSmile + tomoCenterSmile + tomoSubSmile
+		totalPure += pureMax + myCenterPure + mySubPure + tomoCenterPure + tomoSubPure
+		totalCool += coolMax + myCenterCool + mySubCool + tomoCenterCool + tomoSubCool
 		totalHp += maxHp
 
 		// 单卡属性计算结果取上取整
 		fixedSmileMax := int(smileMax)
 		fixedPureMax := int(pureMax)
 		fixedCoolMax := int(coolMax)
-		fmt.Println("单卡属性:", fixedSmileMax, fixedPureMax, fixedCoolMax)
+		// fmt.Println("单卡属性:", fixedSmileMax, fixedPureMax, fixedCoolMax)
 
 		unitList = append(unitList, model.UnitList{
 			Smile: fixedSmileMax,
@@ -273,7 +381,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 	fixedTotalSmile := int(math.Ceil(totalSmile))
 	fixedTotalPure := int(math.Ceil(totalPure))
 	fixedTotalCool := int(math.Ceil(totalCool))
-	fmt.Println("全卡组属性:", fixedTotalSmile, fixedTotalPure, fixedTotalCool)
+	// fmt.Println("全卡组属性:", fixedTotalSmile, fixedTotalPure, fixedTotalCool)
 
 	lives := []model.PlayLiveList{}
 	lives = append(lives, model.PlayLiveList{

@@ -92,7 +92,7 @@ type LiveScheduleResp struct {
 // Play
 type PlayReq struct {
 	Module           string `json:"module"`
-	PartyUserID      int    `json:"party_user_id"`
+	PartyUserID      int64  `json:"party_user_id"`
 	Action           string `json:"action"`
 	Mgd              int    `json:"mgd"`
 	IsTraining       bool   `json:"is_training"`
