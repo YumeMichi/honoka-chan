@@ -3,6 +3,7 @@ package main
 import (
 	"honoka-chan/config"
 	"honoka-chan/handler"
+	_ "honoka-chan/llhelper"
 	"honoka-chan/middleware"
 	_ "honoka-chan/tools"
 	"honoka-chan/xclog"
