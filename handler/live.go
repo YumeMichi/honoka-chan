@@ -8,12 +8,14 @@ import (
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
 	"honoka-chan/utils"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
+	"xorm.io/builder"
 )
 
 type GameOverResp struct {
@@ -90,14 +92,167 @@ func PlayLiveHandler(ctx *gin.Context) {
 		RankMax: 0,
 	})
 
+	UserEng.ShowSQL(true)
+	MainEng.ShowSQL(true)
+	owningIdList := []int{}
+	err = UserEng.Table("deck_unit_m").Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
+		Where("user_id = ? AND deck_id = ?", ctx.GetString("userid"), deckId).Cols("unit_owning_user_id").
+		OrderBy("deck_unit_m.position ASC").Find(&owningIdList)
+	CheckErr(err)
+
 	unitList := []model.UnitList{}
-	for i := 0; i < 9; i++ {
+	var totalSmile, totalPure, totalCool, maxLove float64
+	var totalHp int
+	for _, owningId := range owningIdList {
+		var uId int
+		exists, err := MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", owningId).Cols("unit_id").Get(&uId)
+		CheckErr(err)
+
+		var maxHp, attrId int
+		var baseSmile, basePure, baseCool, smileMax, pureMax, coolMax float64
+		if exists {
+			// 公共卡片仅为100级属性
+			_, err = MainEng.Table("unit_m").Where("unit_id = ?", uId).
+				Join("LEFT", "unit_rarity_m", "unit_m.rarity = unit_rarity_m.rarity").
+				Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max").
+				Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove)
+			CheckErr(err)
+
+			// 绊属性
+
+			// } else {
+			// 	// 用户卡片需要根据等级计算属性
+			// 	// TODO
+		}
+
+		// 饰品属性加成（满级）
+		accessoryOwningList := []int{}
+		err = UserEng.Table("accessory_wear_m").Where(builder.In("unit_owning_user_id", owningIdList)).Cols("accessory_owning_user_id").Find(&accessoryOwningList)
+		CheckErr(err)
+		var smileAccessory, pureAccessory, coolAccessory float64
+		_, err = MainEng.Table("common_accessory_m").Join("LEFT", "accessory_m", "common_accessory_m.accessory_id = accessory_m.accessory_id").
+			Where(builder.In("accessory_owning_user_id", accessoryOwningList)).Cols("smile_max,pure_max,cool_max").Get(&smileAccessory, &pureAccessory, &coolAccessory)
+		CheckErr(err)
+		// fmt.Println("基础属性:", baseSmile, basePure, baseCool)
+
+		// 饰品属性加成（该加成会影响个宝等百分比宝石属性加成的计算，故先计算。）
+		baseSmile += smileAccessory
+		basePure += pureAccessory
+		baseCool += coolAccessory
+		// fmt.Println("饰品属性加成:", smileAccessory, pureAccessory, coolAccessory)
+		// fmt.Println("饰品属性加成后的基础属性:", baseSmile, basePure, baseCool)
+
+		// 回忆画廊属性加成（该加成会影响个宝等百分比宝石属性加成的计算，故先计算。）
+		var smileBuff, pureBuff, coolBuff float64
+		_, err = MainEng.Table("museum_contents_m").Select("SUM(smile_buff),SUM(pure_buff),SUM(cool_buff)").Get(&smileBuff, &pureBuff, &coolBuff)
+		CheckErr(err)
+		baseSmile += smileBuff
+		basePure += pureBuff
+		baseCool += coolBuff
+		// fmt.Println("回忆画廊属性加成:", smileBuff, pureBuff, coolBuff)
+		// fmt.Println("回忆画廊属性加成后的基础属性:", baseSmile, basePure, baseCool)
+
+		// 绊属性加成（该加成会影响个宝等百分比宝石属性加成的计算，故先计算。）
+		if attrId == 1 {
+			baseSmile += maxLove
+		} else if attrId == 2 {
+			basePure += maxLove
+		} else if attrId == 3 {
+			baseCool += maxLove
+		}
+		// fmt.Println("绊属性加成:", maxLove)
+		// fmt.Println("绊属性加成后的基础属性:", baseSmile, basePure, baseCool)
+
+		// 宝石属性加成
+		var kissSmile, kissPure, kissCool float64
+		var skillSmile, skillPure, skillCool float64
+
+		// 宝石加成（满级）
+		removableSkillIds := []int{}
+		err = UserEng.Table("skill_equip_m").Where("unit_owning_user_id = ? AND user_id = ?", owningId, ctx.GetString("userid")).
+			Cols("unit_removable_skill_id").Find(&removableSkillIds)
+		CheckErr(err)
+
+		for _, sk := range removableSkillIds {
+			// 判断宝石效果类型（效果范围、效果类型、效果值、是否固定数值）
+			var effectRange, effectType, fixedValueFlag, refType int
+			var effectValue float64
+			_, err = MainEng.Table("unit_removable_skill_m").Where("unit_removable_skill_id = ?", sk).
+				Cols("effect_range,effect_type,effect_value,fixed_value_flag,target_reference_type").
+				Get(&effectRange, &effectType, &effectValue, &fixedValueFlag, &refType)
+			CheckErr(err)
+
+			if fixedValueFlag == 1 {
+				// 吻、眼神属性加成（固定数值）
+				if effectType == 1 {
+					kissSmile += effectValue
+				} else if effectType == 2 {
+					kissPure += effectValue
+				} else if effectType == 3 {
+					kissCool += effectValue
+				}
+				// fmt.Println("吻、眼神属性加成:", kissSmile, kissPure, kissCool)
+			} else {
+				// 仅效果类型为1、2、3的有属性加成
+				if effectType == 1 || effectType == 2 || effectType == 3 {
+					// 加成范围：2:全员 1:非全员
+					if effectRange == 2 {
+						if effectType == 1 {
+							skillSmile += math.Ceil(baseSmile * (effectValue / 100))
+						} else if effectType == 2 {
+							skillPure += math.Ceil(basePure * (effectValue / 100))
+						} else if effectType == 3 {
+							skillCool += math.Ceil(baseCool * (effectValue / 100))
+						}
+						// fmt.Println("全员类宝石属性加成:", skillSmile, skillPure, skillCool)
+					} else {
+						// refType: 1 -> 年级类加成, target_type -> 指定年级（这里不需要使用，因为能装上宝石肯定是符合的）
+						// refType: 2 -> 个宝
+						// refType: 3 -> 爆分、奶、判宝石, 0 -> 竞技场宝石
+						if refType == 1 || refType == 2 { // 年级类和个宝都是百分比加成
+							if effectType == 1 {
+								skillSmile += math.Ceil(baseSmile * (effectValue / 100))
+							} else if effectType == 2 {
+								skillPure += math.Ceil(basePure * (effectValue / 100))
+							} else if effectValue == 3 {
+								skillCool += math.Ceil(baseCool * (effectValue / 100))
+							}
+							// fmt.Println("年级类宝石、个宝属性加成:", skillSmile, skillPure, skillCool)
+						}
+					}
+				}
+			}
+		}
+
+		// 单卡属性
+		smileMax = baseSmile + kissSmile + skillSmile
+		pureMax = basePure + kissPure + skillPure
+		coolMax = baseCool + kissCool + skillCool
+
+		// 全部卡属性
+		totalSmile += smileMax
+		totalPure += pureMax
+		totalCool += coolMax
+		totalHp += maxHp
+
+		// 单卡属性计算结果取上取整
+		fixedSmileMax := int(smileMax)
+		fixedPureMax := int(pureMax)
+		fixedCoolMax := int(coolMax)
+		// fmt.Println("单卡属性:", fixedSmileMax, fixedPureMax, fixedCoolMax)
+
 		unitList = append(unitList, model.UnitList{
-			Smile: 1,
-			Cute:  1,
-			Cool:  1,
+			Smile: fixedSmileMax,
+			Cute:  fixedPureMax,
+			Cool:  fixedCoolMax,
 		})
 	}
+
+	// 全部卡属性计算结果取上取整
+	fixedTotalSmile := int(math.Ceil(totalSmile))
+	fixedTotalPure := int(math.Ceil(totalPure))
+	fixedTotalCool := int(math.Ceil(totalCool))
+	// fmt.Println("全卡组属性:", fixedTotalSmile, fixedTotalPure, fixedTotalCool)
 
 	lives := []model.PlayLiveList{}
 	lives = append(lives, model.PlayLiveList{
@@ -110,10 +265,10 @@ func PlayLiveHandler(ctx *gin.Context) {
 		},
 		DeckInfo: model.DeckInfo{
 			UnitDeckID:       deckId,
-			TotalSmile:       9,
-			TotalCute:        9,
-			TotalCool:        9,
-			TotalHp:          999,
+			TotalSmile:       fixedTotalSmile,
+			TotalCute:        fixedTotalPure,
+			TotalCool:        fixedTotalCool,
+			TotalHp:          totalHp,
 			PreparedHpDamage: 0,
 			UnitList:         unitList,
 		},
@@ -129,7 +284,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 		MarathonEventID:     nil,
 		NoSkill:             false,
 		CanActivateEffect:   true,
-		ServerTimestamp:     1679237935,
+		ServerTimestamp:     time.Now().Unix(),
 	}
 
 	m, err := json.Marshal(resp)
@@ -143,6 +298,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 
 	mm, err := json.Marshal(res)
 	CheckErr(err)
+	// fmt.Println(string(mm))
 
 	nonce := ctx.GetInt("nonce")
 	nonce++
@@ -289,8 +445,7 @@ func PlayRewardHandler(ctx *gin.Context) {
 	deckId, err := database.LevelDb.Get([]byte(key))
 	CheckErr(err)
 	unitsList := []model.PlayRewardUnitList{}
-	err = UserEng.Table("deck_unit_m").Select("*").
-		Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
+	err = UserEng.Table("deck_unit_m").Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
 		Where("user_id = ? AND deck_id = ?", ctx.GetString("userid"), string(deckId)).Find(&unitsList)
 	CheckErr(err)
 

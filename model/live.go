@@ -164,14 +164,14 @@ type PlayResponseData struct {
 	MarathonEventID     interface{}    `json:"marathon_event_id"`
 	NoSkill             bool           `json:"no_skill"`
 	CanActivateEffect   bool           `json:"can_activate_effect"`
-	ServerTimestamp     int            `json:"server_timestamp"`
+	ServerTimestamp     int64          `json:"server_timestamp"`
 }
 
 // preciseScore
 type PlayScoreReq struct {
 	Module           string `json:"module"`
 	Action           string `json:"action"`
-	TimeStamp        int    `json:"timeStamp"`
+	TimeStamp        int64  `json:"timeStamp"`
 	Mgd              int    `json:"mgd"`
 	LiveDifficultyID string `json:"live_difficulty_id"`
 	CommandNum       string `json:"commandNum"`
