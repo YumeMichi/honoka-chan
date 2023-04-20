@@ -264,7 +264,7 @@ func WearAccessory(ctx *gin.Context) {
 		panic(err)
 	}
 
-	UserEng.ShowSQL(true)
+	// UserEng.ShowSQL(true)
 	// 开始事务
 	session := UserEng.NewSession()
 	defer session.Close()
@@ -325,7 +325,7 @@ func RemoveSkillEquip(ctx *gin.Context) {
 		panic(err)
 	}
 
-	UserEng.ShowSQL(true)
+	// UserEng.ShowSQL(true)
 	// 开始事务
 	session := UserEng.NewSession()
 	defer session.Close()

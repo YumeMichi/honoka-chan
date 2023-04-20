@@ -15,7 +15,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
-	"xorm.io/builder"
 )
 
 type GameOverResp struct {
@@ -92,8 +91,8 @@ func PlayLiveHandler(ctx *gin.Context) {
 		RankMax: 0,
 	})
 
-	UserEng.ShowSQL(true)
-	MainEng.ShowSQL(true)
+	// UserEng.ShowSQL(true)
+	// MainEng.ShowSQL(true)
 	owningIdList := []int{}
 	err = UserEng.Table("deck_unit_m").Join("LEFT", "user_deck_m", "deck_unit_m.user_deck_id = user_deck_m.id").
 		Where("user_id = ? AND deck_id = ?", ctx.GetString("userid"), deckId).Cols("unit_owning_user_id").
@@ -117,21 +116,43 @@ func PlayLiveHandler(ctx *gin.Context) {
 				Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max").
 				Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove)
 			CheckErr(err)
+		} else {
+			// 用户卡片暂时固定为满级350级
+			exists, err := UserEng.Table("user_unit_m").Where("unit_owning_user_id = ?", owningId).Cols("unit_id").Get(&uId)
+			CheckErr(err)
 
-			// 绊属性
+			if exists {
+				// 卡片100级基础属性
+				_, err = MainEng.Table("unit_m").Where("unit_id = ?", uId).
+					Join("LEFT", "unit_rarity_m", "unit_m.rarity = unit_rarity_m.rarity").
+					Cols("attribute_id,hp_max,smile_max,pure_max,cool_max,after_love_max").
+					Get(&attrId, &maxHp, &baseSmile, &basePure, &baseCool, &maxLove)
+				CheckErr(err)
 
-			// } else {
-			// 	// 用户卡片需要根据等级计算属性
-			// 	// TODO
+				// 增量属性
+				var diffSmile, diffPure, diffCool float64
+				_, err = MainEng.Table("unit_level_limit_pattern_m").Where("unit_level_limit_id = 1 AND unit_level = 350").
+					Cols("smile_diff,pure_diff,cool_diff").Get(&diffSmile, &diffPure, &diffCool)
+				CheckErr(err)
+
+				// 更新卡片属性（注意这里是负数，要用减号）
+				baseSmile -= diffSmile
+				basePure -= diffPure
+				baseCool -= diffCool
+			} else {
+				panic("no such unit")
+			}
 		}
 
 		// 饰品属性加成（满级）
-		accessoryOwningList := []int{}
-		err = UserEng.Table("accessory_wear_m").Where(builder.In("unit_owning_user_id", owningIdList)).Cols("accessory_owning_user_id").Find(&accessoryOwningList)
+		var accessoryOwningId int
+		_, err = UserEng.Table("accessory_wear_m").Where("unit_owning_user_id = ?", owningId).
+			Cols("accessory_owning_user_id").Get(&accessoryOwningId)
 		CheckErr(err)
 		var smileAccessory, pureAccessory, coolAccessory float64
 		_, err = MainEng.Table("common_accessory_m").Join("LEFT", "accessory_m", "common_accessory_m.accessory_id = accessory_m.accessory_id").
-			Where(builder.In("accessory_owning_user_id", accessoryOwningList)).Cols("smile_max,pure_max,cool_max").Get(&smileAccessory, &pureAccessory, &coolAccessory)
+			Where("accessory_owning_user_id = ?", accessoryOwningId).Cols("smile_max,pure_max,cool_max").
+			Get(&smileAccessory, &pureAccessory, &coolAccessory)
 		CheckErr(err)
 		// fmt.Println("基础属性:", baseSmile, basePure, baseCool)
 
@@ -139,7 +160,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 		baseSmile += smileAccessory
 		basePure += pureAccessory
 		baseCool += coolAccessory
-		// fmt.Println("饰品属性加成:", smileAccessory, pureAccessory, coolAccessory)
+		fmt.Println("饰品属性加成:", smileAccessory, pureAccessory, coolAccessory)
 		// fmt.Println("饰品属性加成后的基础属性:", baseSmile, basePure, baseCool)
 
 		// 回忆画廊属性加成（该加成会影响个宝等百分比宝石属性加成的计算，故先计算。）
@@ -239,7 +260,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 		fixedSmileMax := int(smileMax)
 		fixedPureMax := int(pureMax)
 		fixedCoolMax := int(coolMax)
-		// fmt.Println("单卡属性:", fixedSmileMax, fixedPureMax, fixedCoolMax)
+		fmt.Println("单卡属性:", fixedSmileMax, fixedPureMax, fixedCoolMax)
 
 		unitList = append(unitList, model.UnitList{
 			Smile: fixedSmileMax,
@@ -252,7 +273,7 @@ func PlayLiveHandler(ctx *gin.Context) {
 	fixedTotalSmile := int(math.Ceil(totalSmile))
 	fixedTotalPure := int(math.Ceil(totalPure))
 	fixedTotalCool := int(math.Ceil(totalCool))
-	// fmt.Println("全卡组属性:", fixedTotalSmile, fixedTotalPure, fixedTotalCool)
+	fmt.Println("全卡组属性:", fixedTotalSmile, fixedTotalPure, fixedTotalCool)
 
 	lives := []model.PlayLiveList{}
 	lives = append(lives, model.PlayLiveList{
