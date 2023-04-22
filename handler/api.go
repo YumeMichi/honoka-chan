@@ -225,7 +225,7 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				userUnits := []model.Active{}
-				err = UserEng.Table("user_unit_m").Find(&userUnits)
+				err = UserEng.Table("user_unit_m").Where("user_id = ?", ctx.GetString("userid")).Find(&userUnits)
 				if err != nil {
 					panic(err)
 				}
