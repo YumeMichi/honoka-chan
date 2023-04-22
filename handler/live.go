@@ -39,7 +39,7 @@ func PartyListHandler(ctx *gin.Context) {
 
 func PlayLiveHandler(ctx *gin.Context) {
 	playReq := model.PlayReq{}
-	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playReq)
+	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &playReq)
 	CheckErr(err)
 
 	tDifficultyId := playReq.LiveDifficultyID
@@ -459,7 +459,7 @@ func GameOverHandler(ctx *gin.Context) {
 
 func PlayScoreHandler(ctx *gin.Context) {
 	playScoreReq := model.PlayScoreReq{}
-	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playScoreReq)
+	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &playScoreReq)
 	CheckErr(err)
 
 	tDifficultyId := playScoreReq.LiveDifficultyID
@@ -557,7 +557,7 @@ func PlayScoreHandler(ctx *gin.Context) {
 
 func PlayRewardHandler(ctx *gin.Context) {
 	playRewardReq := model.PlayRewardReq{}
-	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playRewardReq)
+	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &playRewardReq)
 	CheckErr(err)
 
 	difficultyId := playRewardReq.LiveDifficultyID

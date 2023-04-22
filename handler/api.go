@@ -22,7 +22,7 @@ func ApiHandler(ctx *gin.Context) {
 	CheckErr(err)
 
 	var formdata []model.SifApi
-	err = json.Unmarshal([]byte(ctx.PostForm("request_data")), &formdata)
+	err = json.Unmarshal([]byte(ctx.GetString("request_data")), &formdata)
 	if err != nil {
 		fmt.Println(err)
 		return
