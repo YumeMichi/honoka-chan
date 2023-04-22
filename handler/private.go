@@ -428,7 +428,7 @@ func AccountLoginHandler(ctx *gin.Context) {
 	encryptedData64 := base64.StdEncoding.EncodeToString(encryptedData)
 	// fmt.Println(encryptedToken64)
 
-	resp := fmt.Sprintf(`{ "code": %d, "msg": %s, "data": "%s" }`, loginCode, loginMsg, encryptedData64)
+	resp := fmt.Sprintf(`{ "code": %d, "msg": "%s", "data": "%s" }`, loginCode, loginMsg, encryptedData64)
 
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, resp)
