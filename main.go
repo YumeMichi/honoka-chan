@@ -102,5 +102,5 @@ func main() {
 		ctx.HTML(http.StatusOK, "manga.tmpl", gin.H{})
 	})
 
-	r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(":80") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

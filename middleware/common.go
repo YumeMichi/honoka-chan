@@ -24,6 +24,13 @@ func CheckErr(err error) {
 func Common(ctx *gin.Context) {
 	ctx.Set("req_time", time.Now().Unix())
 
+	ctx.Request.ParseMultipartForm(0)
+	if len(ctx.PostForm("request_data")) == 0 {
+		// 弱智iOS客户端经常发些空的表单上来...
+		fmt.Println("Fuck you, iOS!")
+		ctx.Abort()
+	}
+
 	authorize := ctx.Request.Header.Get("Authorize")
 	if authorize == "" {
 		ctx.String(http.StatusForbidden, ErrorMsg)

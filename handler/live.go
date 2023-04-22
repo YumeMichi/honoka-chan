@@ -38,7 +38,6 @@ func PartyListHandler(ctx *gin.Context) {
 }
 
 func PlayLiveHandler(ctx *gin.Context) {
-	fmt.Println(ctx.PostForm("request_data"))
 	playReq := model.PlayReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &playReq)
 	CheckErr(err)
