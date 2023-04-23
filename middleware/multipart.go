@@ -29,6 +29,8 @@ func ParseMultipartForm(ctx *gin.Context) {
 			reqData = data
 		}
 		ctx.Set("request_data", string(reqData))
+	} else {
+		ctx.Set("request_data", ctx.PostForm("request_data"))
 	}
 
 	ctx.Next()
