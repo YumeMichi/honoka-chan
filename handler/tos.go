@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TosCheckHandler(ctx *gin.Context) {
+func TosCheck(ctx *gin.Context) {
 	tosResp := model.TosResp{
 		ResponseData: model.TosRes{
 			TosID:           1,

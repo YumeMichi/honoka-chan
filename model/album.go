@@ -1,6 +1,6 @@
 package model
 
-// module: album, action: albumAll
+// AlbumResult ...
 type AlbumResult struct {
 	UnitID             int  `json:"unit_id"`
 	RankMaxFlag        bool `json:"rank_max_flag"`
@@ -13,6 +13,7 @@ type AlbumResult struct {
 	SignFlag           bool `json:"sign_flag"`
 }
 
+// AlbumResp ...
 type AlbumResp struct {
 	Result     []AlbumResult `json:"result"`
 	Status     int           `json:"status"`
@@ -20,12 +21,13 @@ type AlbumResp struct {
 	TimeStamp  int64         `json:"timeStamp"`
 }
 
-// albumSeries
+// AlbumSeriesRes ...
 type AlbumSeriesRes struct {
 	SeriesID int           `json:"series_id"`
 	UnitList []AlbumResult `json:"unit_list"`
 }
 
+// AlbumSeriesResp ...
 type AlbumSeriesResp struct {
 	ResponseData []AlbumSeriesRes `json:"response_data"`
 	ReleaseInfo  []interface{}    `json:"release_info"`

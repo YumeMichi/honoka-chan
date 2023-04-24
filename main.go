@@ -1,19 +1,17 @@
 package main
 
 import (
-	"honoka-chan/config"
 	"honoka-chan/handler"
 	_ "honoka-chan/llhelper"
 	"honoka-chan/middleware"
 	_ "honoka-chan/tools"
-	"honoka-chan/xclog"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	xclog.Init(config.Conf.Log.LogDir, "", config.Conf.Log.LogLevel, config.Conf.Log.LogSave)
+
 }
 
 func main() {
@@ -30,20 +28,20 @@ func main() {
 	// Private APIs
 	v1 := r.Group("v1")
 	{
-		v1.GET("/basic/getcode", handler.GetCodeHandler)
-		v1.POST("/basic/getcode", handler.GetCodeHandler)
-		v1.POST("/account/active", handler.ActiveHandler)
-		v1.POST("/basic/publickey", handler.PublicKeyHandler)
-		v1.POST("/basic/handshake", handler.HandshakeHandler)
-		v1.POST("/account/initialize", handler.InitializeHandler)
-		v1.POST("/account/login", handler.AccountLoginHandler)
-		v1.POST("/account/loginauto", handler.LoginAutoHandler)
-		v1.POST("/basic/loginarea", handler.LoginAreaHandler)
-		v1.POST("/account/reportRole", handler.ReportRoleHandler)
-		v1.POST("/basic/getProductList", handler.GetProductListHandler)
-		v1.POST("/guest/status", handler.GuestStatusHandler)
+		v1.GET("/basic/getcode", handler.GetCode)
+		v1.POST("/account/active", handler.Active)
+		v1.POST("/account/initialize", handler.Initialize)
+		v1.POST("/account/loginauto", handler.LoginAuto)
+		v1.POST("/account/login", handler.AccountLogin)
+		v1.POST("/account/reportRole", handler.ReportRole)
+		v1.POST("/basic/getcode", handler.GetCode)
+		v1.POST("/basic/getProductList", handler.GetProductList)
+		v1.POST("/basic/handshake", handler.Handshake)
+		v1.POST("/basic/loginarea", handler.LoginArea)
+		v1.POST("/basic/publickey", handler.PublicKey)
+		v1.POST("/guest/status", handler.GuestStatus)
 	}
-	r.GET("/agreement/all", handler.AgreementHandler)
+	r.GET("/agreement/all", handler.Agreement)
 	r.GET("/integration/appReport/initialize", handler.ReportApp)
 	r.POST("/report/ge/app", handler.ReportLog)
 	// Private APIs
@@ -51,51 +49,51 @@ func main() {
 	// Server APIs
 	m := r.Group("main.php").Use(middleware.Common)
 	{
-		m.POST("/album/seriesAll", middleware.ParseMultipartForm, handler.AlbumSeriesAllHandler)
-		m.POST("/announce/checkState", middleware.ParseMultipartForm, handler.AnnounceCheckStateHandler)
-		m.POST("/api", middleware.ParseMultipartForm, handler.ApiHandler)
+		m.POST("/album/seriesAll", middleware.ParseMultipartForm, handler.AlbumSeriesAll)
+		m.POST("/announce/checkState", middleware.ParseMultipartForm, handler.AnnounceCheckState)
+		m.POST("/api", middleware.ParseMultipartForm, handler.Api)
 		m.POST("/award/set", handler.AwardSet)
 		m.POST("/background/set", handler.BackgroundSet)
-		m.POST("/download/additional", handler.DownloadAdditionalHandler)
-		m.POST("/download/batch", handler.DownloadBatchHandler)
-		m.POST("/download/event", handler.DownloadEventHandler)
-		m.POST("/download/getUrl", handler.DownloadUrlHandler)
-		m.POST("/download/update", handler.DownloadUpdateHandler)
-		m.POST("/event/eventList", middleware.ParseMultipartForm, handler.EventListHandler)
-		m.POST("/gdpr/get", middleware.ParseMultipartForm, handler.GdprHandler)
-		m.POST("/lbonus/execute", handler.LBonusExecuteHandler)
-		m.POST("/live/gameover", handler.GameOverHandler)
-		m.POST("/live/partyList", handler.PartyListHandler)
-		m.POST("/live/play", middleware.ParseMultipartForm, handler.PlayLiveHandler)
-		m.POST("/live/preciseScore", middleware.ParseMultipartForm, handler.PlayScoreHandler)
-		m.POST("/live/reward", middleware.ParseMultipartForm, handler.PlayRewardHandler)
+		m.POST("/download/additional", handler.DownloadAdditional)
+		m.POST("/download/batch", handler.DownloadBatch)
+		m.POST("/download/event", handler.DownloadEvent)
+		m.POST("/download/getUrl", handler.DownloadUrl)
+		m.POST("/download/update", handler.DownloadUpdate)
+		m.POST("/event/eventList", middleware.ParseMultipartForm, handler.EventList)
+		m.POST("/gdpr/get", middleware.ParseMultipartForm, handler.Gdpr)
+		m.POST("/lbonus/execute", handler.LBonusExecute)
+		m.POST("/live/gameover", handler.GameOver)
+		m.POST("/live/partyList", handler.PartyList)
+		m.POST("/live/play", middleware.ParseMultipartForm, handler.PlayLive)
+		m.POST("/live/preciseScore", middleware.ParseMultipartForm, handler.PlayScore)
+		m.POST("/live/reward", middleware.ParseMultipartForm, handler.PlayReward)
 		m.POST("/login/authkey", middleware.AuthKey, handler.AuthKey)
 		m.POST("/login/login", middleware.Login, handler.Login)
-		m.POST("/multiunit/scenarioStartup", handler.MultiUnitStartUpHandler)
+		m.POST("/multiunit/scenarioStartup", handler.MultiUnitStartUp)
 		m.POST("/museum/info", middleware.ParseMultipartForm, handler.MuseumInfo)
-		m.POST("/notice/noticeFriendGreeting", middleware.ParseMultipartForm, handler.NoticeFriendGreetingHandler)
-		m.POST("/notice/noticeFriendVariety", middleware.ParseMultipartForm, handler.NoticeFriendVarietyHandler)
-		m.POST("/notice/noticeUserGreetingHistory", handler.NoticeUserGreetingHandler)
-		m.POST("/payment/productList", middleware.ParseMultipartForm, handler.ProductListHandler)
-		m.POST("/personalnotice/get", middleware.ParseMultipartForm, handler.PersonalNoticeHandler)
+		m.POST("/notice/noticeFriendGreeting", middleware.ParseMultipartForm, handler.NoticeFriendGreeting)
+		m.POST("/notice/noticeFriendVariety", middleware.ParseMultipartForm, handler.NoticeFriendVariety)
+		m.POST("/notice/noticeUserGreetingHistory", handler.NoticeUserGreeting)
+		m.POST("/payment/productList", middleware.ParseMultipartForm, handler.ProductList)
+		m.POST("/personalnotice/get", middleware.ParseMultipartForm, handler.PersonalNotice)
 		m.POST("/profile/profileRegister", handler.ProfileRegister)
-		m.POST("/scenario/reward", handler.ScenarioRewardHandler)
-		m.POST("/scenario/startup", handler.ScenarioStartupHandler)
-		m.POST("/subscenario/reward", handler.SubScenarioStartupHandler)
-		m.POST("/subscenario/startup", handler.SubScenarioStartupHandler)
-		m.POST("/tos/tosCheck", middleware.ParseMultipartForm, handler.TosCheckHandler)
-		m.POST("/unit/deck", handler.SetDeckHandler)
-		m.POST("/unit/deckName", handler.SetDeckNameHandler)
-		m.POST("/unit/favorite", handler.SetDisplayRankHandler)
+		m.POST("/scenario/reward", handler.ScenarioReward)
+		m.POST("/scenario/startup", handler.ScenarioStartup)
+		m.POST("/subscenario/reward", handler.SubScenarioStartup)
+		m.POST("/subscenario/startup", handler.SubScenarioStartup)
+		m.POST("/tos/tosCheck", middleware.ParseMultipartForm, handler.TosCheck)
+		m.POST("/unit/deck", handler.SetDeck)
+		m.POST("/unit/deckName", handler.SetDeckName)
+		m.POST("/unit/favorite", handler.SetDisplayRank)
 		m.POST("/unit/removableSkillEquipment", handler.RemoveSkillEquip)
-		m.POST("/unit/setDisplayRank", handler.SetDisplayRankHandler)
+		m.POST("/unit/setDisplayRank", handler.SetDisplayRank)
 		m.POST("/unit/wearAccessory", handler.WearAccessory)
-		m.POST("/user/changeName", handler.ChangeNameHandler)
-		m.POST("/user/changeNavi", handler.ChangeNaviHandler)
-		m.POST("/user/setNotificationToken", handler.SetNotificationTokenHandler)
-		m.POST("/user/userInfo", middleware.ParseMultipartForm, handler.UserInfoHandler)
+		m.POST("/user/changeName", handler.ChangeName)
+		m.POST("/user/changeNavi", handler.ChangeNavi)
+		m.POST("/user/setNotificationToken", handler.SetNotificationToken)
+		m.POST("/user/userInfo", middleware.ParseMultipartForm, handler.UserInfo)
 	}
-	r.GET("/webview.php/announce/index", handler.AnnounceIndexHandler)
+	r.GET("/webview.php/announce/index", handler.AnnounceIndex)
 	// Server APIs
 
 	// Web

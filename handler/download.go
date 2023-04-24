@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"honoka-chan/config"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
 	"net/http"
@@ -21,12 +22,12 @@ type PkgInfo struct {
 	Size  int `xorm:"pkg_size"`
 }
 
-func DownloadAdditionalHandler(ctx *gin.Context) {
+func DownloadAdditional(ctx *gin.Context) {
 	downloadReq := model.AdditionalReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
-	pkgList := []model.AdditionalResult{}
+	pkgList := []model.AdditionalRes{}
 	if CdnUrl != "" {
 		pkgType, pkgId := downloadReq.PackageType, downloadReq.PackageID
 		var pkgInfo []PkgInfo
@@ -36,7 +37,7 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 		CheckErr(err)
 
 		for _, pkg := range pkgInfo {
-			pkgList = append(pkgList, model.AdditionalResult{
+			pkgList = append(pkgList, model.AdditionalRes{
 				Size: pkg.Size,
 				URL:  fmt.Sprintf("%s/%s/archives/%d_%d_%d.zip", CdnUrl, downloadReq.TargetOs, pkgType, pkg.Id, pkg.Order),
 			})
@@ -61,13 +62,13 @@ func DownloadAdditionalHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func DownloadBatchHandler(ctx *gin.Context) {
+func DownloadBatch(ctx *gin.Context) {
 	downloadReq := model.BatchReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
-	pkgList := []model.BatchResult{}
-	if downloadReq.ClientVersion == PackageVersion && CdnUrl != "" {
+	pkgList := []model.BatchRes{}
+	if downloadReq.ClientVersion == config.PackageVersion && CdnUrl != "" {
 		pkgType := downloadReq.PackageType
 		var pkgInfo []PkgInfo
 		err := MainEng.Table("download_m").Where(builder.NotIn("pkg_id", downloadReq.ExcludedPackageIds)).Where("pkg_type = ? AND pkg_os = ?", pkgType, downloadReq.Os).
@@ -76,7 +77,7 @@ func DownloadBatchHandler(ctx *gin.Context) {
 		CheckErr(err)
 
 		for _, pkg := range pkgInfo {
-			pkgList = append(pkgList, model.BatchResult{
+			pkgList = append(pkgList, model.BatchRes{
 				Size: pkg.Size,
 				URL:  fmt.Sprintf("%s/%s/archives/%d_%d_%d.zip", CdnUrl, downloadReq.Os, pkgType, pkg.Id, pkg.Order),
 			})
@@ -101,13 +102,13 @@ func DownloadBatchHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func DownloadUpdateHandler(ctx *gin.Context) {
+func DownloadUpdate(ctx *gin.Context) {
 	downloadReq := model.UpdateReq{}
 	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
-	pkgList := []model.UpdateResult{}
-	if downloadReq.ExternalVersion != PackageVersion && CdnUrl != "" {
+	pkgList := []model.UpdateRes{}
+	if downloadReq.ExternalVersion != config.PackageVersion && CdnUrl != "" {
 		pkgType := 99
 		var pkgInfo []PkgInfo
 		err := MainEng.Table("download_m").Where("pkg_type = ? AND pkg_os = ?", pkgType, downloadReq.TargetOs).
@@ -116,10 +117,10 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 		CheckErr(err)
 
 		for _, pkg := range pkgInfo {
-			pkgList = append(pkgList, model.UpdateResult{
+			pkgList = append(pkgList, model.UpdateRes{
 				Size:    pkg.Size,
 				URL:     fmt.Sprintf("%s/%s/archives/%d_%d_%d.zip", CdnUrl, downloadReq.TargetOs, pkgType, pkg.Id, pkg.Order),
-				Version: PackageVersion,
+				Version: config.PackageVersion,
 			})
 		}
 	}
@@ -142,7 +143,7 @@ func DownloadUpdateHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func DownloadUrlHandler(ctx *gin.Context) {
+func DownloadUrl(ctx *gin.Context) {
 	// Extract SQL: SELECT CAST(pkg_type AS TEXT) || '_' || CAST(pkg_id AS TEXT) || '_' || CAST(pkg_order AS TEXT) || '.zip' AS zip_name FROM download_m ORDER BY pkg_type ASC,pkg_id ASC, pkg_order ASC;
 	// Extract Cmd: cat list.txt | while read line; do; unzip -o $line; done
 	downloadReq := model.UrlReq{}
@@ -154,7 +155,7 @@ func DownloadUrlHandler(ctx *gin.Context) {
 		urlList = append(urlList, fmt.Sprintf("%s/%s/extracted/%s", CdnUrl, downloadReq.Os, strings.ReplaceAll(v, "\\", "")))
 	}
 	urlResp := model.UrlResp{
-		ResponseData: model.UrlResult{
+		ResponseData: model.UrlRes{
 			UrlList: urlList,
 		},
 		ReleaseInfo: []interface{}{},
@@ -173,7 +174,7 @@ func DownloadUrlHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func DownloadEventHandler(ctx *gin.Context) {
+func DownloadEvent(ctx *gin.Context) {
 	eventResp := model.EventResp{
 		ResponseData: []interface{}{},
 		ReleaseInfo:  []interface{}{},

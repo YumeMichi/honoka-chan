@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LBonusExecuteHandler(ctx *gin.Context) {
+func LBonusExecute(ctx *gin.Context) {
 	weeks := map[string]int{
 		"Monday":    1,
 		"Tuesday":   2,
@@ -142,7 +142,7 @@ func LBonusExecuteHandler(ctx *gin.Context) {
 				},
 			},
 			LimitedEffortBox: []interface{}{},
-			MuseumInfo:       model.MuseumInfo{},
+			MuseumInfo:       model.Museum{},
 			ServerTimestamp:  time.Now().Unix(),
 			PresentCnt:       0,
 		},

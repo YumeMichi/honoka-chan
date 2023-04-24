@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func EventListHandler(ctx *gin.Context) {
+func EventList(ctx *gin.Context) {
 	targets := []model.TargetList{}
 	for i := 0; i < 6; i++ {
 		targets = append(targets, model.TargetList{

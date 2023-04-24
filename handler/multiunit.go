@@ -32,7 +32,7 @@ type MultiUnitStartUpReq struct {
 	CommandNum          string `json:"commandNum"`
 }
 
-func MultiUnitStartUpHandler(ctx *gin.Context) {
+func MultiUnitStartUp(ctx *gin.Context) {
 	startReq := MultiUnitStartUpReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
 	CheckErr(err)

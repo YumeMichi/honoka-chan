@@ -13,7 +13,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func AlbumSeriesAllHandler(ctx *gin.Context) {
+type AlbumSearchResult struct {
+	UnitId int `xorm:"unit_id"`
+	Rarity int `xorm:"rarity"`
+}
+
+func AlbumSeriesAll(ctx *gin.Context) {
 	var albumIds []int
 	err := MainEng.Table("album_series_m").Select("album_series_id").Find(&albumIds)
 	CheckErr(err)
@@ -21,21 +26,14 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 
 	albumSeriesAllRes := []model.AlbumSeriesRes{}
 	for _, albumId := range albumIds {
-		AlbumStmt, err := MainEng.DB().Prepare("SELECT unit_id,rarity FROM unit_m WHERE album_series_id = ?")
-		CheckErr(err)
-		defer AlbumStmt.Close()
-
-		rows, err := AlbumStmt.Query(albumId)
+		unitList := []AlbumSearchResult{}
+		err = MainEng.Table("unit_m").Where("album_series_id = ?", albumId).Cols("unit_id,rarity").Find(&unitList)
 		CheckErr(err)
 
 		albumSeriesAll := []model.AlbumResult{}
-		for rows.Next() {
-			var unitId, rarity int
-			err = rows.Scan(&unitId, &rarity)
-			CheckErr(err)
-
+		for _, unit := range unitList {
 			albumSeries := model.AlbumResult{
-				UnitID:           unitId,
+				UnitID:           unit.UnitId,
 				RankMaxFlag:      true,
 				LoveMaxFlag:      true,
 				RankLevelMaxFlag: true,
@@ -44,8 +42,8 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 				FavoritePoint:    1000,
 			}
 
-			if rarity != 4 {
-				switch rarity {
+			if unit.Rarity != 4 {
+				switch unit.Rarity {
 				case 1:
 					// N
 					albumSeries.HighestLovePerUnit = 50
@@ -64,19 +62,9 @@ func AlbumSeriesAllHandler(ctx *gin.Context) {
 				albumSeries.HighestLovePerUnit = 1000
 
 				// IsSigned
-				signStmt, err := MainEng.DB().Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
+				exists, err := MainEng.Table("unit_sign_asset_m").Where("unit_id = ?", unit.UnitId).Exist()
 				CheckErr(err)
-				defer signStmt.Close()
-
-				var count int
-				err = signStmt.QueryRow(unitId).Scan(&count)
-				CheckErr(err)
-
-				if count > 0 {
-					albumSeries.SignFlag = true
-				} else {
-					albumSeries.SignFlag = false
-				}
+				albumSeries.SignFlag = exists
 			}
 
 			albumSeriesAll = append(albumSeriesAll, albumSeries)

@@ -12,13 +12,16 @@ import (
 )
 
 var (
-	ConfName  = "config.yml"
-	Conf      = &AppConfigs{}
+	ConfName = "config.yml"
+	Conf     = &AppConfigs{}
+
 	ExampleDb = "assets/data.example.db"
 	MainDb    = "assets/main.db"
 	UserDb    = "assets/data.db"
 	MainEng   *xorm.Engine
 	UserEng   *xorm.Engine
+
+	PackageVersion = "97.4.6"
 )
 
 func init() {

@@ -199,7 +199,7 @@ func GenApi1Data() {
 
 	LiveStatusResp := model.LiveStatusResp{
 		// _ = model.LiveStatusResp{
-		Result: model.LiveStatusResult{
+		Result: model.LiveStatusRes{
 			NormalLiveStatusList:   normalLives,
 			SpecialLiveStatusList:  specialLives,
 			TrainingLiveStatusList: []model.TrainingLiveStatusList{},
@@ -225,7 +225,7 @@ func GenApi1Data() {
 	}
 	liveListResp := model.LiveScheduleResp{
 		// _ = model.LiveScheduleResp{
-		Result: model.LiveScheduleResult{
+		Result: model.LiveScheduleRes{
 			EventList:              []interface{}{},
 			LiveList:               livesList,
 			LimitedBonusList:       []interface{}{},
@@ -257,7 +257,7 @@ func GenApi1Data() {
 
 	unitListResp := model.UnitAllResp{
 		// _ = model.UnitAllResp{
-		Result: model.UnitAllResult{
+		Result: model.UnitAllRes{
 			Active:  unitsData,
 			Waiting: []model.Waiting{},
 		},
@@ -273,7 +273,7 @@ func GenApi1Data() {
 	err = UserEng.Table("user_deck_m").Where("user_id = ?", uId).Asc("deck_id").Find(&userDeck)
 	CheckErr(err)
 
-	unitDeckInfo := []model.UnitDeckInfo{}
+	unitDeckInfo := []model.UnitDeckInfoRes{}
 	for _, deck := range userDeck {
 		deckUnit := []UnitDeckData{}
 		err = UserEng.Table("deck_unit_m").Where("user_deck_id = ?", deck.ID).Asc("position").Find(&deckUnit)
@@ -291,7 +291,7 @@ func GenApi1Data() {
 		if deck.MainFlag == 1 {
 			mainFlag = true
 		}
-		unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfo{
+		unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfoRes{
 			UnitDeckID:        deck.DeckID,
 			MainFlag:          mainFlag,
 			DeckName:          deck.DeckName,
@@ -310,7 +310,7 @@ func GenApi1Data() {
 	// unit_support_result
 	unitSupportResp := model.UnitSupportResp{
 		// _ = model.UnitSupportResp{
-		Result: model.UnitSupportResult{
+		Result: model.UnitSupportRes{
 			UnitSupportList: []model.UnitSupportList{},
 		}, // 练习道具
 		Status:     200,
@@ -322,7 +322,7 @@ func GenApi1Data() {
 	// owning_equip_result
 	rmSkillResp := model.RemovableSkillResp{
 		// _ = model.RemovableSkillResp{
-		Result: model.RemovableSkillResult{
+		Result: model.RemovableSkillRes{
 			OwningInfo:    []model.OwningInfo{},
 			EquipmentInfo: map[int]interface{}{},
 		}, // 宝石
@@ -335,7 +335,7 @@ func GenApi1Data() {
 	// costume_list_result
 	costumeListResp := model.CostumeListResp{
 		// _ = model.CostumeListResp{
-		Result: model.CostumeListResult{
+		Result: model.CostumeListRes{
 			CostumeList: []model.CostumeList{},
 		},
 		Status:     200,
@@ -425,7 +425,7 @@ func GenApi1Data() {
 	}
 	scenarioResp := model.ScenarioStatusResp{
 		// _ = model.ScenarioStatusResp{
-		Result: model.ScenarioStatusResult{
+		Result: model.ScenarioStatusRes{
 			ScenarioStatusList: scenarioLists,
 		},
 		Status:     200,
@@ -451,7 +451,7 @@ func GenApi1Data() {
 	}
 	subScenarioResp := model.SubscenarioStatusResp{
 		// _ = model.SubscenarioStatusResp{
-		Result: model.SubscenarioStatusResult{
+		Result: model.SubscenarioStatusRes{
 			SubscenarioStatusList:  subScenarioLists,
 			UnlockedSubscenarioIds: []interface{}{},
 		},
@@ -519,7 +519,7 @@ func GenApi1Data() {
 	}
 	eventScenarioResp := model.EventScenarioStatusResp{
 		// _ = model.EventScenarioStatusResp{
-		Result: model.EventScenarioStatusResult{
+		Result: model.EventScenarioStatusRes{
 			EventScenarioList: eventsList, //
 		},
 		Status:     200,
@@ -566,7 +566,7 @@ func GenApi1Data() {
 	}
 	unitsResp := model.MultiUnitScenarioStatusResp{
 		// _ = model.MultiUnitScenarioStatusResp{
-		Result: model.MultiUnitScenarioStatusResult{
+		Result: model.MultiUnitScenarioStatusRes{
 			MultiUnitScenarioStatusList:  multiUnitsList,
 			UnlockedMultiUnitScenarioIds: []interface{}{},
 		},
@@ -579,7 +579,7 @@ func GenApi1Data() {
 	// product_result
 	productResp := model.ProductListResp{
 		// _ = model.ProductListResp{
-		Result: model.ProductListResult{
+		Result: model.ProductListRes{
 			RestrictionInfo: model.RestrictionInfo{
 				Restricted: false,
 			},
@@ -603,7 +603,7 @@ func GenApi1Data() {
 	// banner_result
 	bannerResp := model.BannerListResp{
 		// _ = model.BannerListResp{
-		Result: model.BannerListResult{
+		Result: model.BannerListRes{
 			TimeLimit: "2037-12-31 23:59:59",
 			BannerList: []model.BannerList{
 				{
@@ -639,7 +639,7 @@ func GenApi1Data() {
 	// item_marquee_result
 	marqueeResp := model.NoticeMarqueeResp{
 		// _ = model.NoticeMarqueeResp{
-		Result: model.NoticeMarqueeResult{
+		Result: model.NoticeMarqueeRes{
 			ItemCount:   0,
 			MarqueeList: []interface{}{},
 		},
@@ -652,7 +652,7 @@ func GenApi1Data() {
 	// user_intro_result
 	userIntroResp := model.UserNaviResp{
 		// _ = model.UserNaviResp{
-		Result: model.UserNaviResult{
+		Result: model.UserNaviRes{
 			User: model.User{
 				UserID:           9999999,
 				UnitOwningUserID: CenterId,
@@ -667,7 +667,7 @@ func GenApi1Data() {
 	// special_cutin_result
 	cutinResp := model.SpecialCutinResp{
 		// _ = model.SpecialCutinResp{
-		Result: model.SpecialCutinResult{
+		Result: model.SpecialCutinRes{
 			SpecialCutinList: []interface{}{},
 		},
 		Status:     200,
@@ -698,7 +698,7 @@ func GenApi1Data() {
 	}
 	awardResp := model.AwardInfoResp{
 		// _ = model.AwardInfoResp{
-		Result: model.AwardInfoResult{
+		Result: model.AwardInfoRes{
 			AwardInfo: awardsList,
 		},
 		Status:     200,
@@ -729,7 +729,7 @@ func GenApi1Data() {
 	}
 	backgroundResp := model.BackgroundInfoResp{
 		// _ = model.BackgroundInfoResp{
-		Result: model.BackgroundInfoResult{
+		Result: model.BackgroundInfoRes{
 			BackgroundInfo: backgroundsList,
 		},
 		Status:     200,
@@ -763,7 +763,7 @@ func GenApi1Data() {
 	}
 	exPointsResp := model.ExchangePointResp{
 		// _ = model.ExchangePointResp{
-		Result: model.ExchangePointResult{
+		Result: model.ExchangePointRes{
 			ExchangePointList: exPointsList,
 		},
 		Status:     200,
@@ -775,7 +775,7 @@ func GenApi1Data() {
 	// live_se_result
 	liveSeResp := model.LiveSeInfoResp{
 		// _ = model.LiveSeInfoResp{
-		Result: model.LiveSeInfoResult{
+		Result: model.LiveSeInfoRes{
 			LiveSeList: []int{1, 2, 3},
 		},
 		Status:     200,
@@ -787,7 +787,7 @@ func GenApi1Data() {
 	// live_icon_result
 	liveIconResp := model.LiveIconInfoResp{
 		// _ = model.LiveIconInfoResp{
-		Result: model.LiveIconInfoResult{
+		Result: model.LiveIconInfoRes{
 			LiveNotesIconList: []int{1, 2, 3},
 		},
 		Status:     200,
@@ -827,7 +827,7 @@ func GenApi1Data() {
 	// Final
 	k, err := json.Marshal(respAll)
 	CheckErr(err)
-	resp := model.Response{
+	resp := model.ApiResp{
 		ResponseData: k,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
@@ -846,7 +846,7 @@ func GenApi2Data() {
 	// login_topinfo_result
 	topInfoResp := model.TopInfoResp{
 		// _ = model.TopInfoResp{
-		Result: model.TopInfoResult{
+		Result: model.TopInfoRes{
 			FriendActionCnt:        0,
 			FriendGreetCnt:         0,
 			FriendVarietyCnt:       0,
@@ -883,7 +883,7 @@ func GenApi2Data() {
 	// login_topinfo_once_result
 	topInfoOnceResp := model.TopInfoOnceResp{
 		// _ = model.TopInfoOnceResp{
-		Result: model.TopInfoOnceResult{
+		Result: model.TopInfoOnceRes{
 			NewAchievementCnt:            0,
 			UnaccomplishedAchievementCnt: 0,
 			LiveDailyRewardExist:         false,
@@ -944,9 +944,9 @@ func GenApi2Data() {
 	}
 
 	museumInfoResp := model.MuseumInfoResp{
-		Result: model.MuseumInfoResult{
-			MuseumInfo: model.MuseumInfo{
-				Parameter: model.MuseumInfoParameter{
+		Result: model.MuseumInfoRes{
+			MuseumInfo: model.Museum{
+				Parameter: model.MuseumParameter{
 					Smile: smileBuf,
 					Pure:  pureBuf,
 					Cool:  coolBuf,
@@ -963,7 +963,7 @@ func GenApi2Data() {
 	// Final
 	k, err := json.Marshal(respAll)
 	CheckErr(err)
-	resp := model.Response{
+	resp := model.ApiResp{
 		ResponseData: k,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
@@ -1121,7 +1121,7 @@ func GenApi3Data() {
 	// Final
 	k, err := json.Marshal(respAll)
 	CheckErr(err)
-	resp := model.Response{
+	resp := model.ApiResp{
 		ResponseData: k,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,

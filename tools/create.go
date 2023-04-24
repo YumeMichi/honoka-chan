@@ -238,7 +238,7 @@ func GenCommonUnitData3() {
 	err := UserEng.Table("user_deck_m").Where("user_id = ?", uId).Asc("deck_id").Find(&userDeck)
 	CheckErr(err)
 
-	unitDeckInfo := []model.UnitDeckInfo{}
+	unitDeckInfo := []model.UnitDeckInfoRes{}
 	for _, deck := range userDeck {
 		deckUnit := []UnitDeckData{}
 		err = UserEng.Table("deck_unit_m").Where("user_deck_id = ?", deck.ID).Asc("position").Find(&deckUnit)
@@ -256,7 +256,7 @@ func GenCommonUnitData3() {
 		if deck.MainFlag == 1 {
 			mainFlag = true
 		}
-		unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfo{
+		unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfoRes{
 			UnitDeckID:        deck.DeckID,
 			MainFlag:          mainFlag,
 			DeckName:          deck.DeckName,

@@ -1,41 +1,45 @@
 package model
 
-// module: scenario, action: scenarioStatus
+// ScenarioStatusList ...
 type ScenarioStatusList struct {
 	ScenarioID int `json:"scenario_id"`
 	Status     int `json:"status"`
 }
 
-type ScenarioStatusResult struct {
+// ScenarioStatusRes ...
+type ScenarioStatusRes struct {
 	ScenarioStatusList []ScenarioStatusList `json:"scenario_status_list"`
 }
 
+// ScenarioStatusResp ...
 type ScenarioStatusResp struct {
-	Result     ScenarioStatusResult `json:"result"`
-	Status     int                  `json:"status"`
-	CommandNum bool                 `json:"commandNum"`
-	TimeStamp  int64                `json:"timeStamp"`
+	Result     ScenarioStatusRes `json:"result"`
+	Status     int               `json:"status"`
+	CommandNum bool              `json:"commandNum"`
+	TimeStamp  int64             `json:"timeStamp"`
 }
 
-// module: subscenario, action: subscenarioStatus
+// SubscenarioStatusList ...
 type SubscenarioStatusList struct {
 	SubscenarioID int `json:"subscenario_id"`
 	Status        int `json:"status"`
 }
 
-type SubscenarioStatusResult struct {
+// SubscenarioStatusRes ...
+type SubscenarioStatusRes struct {
 	SubscenarioStatusList  []SubscenarioStatusList `json:"subscenario_status_list"`
 	UnlockedSubscenarioIds []interface{}           `json:"unlocked_subscenario_ids"`
 }
 
+// SubscenarioStatusResp ...
 type SubscenarioStatusResp struct {
-	Result     SubscenarioStatusResult `json:"result"`
-	Status     int                     `json:"status"`
-	CommandNum bool                    `json:"commandNum"`
-	TimeStamp  int64                   `json:"timeStamp"`
+	Result     SubscenarioStatusRes `json:"result"`
+	Status     int                  `json:"status"`
+	CommandNum bool                 `json:"commandNum"`
+	TimeStamp  int64                `json:"timeStamp"`
 }
 
-// module: eventscenario, action: status
+// EventScenarioChapterList ...
 type EventScenarioChapterList struct {
 	EventScenarioID int    `json:"event_scenario_id"`
 	Chapter         int    `json:"chapter"`
@@ -48,6 +52,7 @@ type EventScenarioChapterList struct {
 	Amount          int    `json:"amount"`
 }
 
+// EventScenarioList ...
 type EventScenarioList struct {
 	EventID               int                        `json:"event_id"`
 	EventScenarioBtnAsset string                     `json:"event_scenario_btn_asset"`
@@ -55,13 +60,15 @@ type EventScenarioList struct {
 	ChapterList           []EventScenarioChapterList `json:"chapter_list"`
 }
 
-type EventScenarioStatusResult struct {
+// EventScenarioStatusRes ...
+type EventScenarioStatusRes struct {
 	EventScenarioList []EventScenarioList `json:"event_scenario_list"`
 }
 
+// EventScenarioStatusResp ...
 type EventScenarioStatusResp struct {
-	Result     EventScenarioStatusResult `json:"result"`
-	Status     int                       `json:"status"`
-	CommandNum bool                      `json:"commandNum"`
-	TimeStamp  int64                     `json:"timeStamp"`
+	Result     EventScenarioStatusRes `json:"result"`
+	Status     int                    `json:"status"`
+	CommandNum bool                   `json:"commandNum"`
+	TimeStamp  int64                  `json:"timeStamp"`
 }

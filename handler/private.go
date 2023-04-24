@@ -88,7 +88,7 @@ type InitializeResp struct {
 	WeixinKey                 string        `json:"weixin_key"`
 }
 
-func ActiveHandler(ctx *gin.Context) {
+func Active(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
 	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
@@ -98,7 +98,7 @@ func ActiveHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, `{ "code": 0, "msg": "ok", "data": { "message": "ok", "result": 0 } }`)
 }
 
-func PublicKeyHandler(ctx *gin.Context) {
+func PublicKey(ctx *gin.Context) {
 	publicKey := utils.ReadAllText("publickey.pem")
 	publicKey = strings.ReplaceAll(publicKey, "\n", "")
 	publicKey = strings.ReplaceAll(publicKey, "-----BEGIN PUBLIC KEY-----", "")
@@ -110,7 +110,7 @@ func PublicKeyHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func HandshakeHandler(ctx *gin.Context) {
+func Handshake(ctx *gin.Context) {
 	body, err := io.ReadAll(ctx.Request.Body)
 	CheckErr(err)
 	defer ctx.Request.Body.Close()
@@ -148,7 +148,7 @@ func HandshakeHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func InitializeHandler(ctx *gin.Context) {
+func Initialize(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
 	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
@@ -191,13 +191,13 @@ func InitializeHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func GetCodeHandler(ctx *gin.Context) {
+func GetCode(ctx *gin.Context) {
 	resp := `{ "code": 0, "msg": "ok", "data": { "codeArray": [ { "btntext": "好的", "code": "-10264022", "msg_from": 2, "text": "", "title": "短信验证码被阻止", "type": 1 }, { "btntext": " ", "code": "-10869623", "msg_from": 2, "text": "", "title": "网络连接失败，无法一键登录", "type": 2 }, { "btntext": " ", "code": "10298300", "msg_from": 2, "text": "", "title": " ", "type": 3 }, { "btntext": "", "code": "10298311", "msg_from": 2, "text": "", "title": "", "type": 3 }, { "btntext": " ", "code": "10298312", "msg_from": 2, "text": "", "title": " ", "type": 3 }, { "btntext": " ", "code": "10298313", "msg_from": 2, "text": "", "title": " ", "type": 1 }, { "btntext": " ", "code": "10298321", "msg_from": 2, "text": "", "title": " ", "type": 3 }, { "btntext": " ", "code": "10298322", "msg_from": 2, "text": "", "title": " ", "type": 3 } ], "codeVersion": "1.0.5" } }`
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, resp)
 }
 
-func LoginAutoHandler(ctx *gin.Context) {
+func LoginAuto(ctx *gin.Context) {
 	body, err := io.ReadAll(ctx.Request.Body)
 	CheckErr(err)
 	defer ctx.Request.Body.Close()
@@ -265,7 +265,7 @@ func LoginAutoHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func LoginAreaHandler(ctx *gin.Context) {
+func LoginArea(ctx *gin.Context) {
 	userId := ctx.PostForm("userid")
 	if userId != "" {
 		// fmt.Println(userId)
@@ -275,7 +275,7 @@ func LoginAreaHandler(ctx *gin.Context) {
 	}
 }
 
-func AccountLoginHandler(ctx *gin.Context) {
+func AccountLogin(ctx *gin.Context) {
 	body, err := io.ReadAll(ctx.Request.Body)
 	CheckErr(err)
 	defer ctx.Request.Body.Close()
@@ -434,7 +434,7 @@ func AccountLoginHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func ReportRoleHandler(ctx *gin.Context) {
+func ReportRole(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
 	// CheckErr(err)
 	// defer ctx.Request.Body.Close()
@@ -469,13 +469,13 @@ func ReportRoleHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func GetProductListHandler(ctx *gin.Context) {
+func GetProductList(ctx *gin.Context) {
 	resp := `{ "code": 0, "msg": "ok", "data": { "message": [ ], "result": 0 } }`
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, resp)
 }
 
-func GuestStatusHandler(ctx *gin.Context) {
+func GuestStatus(ctx *gin.Context) {
 	resp := `{"code":0,"msg":"ok","data":{"disablead":1,"loginswitch":1,"message":"ok","result":0}}`
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, resp)
@@ -500,7 +500,7 @@ func ReportApp(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func AgreementHandler(ctx *gin.Context) {
+func Agreement(ctx *gin.Context) {
 	resp := `{ "return_code": 0, "error_type": 0, "return_message": "", "data": { } }`
 	ctx.Header("Content-Type", "text/html;charset=utf-8")
 	ctx.String(http.StatusOK, resp)

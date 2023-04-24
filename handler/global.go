@@ -7,12 +7,10 @@ import (
 )
 
 var (
-	// nonce          = 0
-	PackageVersion = "97.4.6"
-	CdnUrl         string
-	ErrorMsg       = `{"code":20001,"message":""}`
-	MainEng        *xorm.Engine
-	UserEng        *xorm.Engine
+	CdnUrl   string
+	ErrorMsg = `{"code":20001,"message":""}`
+	MainEng  *xorm.Engine
+	UserEng  *xorm.Engine
 )
 
 func init() {

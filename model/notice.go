@@ -42,3 +42,17 @@ type NoticeUserGreetingRes struct {
 	NoticeList      []interface{} `json:"notice_list"`
 	ServerTimestamp int64         `json:"server_timestamp"`
 }
+
+// NoticeMarqueeRes ...
+type NoticeMarqueeRes struct {
+	ItemCount   int           `json:"item_count"`
+	MarqueeList []interface{} `json:"marquee_list"`
+}
+
+// NoticeMarqueeResp ...
+type NoticeMarqueeResp struct {
+	Result     NoticeMarqueeRes `json:"result"`
+	Status     int              `json:"status"`
+	CommandNum bool             `json:"commandNum"`
+	TimeStamp  int64            `json:"timeStamp"`
+}

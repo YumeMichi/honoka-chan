@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NoticeFriendVarietyHandler(ctx *gin.Context) {
+func NoticeFriendVariety(ctx *gin.Context) {
 	noticeResp := model.NoticeFriendVarietyResp{
 		ResponseData: model.NoticeFriendVarietyRes{
 			ItemCount:       1,
@@ -35,7 +35,7 @@ func NoticeFriendVarietyHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func NoticeFriendGreetingHandler(ctx *gin.Context) {
+func NoticeFriendGreeting(ctx *gin.Context) {
 	noticeResp := model.NoticeFriendGreetingResp{
 		ResponseData: model.NoticeFriendGreetingRes{
 			NextId:          0,
@@ -58,7 +58,7 @@ func NoticeFriendGreetingHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func NoticeUserGreetingHandler(ctx *gin.Context) {
+func NoticeUserGreeting(ctx *gin.Context) {
 	noticeResp := model.NoticeUserGreetingResp{
 		ResponseData: model.NoticeUserGreetingRes{
 			ItemCount:       0,

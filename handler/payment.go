@@ -35,7 +35,7 @@ type ProductData struct {
 	ServerTimestamp  int64           `json:"server_timestamp"`
 }
 
-func ProductListHandler(ctx *gin.Context) {
+func ProductList(ctx *gin.Context) {
 	prodReesp := ProductResp{
 		ResponseData: ProductData{
 			RestrictionInfo: RestrictionInfo{

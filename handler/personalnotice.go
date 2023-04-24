@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PersonalNoticeHandler(ctx *gin.Context) {
+func PersonalNotice(ctx *gin.Context) {
 	noticeResp := model.PersonalNoticeResp{
 		ResponseData: model.PersonalNoticeRes{
 			HasNotice:       false,

@@ -14,14 +14,16 @@ type BannerList struct {
 	WebviewURL       string `json:"webview_url,omitempty"`
 }
 
-type BannerListResult struct {
+// BannerListRes ...
+type BannerListRes struct {
 	TimeLimit  string       `json:"time_limit"`
 	BannerList []BannerList `json:"banner_list"`
 }
 
+// BannerListResp ...
 type BannerListResp struct {
-	Result     BannerListResult `json:"result"`
-	Status     int              `json:"status"`
-	CommandNum bool             `json:"commandNum"`
-	TimeStamp  int64            `json:"timeStamp"`
+	Result     BannerListRes `json:"result"`
+	Status     int           `json:"status"`
+	CommandNum bool          `json:"commandNum"`
+	TimeStamp  int64         `json:"timeStamp"`
 }

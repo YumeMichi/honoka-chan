@@ -1,5 +1,6 @@
 package model
 
+// TopInfoLicenseInfo ...
 type TopInfoLicenseInfo struct {
 	LicenseList  []interface{} `json:"license_list"`
 	LicensedInfo []interface{} `json:"licensed_info"`
@@ -7,7 +8,8 @@ type TopInfoLicenseInfo struct {
 	BadgeFlag    bool          `json:"badge_flag"`
 }
 
-type TopInfoResult struct {
+// TopInfoRes ...
+type TopInfoRes struct {
 	FriendActionCnt        int                `json:"friend_action_cnt"`
 	FriendGreetCnt         int                `json:"friend_greet_cnt"`
 	FriendVarietyCnt       int                `json:"friend_variety_cnt"`
@@ -31,13 +33,15 @@ type TopInfoResult struct {
 	HasAdReward            bool               `json:"has_ad_reward"`
 }
 
+// TopInfoResp ...
 type TopInfoResp struct {
-	Result     TopInfoResult `json:"result"`
-	Status     int           `json:"status"`
-	CommandNum bool          `json:"commandNum"`
-	TimeStamp  int64         `json:"timeStamp"`
+	Result     TopInfoRes `json:"result"`
+	Status     int        `json:"status"`
+	CommandNum bool       `json:"commandNum"`
+	TimeStamp  int64      `json:"timeStamp"`
 }
 
+// TopInfoOnceNotification ...
 type TopInfoOnceNotification struct {
 	Push       bool `json:"push"`
 	Lp         bool `json:"lp"`
@@ -50,7 +54,8 @@ type TopInfoOnceNotification struct {
 	Birthday   bool `json:"birthday"`
 }
 
-type TopInfoOnceResult struct {
+// TopInfoOnceRes ...
+type TopInfoOnceRes struct {
 	NewAchievementCnt            int                     `json:"new_achievement_cnt"`
 	UnaccomplishedAchievementCnt int                     `json:"unaccomplished_achievement_cnt"`
 	LiveDailyRewardExist         bool                    `json:"live_daily_reward_exist"`
@@ -64,9 +69,10 @@ type TopInfoOnceResult struct {
 	OpenV98                      bool                    `json:"open_v98"`
 }
 
+// TopInfoOnceResp ...
 type TopInfoOnceResp struct {
-	Result     TopInfoOnceResult `json:"result"`
-	Status     int               `json:"status"`
-	CommandNum bool              `json:"commandNum"`
-	TimeStamp  int64             `json:"timeStamp"`
+	Result     TopInfoOnceRes `json:"result"`
+	Status     int            `json:"status"`
+	CommandNum bool           `json:"commandNum"`
+	TimeStamp  int64          `json:"timeStamp"`
 }

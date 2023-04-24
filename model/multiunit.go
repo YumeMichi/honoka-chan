@@ -1,12 +1,13 @@
 package model
 
-// module: multiunit, action: multiunitscenarioStatus
+// MultiUnitScenarioChapterList ...
 type MultiUnitScenarioChapterList struct {
 	MultiUnitScenarioID int `json:"multi_unit_scenario_id"`
 	Chapter             int `json:"chapter"`
 	Status              int `json:"status"`
 }
 
+// MultiUnitScenarioStatusList ...
 type MultiUnitScenarioStatusList struct {
 	MultiUnitID               int                            `json:"multi_unit_id"`
 	Status                    int                            `json:"status"`
@@ -15,14 +16,16 @@ type MultiUnitScenarioStatusList struct {
 	ChapterList               []MultiUnitScenarioChapterList `json:"chapter_list"`
 }
 
-type MultiUnitScenarioStatusResult struct {
+// MultiUnitScenarioStatusRes ...
+type MultiUnitScenarioStatusRes struct {
 	MultiUnitScenarioStatusList  []MultiUnitScenarioStatusList `json:"multi_unit_scenario_status_list"`
 	UnlockedMultiUnitScenarioIds []interface{}                 `json:"unlocked_multi_unit_scenario_ids"`
 }
 
+// MultiUnitScenarioStatusResp ...
 type MultiUnitScenarioStatusResp struct {
-	Result     MultiUnitScenarioStatusResult `json:"result"`
-	Status     int                           `json:"status"`
-	CommandNum bool                          `json:"commandNum"`
-	TimeStamp  int64                         `json:"timeStamp"`
+	Result     MultiUnitScenarioStatusRes `json:"result"`
+	Status     int                        `json:"status"`
+	CommandNum bool                       `json:"commandNum"`
+	TimeStamp  int64                      `json:"timeStamp"`
 }

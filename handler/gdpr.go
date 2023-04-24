@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GdprHandler(ctx *gin.Context) {
+func Gdpr(ctx *gin.Context) {
 	gdprResp := model.GdprResp{
 		ResponseData: model.GdprRes{
 			EnableGdpr:      true,

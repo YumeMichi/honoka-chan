@@ -33,7 +33,7 @@ type ScenarioReq struct {
 	ScenarioID int    `json:"scenario_id"`
 }
 
-func ScenarioStartupHandler(ctx *gin.Context) {
+func ScenarioStartup(ctx *gin.Context) {
 	startReq := ScenarioReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
 	CheckErr(err)
@@ -62,7 +62,7 @@ func ScenarioStartupHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func ScenarioRewardHandler(ctx *gin.Context) {
+func ScenarioReward(ctx *gin.Context) {
 	resp := utils.ReadAllText("assets/reward.json")
 
 	nonce := ctx.GetInt("nonce")

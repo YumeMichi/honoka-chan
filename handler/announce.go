@@ -13,14 +13,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AnnounceIndexHandler(ctx *gin.Context) {
+func AnnounceIndex(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "announce.tmpl", gin.H{
 		"title":   "Love Live! 学园偶像祭 非官方服务器",
 		"content": template.HTML("目前开发完毕的功能包括：登录、相册、Live、个人信息。<br>其他功能仍在开发中，有报错属于正常现象。"),
 	})
 }
 
-func AnnounceCheckStateHandler(ctx *gin.Context) {
+func AnnounceCheckState(ctx *gin.Context) {
 	announceResp := model.AnnounceResp{
 		ResponseData: model.AnnounceRes{
 			HasUnreadAnnounce: false,

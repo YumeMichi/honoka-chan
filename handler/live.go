@@ -18,13 +18,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type GameOverResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
-}
-
-func PartyListHandler(ctx *gin.Context) {
+func PartyList(ctx *gin.Context) {
 	resp := utils.ReadAllText("assets/partylist.json")
 
 	nonce := ctx.GetInt("nonce")
@@ -37,7 +31,7 @@ func PartyListHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
-func PlayLiveHandler(ctx *gin.Context) {
+func PlayLive(ctx *gin.Context) {
 	playReq := model.PlayReq{}
 	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &playReq)
 	CheckErr(err)
@@ -402,44 +396,38 @@ func PlayLiveHandler(ctx *gin.Context) {
 		},
 	})
 
-	resp := model.PlayResponseData{
-		RankInfo:            ranks,
-		EnergyFullTime:      "2023-03-20 01:28:55",
-		OverMaxEnergy:       0,
-		AvailableLiveResume: false,
-		LiveList:            lives,
-		IsMarathonEvent:     false,
-		MarathonEventID:     nil,
-		NoSkill:             false,
-		CanActivateEffect:   true,
-		ServerTimestamp:     time.Now().Unix(),
+	playResp := model.PlayResp{
+		ResponseData: model.PlayRes{
+			RankInfo:            ranks,
+			EnergyFullTime:      "2023-03-20 01:28:55",
+			OverMaxEnergy:       0,
+			AvailableLiveResume: false,
+			LiveList:            lives,
+			IsMarathonEvent:     false,
+			MarathonEventID:     nil,
+			NoSkill:             false,
+			CanActivateEffect:   true,
+			ServerTimestamp:     time.Now().Unix(),
+		},
+		ReleaseInfo: []interface{}{},
+		StatusCode:  200,
 	}
 
-	m, err := json.Marshal(resp)
+	resp, err := json.Marshal(playResp)
 	CheckErr(err)
-
-	res := model.Response{
-		ResponseData: m,
-		ReleaseInfo:  []interface{}{},
-		StatusCode:   200,
-	}
-
-	mm, err := json.Marshal(res)
-	CheckErr(err)
-	// fmt.Println(string(mm))
 
 	nonce := ctx.GetInt("nonce")
 	nonce++
 
 	ctx.Header("user_id", ctx.GetString("userid"))
 	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
-	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
 
-	ctx.String(http.StatusOK, string(mm))
+	ctx.String(http.StatusOK, string(resp))
 }
 
-func GameOverHandler(ctx *gin.Context) {
-	overResp := GameOverResp{
+func GameOver(ctx *gin.Context) {
+	overResp := model.GameOverResp{
 		ResponseData: []interface{}{},
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
@@ -457,7 +445,7 @@ func GameOverHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func PlayScoreHandler(ctx *gin.Context) {
+func PlayScore(ctx *gin.Context) {
 	playScoreReq := model.PlayScoreReq{}
 	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &playScoreReq)
 	CheckErr(err)
@@ -506,56 +494,50 @@ func PlayScoreHandler(ctx *gin.Context) {
 		RankMax: 0,
 	})
 
-	resp := model.PlayScoreResponseData{
-		On: model.On{
-			HasRecord: false,
-			LiveInfo: model.LiveInfo{
-				LiveDifficultyID: difficultyId,
-				IsRandom:         false,
-				AcFlag:           ac_flag,
-				SwingFlag:        swing_flag,
-				NotesList:        notes,
+	playResp := model.PlayScoreResp{
+		ResponseData: model.PlayScoreRes{
+			On: model.On{
+				HasRecord: false,
+				LiveInfo: model.LiveInfo{
+					LiveDifficultyID: difficultyId,
+					IsRandom:         false,
+					AcFlag:           ac_flag,
+					SwingFlag:        swing_flag,
+					NotesList:        notes,
+				},
 			},
-		},
-		Off: model.Off{
-			HasRecord: false,
-			LiveInfo: model.LiveInfo{
-				LiveDifficultyID: difficultyId,
-				IsRandom:         false,
-				AcFlag:           ac_flag,
-				SwingFlag:        swing_flag,
-				NotesList:        notes,
+			Off: model.Off{
+				HasRecord: false,
+				LiveInfo: model.LiveInfo{
+					LiveDifficultyID: difficultyId,
+					IsRandom:         false,
+					AcFlag:           ac_flag,
+					SwingFlag:        swing_flag,
+					NotesList:        notes,
+				},
 			},
+			RankInfo:          ranks,
+			CanActivateEffect: true,
+			ServerTimestamp:   int(time.Now().Unix()),
 		},
-		RankInfo:          ranks,
-		CanActivateEffect: true,
-		ServerTimestamp:   int(time.Now().Unix()),
+		ReleaseInfo: []interface{}{},
+		StatusCode:  200,
 	}
 
-	m, err := json.Marshal(resp)
+	resp, err := json.Marshal(playResp)
 	CheckErr(err)
-
-	res := model.Response{
-		ResponseData: m,
-		ReleaseInfo:  []interface{}{},
-		StatusCode:   200,
-	}
-
-	mm, err := json.Marshal(res)
-	CheckErr(err)
-	// fmt.Println(string(mm))
 
 	nonce := ctx.GetInt("nonce")
 	nonce++
 
 	ctx.Header("user_id", ctx.GetString("userid"))
 	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
-	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
 
-	ctx.String(http.StatusOK, string(mm))
+	ctx.String(http.StatusOK, string(resp))
 }
 
-func PlayRewardHandler(ctx *gin.Context) {
+func PlayReward(ctx *gin.Context) {
 	playRewardReq := model.PlayRewardReq{}
 	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &playRewardReq)
 	CheckErr(err)
@@ -578,172 +560,166 @@ func PlayRewardHandler(ctx *gin.Context) {
 	CheckErr(err)
 
 	totalScore := playRewardReq.ScoreSmile + playRewardReq.ScoreCool + playRewardReq.ScoreCute
-	resp := model.RewardResponseData{
-		LiveInfo: []model.RewardLiveInfo{
-			{
-				LiveDifficultyID: difficultyId,
-				IsRandom:         false,
-				AcFlag:           ac_flag,
-				SwingFlag:        swing_flag,
+	playResp := model.RewardResp{
+		ResponseData: model.RewardRes{
+			LiveInfo: []model.RewardLiveInfo{
+				{
+					LiveDifficultyID: difficultyId,
+					IsRandom:         false,
+					AcFlag:           ac_flag,
+					SwingFlag:        swing_flag,
+				},
 			},
-		},
-		TotalLove:   0,
-		IsHighScore: true,
-		HiScore:     totalScore,
-		BaseRewardInfo: model.BaseRewardInfo{
-			PlayerExp: 830,
-			PlayerExpUnitMax: model.PlayerExpUnitMax{
-				Before: 900,
-				After:  900,
+			TotalLove:   0,
+			IsHighScore: true,
+			HiScore:     totalScore,
+			BaseRewardInfo: model.BaseRewardInfo{
+				PlayerExp: 830,
+				PlayerExpUnitMax: model.PlayerExpUnitMax{
+					Before: 900,
+					After:  900,
+				},
+				PlayerExpFriendMax: model.PlayerExpFriendMax{
+					Before: 99,
+					After:  99,
+				},
+				PlayerExpLpMax: model.PlayerExpLpMax{
+					Before: 417,
+					After:  417,
+				},
+				GameCoin:              4500,
+				GameCoinRewardBoxFlag: false,
+				SocialPoint:           10,
 			},
-			PlayerExpFriendMax: model.PlayerExpFriendMax{
-				Before: 99,
-				After:  99,
+			RewardUnitList: model.RewardUnitList{
+				LiveClear: []model.LiveClear{},
+				LiveRank:  []model.LiveRank{},
+				LiveCombo: []interface{}{},
 			},
-			PlayerExpLpMax: model.PlayerExpLpMax{
-				Before: 417,
-				After:  417,
+			UnlockedSubscenarioIds:       []interface{}{},
+			UnlockedMultiUnitScenarioIds: []interface{}{},
+			EffortPoint:                  []model.EffortPoint{},
+			IsEffortPointVisible:         false,
+			LimitedEffortBox:             []interface{}{},
+			UnitList:                     unitsList,
+			BeforeUserInfo: model.BeforeUserInfo{
+				Level:                          1028,
+				Exp:                            28823566,
+				PreviousExp:                    27734700,
+				NextExp:                        28941885,
+				GameCoin:                       86505544,
+				SnsCoin:                        49,
+				FreeSnsCoin:                    48,
+				PaidSnsCoin:                    1,
+				SocialPoint:                    1438165,
+				UnitMax:                        5000,
+				WaitingUnitMax:                 1000,
+				CurrentEnergy:                  392,
+				EnergyMax:                      417,
+				TrainingEnergy:                 9,
+				TrainingEnergyMax:              10,
+				EnergyFullTime:                 "2023-03-20 01:28:55",
+				LicenseLiveEnergyRecoverlyTime: 60,
+				FriendMax:                      99,
+				TutorialState:                  -1,
+				OverMaxEnergy:                  0,
+				UnlockRandomLiveMuse:           1,
+				UnlockRandomLiveAqours:         1,
 			},
-			GameCoin:              4500,
-			GameCoinRewardBoxFlag: false,
-			SocialPoint:           10,
-		},
-		RewardUnitList: model.RewardUnitList{
-			LiveClear: []model.LiveClear{},
-			LiveRank:  []model.LiveRank{},
-			LiveCombo: []interface{}{},
-		},
-		UnlockedSubscenarioIds:       []interface{}{},
-		UnlockedMultiUnitScenarioIds: []interface{}{},
-		EffortPoint:                  []model.EffortPoint{},
-		IsEffortPointVisible:         false,
-		LimitedEffortBox:             []interface{}{},
-		UnitList:                     unitsList,
-		BeforeUserInfo: model.BeforeUserInfo{
-			Level:                          1028,
-			Exp:                            28823566,
-			PreviousExp:                    27734700,
-			NextExp:                        28941885,
-			GameCoin:                       86505544,
-			SnsCoin:                        49,
-			FreeSnsCoin:                    48,
-			PaidSnsCoin:                    1,
-			SocialPoint:                    1438165,
-			UnitMax:                        5000,
-			WaitingUnitMax:                 1000,
-			CurrentEnergy:                  392,
-			EnergyMax:                      417,
-			TrainingEnergy:                 9,
-			TrainingEnergyMax:              10,
-			EnergyFullTime:                 "2023-03-20 01:28:55",
-			LicenseLiveEnergyRecoverlyTime: 60,
-			FriendMax:                      99,
-			TutorialState:                  -1,
-			OverMaxEnergy:                  0,
-			UnlockRandomLiveMuse:           1,
-			UnlockRandomLiveAqours:         1,
-		},
-		AfterUserInfo: model.AfterUserInfo{
-			Level:                          1028,
-			Exp:                            28824396,
-			PreviousExp:                    27734700,
-			NextExp:                        28941885,
-			GameCoin:                       86520044,
-			SnsCoin:                        50,
-			FreeSnsCoin:                    49,
-			PaidSnsCoin:                    1,
-			SocialPoint:                    1438375,
-			UnitMax:                        5000,
-			WaitingUnitMax:                 1000,
-			CurrentEnergy:                  392,
-			EnergyMax:                      417,
-			TrainingEnergy:                 9,
-			TrainingEnergyMax:              10,
-			EnergyFullTime:                 "2023-03-20 01:28:55",
-			LicenseLiveEnergyRecoverlyTime: 60,
-			FriendMax:                      99,
-			TutorialState:                  -1,
-			OverMaxEnergy:                  0,
-			UnlockRandomLiveMuse:           1,
-			UnlockRandomLiveAqours:         1,
-		},
-		NextLevelInfo: []model.NextLevelInfo{
-			{
-				Level:   1028,
-				FromExp: 28823566,
+			AfterUserInfo: model.AfterUserInfo{
+				Level:                          1028,
+				Exp:                            28824396,
+				PreviousExp:                    27734700,
+				NextExp:                        28941885,
+				GameCoin:                       86520044,
+				SnsCoin:                        50,
+				FreeSnsCoin:                    49,
+				PaidSnsCoin:                    1,
+				SocialPoint:                    1438375,
+				UnitMax:                        5000,
+				WaitingUnitMax:                 1000,
+				CurrentEnergy:                  392,
+				EnergyMax:                      417,
+				TrainingEnergy:                 9,
+				TrainingEnergyMax:              10,
+				EnergyFullTime:                 "2023-03-20 01:28:55",
+				LicenseLiveEnergyRecoverlyTime: 60,
+				FriendMax:                      99,
+				TutorialState:                  -1,
+				OverMaxEnergy:                  0,
+				UnlockRandomLiveMuse:           1,
+				UnlockRandomLiveAqours:         1,
 			},
-		},
-		GoalAccompInfo: model.GoalAccompInfo{
-			AchievedIds: []interface{}{},
-			Rewards:     []interface{}{},
-		},
-		SpecialRewardInfo:    []interface{}{},
-		EventInfo:            []interface{}{},
-		DailyRewardInfo:      []interface{}{},
-		CanSendFriendRequest: false,
-		UsingBuffInfo:        []interface{}{},
-		ClassSystem: model.ClassSystem{
-			RankInfo: model.RewardRankInfo{
-				BeforeClassRankID: 10,
-				AfterClassRankID:  10,
-				RankUpDate:        "2020-02-12 11:57:15",
+			NextLevelInfo: []model.NextLevelInfo{
+				{
+					Level:   1028,
+					FromExp: 28823566,
+				},
 			},
-			CompleteFlag: false,
-			IsOpened:     true,
-			IsVisible:    true,
+			GoalAccompInfo: model.GoalAccompInfo{
+				AchievedIds: []interface{}{},
+				Rewards:     []interface{}{},
+			},
+			SpecialRewardInfo:    []interface{}{},
+			EventInfo:            []interface{}{},
+			DailyRewardInfo:      []interface{}{},
+			CanSendFriendRequest: false,
+			UsingBuffInfo:        []interface{}{},
+			ClassSystem: model.ClassSystem{
+				RankInfo: model.RewardRankInfo{
+					BeforeClassRankID: 10,
+					AfterClassRankID:  10,
+					RankUpDate:        "2020-02-12 11:57:15",
+				},
+				CompleteFlag: false,
+				IsOpened:     true,
+				IsVisible:    true,
+			},
+			AccomplishedAchievementList:  []model.AccomplishedAchievementList{},
+			UnaccomplishedAchievementCnt: 15,
+			AddedAchievementList:         []interface{}{},
+			MuseumInfo:                   model.Museum{},
+			UnitSupportList:              []model.RewardUnitSupportList{},
+			ServerTimestamp:              1679238066,
+			PresentCnt:                   2159,
 		},
-		AccomplishedAchievementList:  []model.AccomplishedAchievementList{},
-		UnaccomplishedAchievementCnt: 15,
-		AddedAchievementList:         []interface{}{},
-		MuseumInfo:                   model.RewardMuseumInfo{},
-		UnitSupportList:              []model.RewardUnitSupportList{},
-		ServerTimestamp:              1679238066,
-		PresentCnt:                   2159,
+		ReleaseInfo: []interface{}{},
+		StatusCode:  200,
 	}
 
 	if playRewardReq.MaxCombo > s_rank_combo {
-		resp.ComboRank = 1
+		playResp.ResponseData.ComboRank = 1
 	} else if playRewardReq.MaxCombo > a_rank_combo {
-		resp.ComboRank = 2
+		playResp.ResponseData.ComboRank = 2
 	} else if playRewardReq.MaxCombo > b_rank_combo {
-		resp.ComboRank = 3
+		playResp.ResponseData.ComboRank = 3
 	} else if playRewardReq.MaxCombo > c_rank_combo {
-		resp.ComboRank = 4
+		playResp.ResponseData.ComboRank = 4
 	} else {
-		resp.ComboRank = 5
+		playResp.ResponseData.ComboRank = 5
 	}
 
 	if totalScore > s_rank_score {
-		resp.Rank = 1
+		playResp.ResponseData.Rank = 1
 	} else if totalScore > a_rank_score {
-		resp.Rank = 2
+		playResp.ResponseData.Rank = 2
 	} else if totalScore > b_rank_score {
-		resp.Rank = 3
+		playResp.ResponseData.Rank = 3
 	} else if totalScore > c_rank_score {
-		resp.Rank = 4
+		playResp.ResponseData.Rank = 4
 	} else {
-		resp.Rank = 5
+		playResp.ResponseData.Rank = 5
 	}
 
-	m, err := json.Marshal(resp)
+	resp, err := json.Marshal(playResp)
 	CheckErr(err)
-
-	res := model.Response{
-		ResponseData: m,
-		ReleaseInfo:  []interface{}{},
-		StatusCode:   200,
-	}
-
-	mm, err := json.Marshal(res)
-	CheckErr(err)
-	// fmt.Println(string(mm))
 
 	nonce := ctx.GetInt("nonce")
 	nonce++
 
 	ctx.Header("user_id", ctx.GetString("userid"))
 	ctx.Header("authorize", fmt.Sprintf("consumerKey=lovelive_test&timeStamp=%d&version=1.1&token=%s&nonce=%d&user_id=%s&requestTimeStamp=%d", time.Now().Unix(), ctx.GetString("token"), nonce, ctx.GetString("userid"), ctx.GetInt64("req_time")))
-	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(mm, "privatekey.pem")))
+	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
 
-	ctx.String(http.StatusOK, string(mm))
+	ctx.String(http.StatusOK, string(resp))
 }

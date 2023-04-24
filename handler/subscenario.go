@@ -33,7 +33,7 @@ type SubScenarioReq struct {
 	CommandNum    string `json:"commandNum"`
 }
 
-func SubScenarioStartupHandler(ctx *gin.Context) {
+func SubScenarioStartup(ctx *gin.Context) {
 	startReq := SubScenarioReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
 	CheckErr(err)
@@ -60,7 +60,7 @@ func SubScenarioStartupHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func SubScenarioRewardHandler(ctx *gin.Context) {
+func SubScenarioReward(ctx *gin.Context) {
 	resp := utils.ReadAllText("assets/subreward.json")
 
 	nonce := ctx.GetInt("nonce")

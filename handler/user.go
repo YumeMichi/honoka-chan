@@ -20,7 +20,7 @@ type NotificationResp struct {
 	StatusCode   int           `json:"status_code"`
 }
 
-func SetNotificationTokenHandler(ctx *gin.Context) {
+func SetNotificationToken(ctx *gin.Context) {
 	notifResp := NotificationResp{
 		ResponseData: []interface{}{},
 		ReleaseInfo:  []interface{}{},
@@ -39,7 +39,7 @@ func SetNotificationTokenHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func ChangeNaviHandler(ctx *gin.Context) {
+func ChangeNavi(ctx *gin.Context) {
 	req := gjson.Parse(ctx.PostForm("request_data"))
 	pref := tools.UserPref{
 		UnitOwningUserID: int(req.Get("unit_owning_user_id").Int()),
@@ -64,7 +64,7 @@ func ChangeNaviHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, string(resp))
 }
 
-func ChangeNameHandler(ctx *gin.Context) {
+func ChangeName(ctx *gin.Context) {
 	req := gjson.Parse(ctx.PostForm("request_data"))
 	var oldName string
 	exists, err := UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Cols("user_name").Get(&oldName)

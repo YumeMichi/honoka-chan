@@ -126,13 +126,28 @@ type SkillEquipResp struct {
 	StatusCode   int           `json:"status_code"`
 }
 
-// module: unit, action: unitAll
+// SetDisplayRankResp ...
+type SetDisplayRankResp struct {
+	ResponseData []interface{} `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+
+// SetDeckResp ...
+type SetDeckResp struct {
+	ResponseData []interface{} `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+
+// Costume ...
 type Costume struct {
 	UnitID    int  `json:"unit_id"`
 	IsRankMax bool `json:"is_rank_max"`
 	IsSigned  bool `json:"is_signed"`
 }
 
+// Active ...
 type Active struct {
 	UnitOwningUserID            int    `xorm:"unit_owning_user_id pk autoincr" json:"unit_owning_user_id"`
 	UserID                      int    `xorm:"user_id" json:"-"`
@@ -162,6 +177,7 @@ type Active struct {
 	// Costume                     Costume `json:"costume,omitempty"`
 }
 
+// Waiting ...
 type Waiting struct {
 	UnitOwningUserID            int64  `json:"unit_owning_user_id"`
 	UnitID                      int    `json:"unit_id"`
@@ -189,56 +205,62 @@ type Waiting struct {
 	InsertDate                  string `json:"insert_date"`
 }
 
-type UnitAllResult struct {
+// UnitAllRes ...
+type UnitAllRes struct {
 	Active  []Active  `json:"active"`
 	Waiting []Waiting `json:"waiting"`
 }
 
+// UnitAllResp ...
 type UnitAllResp struct {
-	Result     UnitAllResult `json:"result"`
-	Status     int           `json:"status"`
-	CommandNum bool          `json:"commandNum"`
-	TimeStamp  int64         `json:"timeStamp"`
+	Result     UnitAllRes `json:"result"`
+	Status     int        `json:"status"`
+	CommandNum bool       `json:"commandNum"`
+	TimeStamp  int64      `json:"timeStamp"`
 }
 
-// module: unit, action: deckInfo
+// UnitOwningUserIds ...
 type UnitOwningUserIds struct {
 	Position         int `json:"position"`
 	UnitOwningUserID int `json:"unit_owning_user_id"`
 }
 
-type UnitDeckInfo struct {
+// UnitDeckInfoRes ...
+type UnitDeckInfoRes struct {
 	UnitDeckID        int                 `json:"unit_deck_id"`
 	MainFlag          bool                `json:"main_flag"`
 	DeckName          string              `json:"deck_name"`
 	UnitOwningUserIds []UnitOwningUserIds `json:"unit_owning_user_ids"`
 }
 
+// UnitDeckInfoResp ...
 type UnitDeckInfoResp struct {
-	Result     []UnitDeckInfo `json:"result"`
-	Status     int            `json:"status"`
-	CommandNum bool           `json:"commandNum"`
-	TimeStamp  int64          `json:"timeStamp"`
-}
-
-// module: unit, action: supporterAll
-type UnitSupportList struct {
-	UnitID int `json:"unit_id"`
-	Amount int `json:"amount"`
-}
-
-type UnitSupportResult struct {
-	UnitSupportList []UnitSupportList `json:"unit_support_list"`
-}
-
-type UnitSupportResp struct {
-	Result     UnitSupportResult `json:"result"`
+	Result     []UnitDeckInfoRes `json:"result"`
 	Status     int               `json:"status"`
 	CommandNum bool              `json:"commandNum"`
 	TimeStamp  int64             `json:"timeStamp"`
 }
 
-// module: unit, action: removableSkillInfo
+// UnitSupportList ...
+type UnitSupportList struct {
+	UnitID int `json:"unit_id"`
+	Amount int `json:"amount"`
+}
+
+// UnitSupportRes ...
+type UnitSupportRes struct {
+	UnitSupportList []UnitSupportList `json:"unit_support_list"`
+}
+
+// UnitSupportResp ...
+type UnitSupportResp struct {
+	Result     UnitSupportRes `json:"result"`
+	Status     int            `json:"status"`
+	CommandNum bool           `json:"commandNum"`
+	TimeStamp  int64          `json:"timeStamp"`
+}
+
+// OwningInfo ...
 type OwningInfo struct {
 	UnitRemovableSkillID int    `json:"unit_removable_skill_id"`
 	TotalAmount          int    `json:"total_amount"`
@@ -246,19 +268,21 @@ type OwningInfo struct {
 	InsertDate           string `json:"insert_date"`
 }
 
-type RemovableSkillResult struct {
+// RemovableSkillRes ...
+type RemovableSkillRes struct {
 	OwningInfo    []OwningInfo        `json:"owning_info"`
 	EquipmentInfo map[int]interface{} `json:"equipment_info"`
 }
 
+// RemovableSkillResp ...
 type RemovableSkillResp struct {
-	Result     RemovableSkillResult `json:"result"`
-	Status     int                  `json:"status"`
-	CommandNum bool                 `json:"commandNum"`
-	TimeStamp  int64                `json:"timeStamp"`
+	Result     RemovableSkillRes `json:"result"`
+	Status     int               `json:"status"`
+	CommandNum bool              `json:"commandNum"`
+	TimeStamp  int64             `json:"timeStamp"`
 }
 
-// module: unit, action: deck
+// UnitDeckReq ...
 type UnitDeckReq struct {
 	Module       string         `json:"module"`
 	UnitDeckList []UnitDeckList `json:"unit_deck_list"`
@@ -266,11 +290,13 @@ type UnitDeckReq struct {
 	Mgd          int            `json:"mgd"`
 }
 
+// UnitDeckDetail ...
 type UnitDeckDetail struct {
 	Position         int `json:"position"`
 	UnitOwningUserID int `json:"unit_owning_user_id"`
 }
 
+// UnitDeckList ...
 type UnitDeckList struct {
 	UnitDeckDetail []UnitDeckDetail `json:"unit_deck_detail"`
 	UnitDeckID     int              `json:"unit_deck_id"`
@@ -278,7 +304,7 @@ type UnitDeckList struct {
 	DeckName       string           `json:"deck_name"`
 }
 
-// module: unit, action: deckName
+// DeckNameReq ...
 type DeckNameReq struct {
 	Module     string `json:"module"`
 	UnitDeckID int    `json:"unit_deck_id"`

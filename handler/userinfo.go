@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserInfoHandler(ctx *gin.Context) {
+func UserInfo(ctx *gin.Context) {
 	userId, err := strconv.Atoi(ctx.GetString("userid"))
 	CheckErr(err)
 

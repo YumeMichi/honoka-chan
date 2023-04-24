@@ -1,5 +1,6 @@
 package model
 
+// AdditionalReq ...
 type AdditionalReq struct {
 	Module      string `json:"module"`
 	Mgd         int    `json:"mgd"`
@@ -11,17 +12,20 @@ type AdditionalReq struct {
 	CommandNum  string `json:"commandNum"`
 }
 
-type AdditionalResult struct {
+// AdditionalRes ...
+type AdditionalRes struct {
 	Size int    `json:"size"`
 	URL  string `json:"url"`
 }
 
+// AdditionalResp ...
 type AdditionalResp struct {
-	ResponseData []AdditionalResult `json:"response_data"`
-	ReleaseInfo  []interface{}      `json:"release_info"`
-	StatusCode   int                `json:"status_code"`
+	ResponseData []AdditionalRes `json:"response_data"`
+	ReleaseInfo  []interface{}   `json:"release_info"`
+	StatusCode   int             `json:"status_code"`
 }
 
+// BatchReq ...
 type BatchReq struct {
 	ClientVersion      string `json:"client_version"`
 	Os                 string `json:"os"`
@@ -30,17 +34,20 @@ type BatchReq struct {
 	CommandNum         string `json:"commandNum"`
 }
 
-type BatchResult struct {
+// BatchRes ...
+type BatchRes struct {
 	Size int    `json:"size"`
 	URL  string `json:"url"`
 }
 
+// BatchResp ...
 type BatchResp struct {
-	ResponseData []BatchResult `json:"response_data"`
+	ResponseData []BatchRes    `json:"response_data"`
 	ReleaseInfo  []interface{} `json:"release_info"`
 	StatusCode   int           `json:"status_code"`
 }
 
+// UpdateReq ...
 type UpdateReq struct {
 	Module          string        `json:"module"`
 	TargetOs        string        `json:"target_os"`
@@ -52,18 +59,21 @@ type UpdateReq struct {
 	ExternalVersion string        `json:"external_version"`
 }
 
-type UpdateResult struct {
+// UpdateRes ...
+type UpdateRes struct {
 	Size    int    `json:"size"`
 	URL     string `json:"url"`
 	Version string `json:"version"`
 }
 
+// UpdateResp ...
 type UpdateResp struct {
-	ResponseData []UpdateResult `json:"response_data"`
-	ReleaseInfo  []interface{}  `json:"release_info"`
-	StatusCode   int            `json:"status_code"`
+	ResponseData []UpdateRes   `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
 }
 
+// UrlReq ...
 type UrlReq struct {
 	Module   string   `json:"module"`
 	Os       string   `json:"os"`
@@ -72,16 +82,19 @@ type UrlReq struct {
 	Action   string   `json:"action"`
 }
 
-type UrlResult struct {
+// UrlRes ...
+type UrlRes struct {
 	UrlList []string `json:"url_list"`
 }
 
+// UrlResp ...
 type UrlResp struct {
-	ResponseData UrlResult     `json:"response_data"`
+	ResponseData UrlRes        `json:"response_data"`
 	ReleaseInfo  []interface{} `json:"release_info"`
 	StatusCode   int           `json:"status_code"`
 }
 
+// EventResp ...
 type EventResp struct {
 	ResponseData []interface{} `json:"response_data"`
 	ReleaseInfo  []interface{} `json:"release_info"`

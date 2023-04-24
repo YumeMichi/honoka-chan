@@ -17,29 +17,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ApiHandler(ctx *gin.Context) {
-	userId, err := strconv.Atoi(ctx.GetString("userid"))
-	CheckErr(err)
-
-	var formdata []model.SifApi
-	err = json.Unmarshal([]byte(ctx.GetString("request_data")), &formdata)
+func Api(ctx *gin.Context) {
+	apiReq := []model.ApiReq{}
+	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &apiReq)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	var results []interface{}
-	for _, v := range formdata {
+	results := []interface{}{}
+	for _, v := range apiReq {
 		var res []byte
 		var err error
 		// fmt.Println(v)
-		fmt.Println(v.Module, v.Action)
+		// fmt.Println(v.Module, v.Action)
 
 		switch v.Module {
 		case "login":
 			if v.Action == "topInfo" {
 				// key = "login_topinfo_result"
 				topInfoResp := model.TopInfoResp{
-					Result: model.TopInfoResult{
+					Result: model.TopInfoRes{
 						FriendActionCnt:        0,
 						FriendGreetCnt:         0,
 						FriendVarietyCnt:       0,
@@ -76,7 +73,7 @@ func ApiHandler(ctx *gin.Context) {
 			} else if v.Action == "topInfoOnce" {
 				// key = "login_topinfo_once_result"
 				topInfoOnceResp := model.TopInfoOnceResp{
-					Result: model.TopInfoOnceResult{
+					Result: model.TopInfoOnceRes{
 						NewAchievementCnt:            0,
 						UnaccomplishedAchievementCnt: 0,
 						LiveDailyRewardExist:         false,
@@ -109,18 +106,13 @@ func ApiHandler(ctx *gin.Context) {
 		case "live":
 			if v.Action == "liveStatus" {
 				// key = "live_status_result"
-				var liveDifficultyId int
+				var liveDifficultyId []int
 				normalLives := []model.NormalLiveStatusList{}
-				sql := `SELECT live_difficulty_id FROM normal_live_m ORDER BY live_difficulty_id ASC`
-				rows, err := MainEng.DB().Query(sql)
+				err = MainEng.Table("normal_live_m").Cols("live_difficulty_id").OrderBy("live_difficulty_id ASC").Find(&liveDifficultyId)
 				CheckErr(err)
-				defer rows.Close()
-				for rows.Next() {
-					err = rows.Scan(&liveDifficultyId)
-					CheckErr(err)
-
+				for _, id := range liveDifficultyId {
 					normalLive := model.NormalLiveStatusList{
-						LiveDifficultyID:   liveDifficultyId,
+						LiveDifficultyID:   id,
 						Status:             1,
 						HiScore:            0,
 						HiComboCount:       0,
@@ -131,16 +123,11 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				specialLives := []model.SpecialLiveStatusList{}
-				sql = `SELECT live_difficulty_id FROM special_live_m ORDER BY live_difficulty_id ASC`
-				rows, err = MainEng.DB().Query(sql)
+				err = MainEng.Table("special_live_m").Cols("live_difficulty_id").OrderBy("live_difficulty_id ASC").Find(&liveDifficultyId)
 				CheckErr(err)
-				defer rows.Close()
-				for rows.Next() {
-					err = rows.Scan(&liveDifficultyId)
-					CheckErr(err)
-
+				for _, id := range liveDifficultyId {
 					specialLive := model.SpecialLiveStatusList{
-						LiveDifficultyID:   liveDifficultyId,
+						LiveDifficultyID:   id,
 						Status:             1,
 						HiScore:            0,
 						HiComboCount:       0,
@@ -151,7 +138,7 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				LiveStatusResp := model.LiveStatusResp{
-					Result: model.LiveStatusResult{
+					Result: model.LiveStatusRes{
 						NormalLiveStatusList:   normalLives,
 						SpecialLiveStatusList:  specialLives,
 						TrainingLiveStatusList: []model.TrainingLiveStatusList{},
@@ -167,18 +154,13 @@ func ApiHandler(ctx *gin.Context) {
 				CheckErr(err)
 			} else if v.Action == "schedule" {
 				// key = "live_list_result"
-				var liveDifficultyId int
+				var liveDifficultyId []int
 				specialLives := []model.SpecialLiveStatusList{}
-				sql := `SELECT live_difficulty_id FROM special_live_m ORDER BY live_difficulty_id ASC`
-				rows, err := MainEng.DB().Query(sql)
+				err = MainEng.Table("special_live_m").Cols("live_difficulty_id").OrderBy("live_difficulty_id ASC").Find(&liveDifficultyId)
 				CheckErr(err)
-				defer rows.Close()
-				for rows.Next() {
-					err = rows.Scan(&liveDifficultyId)
-					CheckErr(err)
-
+				for _, id := range liveDifficultyId {
 					specialLive := model.SpecialLiveStatusList{
-						LiveDifficultyID:   liveDifficultyId,
+						LiveDifficultyID:   id,
 						Status:             1,
 						HiScore:            0,
 						HiComboCount:       0,
@@ -198,7 +180,7 @@ func ApiHandler(ctx *gin.Context) {
 					})
 				}
 				liveListResp := model.LiveScheduleResp{
-					Result: model.LiveScheduleResult{
+					Result: model.LiveScheduleRes{
 						EventList:              []interface{}{},
 						LiveList:               livesList,
 						LimitedBonusList:       []interface{}{},
@@ -229,11 +211,10 @@ func ApiHandler(ctx *gin.Context) {
 				if err != nil {
 					panic(err)
 				}
-
 				unitsData = append(unitsData, userUnits...)
 
 				unitListResp := model.UnitAllResp{
-					Result: model.UnitAllResult{
+					Result: model.UnitAllRes{
 						Active:  unitsData,
 						Waiting: []model.Waiting{},
 					},
@@ -246,10 +227,10 @@ func ApiHandler(ctx *gin.Context) {
 			case "deckInfo":
 				// key = "unit_deck_result"
 				userDeck := []tools.UserDeckData{}
-				err = UserEng.Table("user_deck_m").Where("user_id = ?", userId).Asc("deck_id").Find(&userDeck)
+				err = UserEng.Table("user_deck_m").Where("user_id = ?", ctx.GetString("userid")).Asc("deck_id").Find(&userDeck)
 				CheckErr(err)
 
-				unitDeckInfo := []model.UnitDeckInfo{}
+				unitDeckInfo := []model.UnitDeckInfoRes{}
 				for _, deck := range userDeck {
 					deckUnit := []tools.UnitDeckData{}
 					err = UserEng.Table("deck_unit_m").Where("user_deck_id = ?", deck.ID).Asc("position").Find(&deckUnit)
@@ -267,7 +248,7 @@ func ApiHandler(ctx *gin.Context) {
 					if deck.MainFlag == 1 {
 						mainFlag = true
 					}
-					unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfo{
+					unitDeckInfo = append(unitDeckInfo, model.UnitDeckInfoRes{
 						UnitDeckID:        deck.DeckID,
 						MainFlag:          mainFlag,
 						DeckName:          deck.DeckName,
@@ -285,7 +266,7 @@ func ApiHandler(ctx *gin.Context) {
 			case "supporterAll":
 				// key = "unit_support_result"
 				unitSupportResp := model.UnitSupportResp{
-					Result: model.UnitSupportResult{
+					Result: model.UnitSupportRes{
 						UnitSupportList: []model.UnitSupportList{},
 					}, // 练习道具
 					Status:     200,
@@ -322,10 +303,6 @@ func ApiHandler(ctx *gin.Context) {
 					owingInfo = append(owingInfo, info)
 				}
 
-				// equipInfo := []model.SkillEquip{}
-				// err = UserEng.Table("skill_equip_m").Where("user_id = ?", ctx.GetString("userid")).Cols("unit_removable_skill_id,unit_owning_user_id").Find(&equipInfo)
-				// CheckErr(err)
-
 				var unitOwningIds []int
 				err = UserEng.Table("skill_equip_m").Where("user_id = ?", ctx.GetString("userid")).Cols("unit_owning_user_id").GroupBy("unit_owning_user_id").Find(&unitOwningIds)
 				CheckErr(err)
@@ -344,7 +321,7 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				rmSkillResp := model.RemovableSkillResp{
-					Result: model.RemovableSkillResult{
+					Result: model.RemovableSkillRes{
 						OwningInfo:    owingInfo,
 						EquipmentInfo: equipInfo,
 					}, // 宝石
@@ -390,7 +367,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "costume":
 			// key = "costume_list_result"
 			costumeListResp := model.CostumeListResp{
-				Result: model.CostumeListResult{
+				Result: model.CostumeListRes{
 					CostumeList: []model.CostumeList{},
 				},
 				Status:     200,
@@ -402,11 +379,10 @@ func ApiHandler(ctx *gin.Context) {
 		case "album":
 			// key = "album_unit_result"
 			albumLists := []model.AlbumResult{}
-			sql := `SELECT unit_id,rarity FROM unit_m ORDER BY unit_id ASC`
-			rows, err := MainEng.DB().Query(sql)
+			unitList := []AlbumSearchResult{}
+			err = MainEng.Table("unit_m").Cols("unit_id,rarity").OrderBy("unit_id ASC").Find(&unitList)
 			CheckErr(err)
-			defer rows.Close()
-			for rows.Next() {
+			for _, unit := range unitList {
 				albumList := model.AlbumResult{
 					RankMaxFlag:      true,
 					LoveMaxFlag:      true,
@@ -414,22 +390,19 @@ func ApiHandler(ctx *gin.Context) {
 					AllMaxFlag:       true,
 					FavoritePoint:    1000,
 				}
-				var uid, rit int
-				err = rows.Scan(&uid, &rit)
-				CheckErr(err)
-				albumList.UnitID = uid
-				if rit != 4 {
+				albumList.UnitID = unit.UnitId
+				if unit.Rarity != 4 {
 					albumList.SignFlag = false
-					if rit == 1 {
+					if unit.Rarity == 1 {
 						albumList.HighestLovePerUnit = 50
 						albumList.TotalLove = 50
-					} else if rit == 2 {
+					} else if unit.Rarity == 2 {
 						albumList.HighestLovePerUnit = 200
 						albumList.TotalLove = 200
-					} else if rit == 3 {
+					} else if unit.Rarity == 3 {
 						albumList.HighestLovePerUnit = 500
 						albumList.TotalLove = 500
-					} else if rit == 5 {
+					} else if unit.Rarity == 5 {
 						albumList.HighestLovePerUnit = 750
 						albumList.TotalLove = 750
 					}
@@ -437,19 +410,10 @@ func ApiHandler(ctx *gin.Context) {
 					albumList.HighestLovePerUnit = 1000
 					albumList.TotalLove = 1000
 
-					stmt, err := MainEng.DB().Prepare("SELECT COUNT(*) AS ct FROM unit_sign_asset_m WHERE unit_id = ?")
+					// IsSigned
+					exists, err := MainEng.Table("unit_sign_asset_m").Where("unit_id = ?", unit.UnitId).Exist()
 					CheckErr(err)
-					defer stmt.Close()
-
-					var count int
-					err = stmt.QueryRow(uid).Scan(&count)
-					CheckErr(err)
-
-					if count > 0 {
-						albumList.SignFlag = true
-					} else {
-						albumList.SignFlag = false
-					}
+					albumList.SignFlag = exists
 				}
 				albumLists = append(albumLists, albumList)
 			}
@@ -464,22 +428,18 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "scenario":
 			// key = "scenario_status_result"
-			sql := `SELECT scenario_id FROM scenario_m ORDER BY scenario_id ASC`
-			rows, err := MainEng.DB().Query(sql)
-			CheckErr(err)
-			defer rows.Close()
+			var scenarioIds []int
 			scenarioLists := []model.ScenarioStatusList{}
-			for rows.Next() {
-				var sid int
-				err = rows.Scan(&sid)
-				CheckErr(err)
+			err = MainEng.Table("scenario_m").Cols("scenario_id").OrderBy("scenario_id ASC").Find(&scenarioIds)
+			CheckErr(err)
+			for _, id := range scenarioIds {
 				scenarioLists = append(scenarioLists, model.ScenarioStatusList{
-					ScenarioID: sid,
+					ScenarioID: id,
 					Status:     2,
 				})
 			}
 			scenarioResp := model.ScenarioStatusResp{
-				Result: model.ScenarioStatusResult{
+				Result: model.ScenarioStatusRes{
 					ScenarioStatusList: scenarioLists,
 				},
 				Status:     200,
@@ -490,22 +450,18 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "subscenario":
 			// key = "subscenario_status_result"
-			sql := `SELECT subscenario_id FROM subscenario_m ORDER BY subscenario_id ASC`
-			rows, err := MainEng.DB().Query(sql)
-			CheckErr(err)
-			defer rows.Close()
+			var subScenarioIds []int
 			subScenarioLists := []model.SubscenarioStatusList{}
-			for rows.Next() {
-				var sid int
-				err = rows.Scan(&sid)
-				CheckErr(err)
+			err = MainEng.Table("subscenario_m").Cols("subscenario_id").OrderBy("subscenario_id ASC").Find(&subScenarioIds)
+			CheckErr(err)
+			for _, id := range subScenarioIds {
 				subScenarioLists = append(subScenarioLists, model.SubscenarioStatusList{
-					SubscenarioID: sid,
+					SubscenarioID: id,
 					Status:        2,
 				})
 			}
 			subScenarioResp := model.SubscenarioStatusResp{
-				Result: model.SubscenarioStatusResult{
+				Result: model.SubscenarioStatusRes{
 					SubscenarioStatusList:  subScenarioLists,
 					UnlockedSubscenarioIds: []interface{}{},
 				},
@@ -517,18 +473,13 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "eventscenario":
 			// key = "event_scenario_result"
+			var eventIds []int
 			eventsList := []model.EventScenarioList{}
-			sql := `SELECT event_id FROM event_scenario_m GROUP BY event_id ORDER BY event_id DESC`
-			rows, err := MainEng.DB().Query(sql)
+			err = MainEng.Table("event_scenario_m").Cols("event_id").GroupBy("event_id").OrderBy("event_id DESC").Find(&eventIds)
 			CheckErr(err)
-			defer rows.Close()
-			for rows.Next() {
-				var eventId int
-				err = rows.Scan(&eventId)
-				CheckErr(err)
-
-				sql = `SELECT event_scenario_id,chapter,chapter_asset,open_date FROM event_scenario_m WHERE event_id = ? ORDER BY chapter DESC`
-				chaps, err := MainEng.DB().Query(sql, eventId)
+			for _, id := range eventIds {
+				sql := `SELECT event_scenario_id,chapter,chapter_asset,open_date FROM event_scenario_m WHERE event_id = ? ORDER BY chapter DESC`
+				chaps, err := MainEng.DB().Query(sql, id)
 				CheckErr(err)
 				defer chaps.Close()
 				chapsList := []model.EventScenarioChapterList{}
@@ -556,24 +507,24 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				eventList := model.EventScenarioList{
-					EventID:     eventId,
+					EventID:     id,
 					OpenDate:    strings.ReplaceAll(open_date, "/", "-"),
 					ChapterList: chapsList,
 				}
 
 				// HACK event_scenario_btn_asset
-				if eventId == 10001 {
+				if id == 10001 {
 					eventList.EventScenarioBtnAsset = "assets/image/ui/eventscenario/38_se_ba_t.png"
-				} else if eventId == 221 {
+				} else if id == 221 {
 					eventList.EventScenarioBtnAsset = "assets/image/ui/eventscenario/215_se_ba_t.png"
 				} else {
-					eventList.EventScenarioBtnAsset = fmt.Sprintf("assets/image/ui/eventscenario/%d_se_ba_t.png", eventId)
+					eventList.EventScenarioBtnAsset = fmt.Sprintf("assets/image/ui/eventscenario/%d_se_ba_t.png", id)
 				}
 
 				eventsList = append(eventsList, eventList)
 			}
 			eventScenarioResp := model.EventScenarioStatusResp{
-				Result: model.EventScenarioStatusResult{
+				Result: model.EventScenarioStatusRes{
 					EventScenarioList: eventsList, //
 				},
 				Status:     200,
@@ -584,18 +535,13 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "multiunit":
 			// key = "multi_unit_scenario_result"
-			sql := `SELECT multi_unit_id FROM multi_unit_scenario_m GROUP BY multi_unit_id ORDER BY multi_unit_id ASC`
-			rows, err := MainEng.DB().Query(sql)
-			CheckErr(err)
-			defer rows.Close()
-			var mId int
+			var multiIds []int
 			multiUnitsList := []model.MultiUnitScenarioStatusList{}
-			for rows.Next() {
-				err = rows.Scan(&mId)
-				CheckErr(err)
-
-				sql = `SELECT multi_unit_scenario_btn_asset,open_date,multi_unit_scenario_id,chapter FROM multi_unit_scenario_m a LEFT JOIN multi_unit_scenario_open_m b ON a.multi_unit_id = b.multi_unit_id WHERE a.multi_unit_id = ?`
-				units, err := MainEng.DB().Query(sql, mId)
+			err = MainEng.Table("multi_unit_scenario_m").Cols("multi_unit_id").GroupBy("multi_unit_id").OrderBy("multi_unit_id ASC").Find(&multiIds)
+			CheckErr(err)
+			for _, id := range multiIds {
+				sql := `SELECT multi_unit_scenario_btn_asset,open_date,multi_unit_scenario_id,chapter FROM multi_unit_scenario_m a LEFT JOIN multi_unit_scenario_open_m b ON a.multi_unit_id = b.multi_unit_id WHERE a.multi_unit_id = ?`
+				units, err := MainEng.DB().Query(sql, id)
 				CheckErr(err)
 				defer units.Close()
 				var multi_unit_scenario_id, chapter int
@@ -606,7 +552,7 @@ func ApiHandler(ctx *gin.Context) {
 				}
 
 				multiUnitsList = append(multiUnitsList, model.MultiUnitScenarioStatusList{
-					MultiUnitID:               mId,
+					MultiUnitID:               id,
 					Status:                    2,
 					MultiUnitScenarioBtnAsset: multi_unit_scenario_btn_asset,
 					OpenDate:                  strings.ReplaceAll(open_date, "/", "-"),
@@ -620,7 +566,7 @@ func ApiHandler(ctx *gin.Context) {
 				})
 			}
 			unitsResp := model.MultiUnitScenarioStatusResp{
-				Result: model.MultiUnitScenarioStatusResult{
+				Result: model.MultiUnitScenarioStatusRes{
 					MultiUnitScenarioStatusList:  multiUnitsList,
 					UnlockedMultiUnitScenarioIds: []interface{}{},
 				},
@@ -633,7 +579,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "payment":
 			// key = "product_result"
 			productResp := model.ProductListResp{
-				Result: model.ProductListResult{
+				Result: model.ProductListRes{
 					RestrictionInfo: model.RestrictionInfo{
 						Restricted: false,
 					},
@@ -657,7 +603,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "banner":
 			// key = "banner_result"
 			bannerResp := model.BannerListResp{
-				Result: model.BannerListResult{
+				Result: model.BannerListRes{
 					TimeLimit: "2037-12-31 23:59:59",
 					BannerList: []model.BannerList{
 						{
@@ -693,7 +639,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "notice":
 			// key = "item_marquee_result"
 			marqueeResp := model.NoticeMarqueeResp{
-				Result: model.NoticeMarqueeResult{
+				Result: model.NoticeMarqueeRes{
 					ItemCount:   0,
 					MarqueeList: []interface{}{},
 				},
@@ -709,7 +655,7 @@ func ApiHandler(ctx *gin.Context) {
 			_, err := UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Cols("user_id,unit_owning_user_id").Get(&uId, &oId)
 			CheckErr(err)
 			userIntroResp := model.UserNaviResp{
-				Result: model.UserNaviResult{
+				Result: model.UserNaviRes{
 					User: model.User{
 						UserID:           uId,
 						UnitOwningUserID: oId,
@@ -724,7 +670,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "navigation":
 			// key = "special_cutin_result"
 			cutinResp := model.SpecialCutinResp{
-				Result: model.SpecialCutinResult{
+				Result: model.SpecialCutinRes{
 					SpecialCutinList: []interface{}{},
 				},
 				Status:     200,
@@ -756,7 +702,7 @@ func ApiHandler(ctx *gin.Context) {
 			}
 
 			awardResp := model.AwardInfoResp{
-				Result: model.AwardInfoResult{
+				Result: model.AwardInfoRes{
 					AwardInfo: awardsList,
 				},
 				Status:     200,
@@ -788,7 +734,7 @@ func ApiHandler(ctx *gin.Context) {
 			}
 
 			backgroundResp := model.BackgroundInfoResp{
-				Result: model.BackgroundInfoResult{
+				Result: model.BackgroundInfoRes{
 					BackgroundInfo: backgroundsList,
 				},
 				Status:     200,
@@ -807,22 +753,18 @@ func ApiHandler(ctx *gin.Context) {
 			CheckErr(err)
 		case "exchange":
 			// key = "exchange_point_result"
-			sql := `SELECT exchange_point_id FROM exchange_point_m ORDER BY exchange_point_id ASC`
-			rows, err := MainEng.DB().Query(sql)
-			CheckErr(err)
-			defer rows.Close()
+			var exchangeIds []int
 			exPointsList := []model.ExchangePointList{}
-			for rows.Next() {
-				var eId int
-				err = rows.Scan(&eId)
-				CheckErr(err)
+			err = MainEng.Table("exchange_point_m").Cols("exchange_point_id").OrderBy("exchange_point_id ASC").Find(&exchangeIds)
+			CheckErr(err)
+			for _, id := range exchangeIds {
 				exPointsList = append(exPointsList, model.ExchangePointList{
-					Rarity:        eId,
+					Rarity:        id,
 					ExchangePoint: 9999,
 				})
 			}
 			exPointsResp := model.ExchangePointResp{
-				Result: model.ExchangePointResult{
+				Result: model.ExchangePointRes{
 					ExchangePointList: exPointsList,
 				},
 				Status:     200,
@@ -834,7 +776,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "livese":
 			// key = "live_se_result"
 			liveSeResp := model.LiveSeInfoResp{
-				Result: model.LiveSeInfoResult{
+				Result: model.LiveSeInfoRes{
 					LiveSeList: []int{1, 2, 3},
 				},
 				Status:     200,
@@ -846,7 +788,7 @@ func ApiHandler(ctx *gin.Context) {
 		case "liveicon":
 			// key = "live_icon_result"
 			liveIconResp := model.LiveIconInfoResp{
-				Result: model.LiveIconInfoResult{
+				Result: model.LiveIconInfoRes{
 					LiveNotesIconList: []int{1, 2, 3},
 				},
 				Status:     200,
@@ -902,9 +844,9 @@ func ApiHandler(ctx *gin.Context) {
 			}
 
 			museumInfoResp := model.MuseumInfoResp{
-				Result: model.MuseumInfoResult{
-					MuseumInfo: model.MuseumInfo{
-						Parameter: model.MuseumInfoParameter{
+				Result: model.MuseumInfoRes{
+					MuseumInfo: model.Museum{
+						Parameter: model.MuseumParameter{
 							Smile: smileBuf,
 							Pure:  pureBuf,
 							Cool:  coolBuf,
@@ -1139,7 +1081,7 @@ func ApiHandler(ctx *gin.Context) {
 	// fmt.Println(results)
 	b, err := json.Marshal(results)
 	CheckErr(err)
-	rp := model.Response{
+	rp := model.ApiResp{
 		ResponseData: b,
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,
