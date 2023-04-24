@@ -475,6 +475,12 @@ func GetProductListHandler(ctx *gin.Context) {
 	ctx.String(http.StatusOK, resp)
 }
 
+func GuestStatusHandler(ctx *gin.Context) {
+	resp := `{"code":0,"msg":"ok","data":{"disablead":1,"loginswitch":1,"message":"ok","result":0}}`
+	ctx.Header("Content-Type", "text/html;charset=utf-8")
+	ctx.String(http.StatusOK, resp)
+}
+
 func ReportLog(ctx *gin.Context) {
 	// body, err := io.ReadAll(ctx.Request.Body)
 	// CheckErr(err)

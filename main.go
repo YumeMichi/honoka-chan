@@ -31,6 +31,7 @@ func main() {
 	v1 := r.Group("v1")
 	{
 		v1.GET("/basic/getcode", handler.GetCodeHandler)
+		v1.POST("/basic/getcode", handler.GetCodeHandler)
 		v1.POST("/account/active", handler.ActiveHandler)
 		v1.POST("/basic/publickey", handler.PublicKeyHandler)
 		v1.POST("/basic/handshake", handler.HandshakeHandler)
@@ -40,6 +41,7 @@ func main() {
 		v1.POST("/basic/loginarea", handler.LoginAreaHandler)
 		v1.POST("/account/reportRole", handler.ReportRoleHandler)
 		v1.POST("/basic/getProductList", handler.GetProductListHandler)
+		v1.POST("/guest/status", handler.GuestStatusHandler)
 	}
 	r.GET("/agreement/all", handler.AgreementHandler)
 	r.GET("/integration/appReport/initialize", handler.ReportApp)
