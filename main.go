@@ -18,7 +18,7 @@ func main() {
 	// Router
 	r := gin.Default()
 	r.Static("/static", "static")
-	r.LoadHTMLGlob("static/*.tmpl")
+	r.LoadHTMLGlob("static/templates/**/*.html")
 
 	// /
 	r.Any("/", func(ctx *gin.Context) {
@@ -99,7 +99,7 @@ func main() {
 	// Web
 	// Manga
 	r.GET("/manga", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "manga.tmpl", gin.H{})
+		ctx.HTML(http.StatusOK, "common/manga.html", gin.H{})
 	})
 
 	r.Run(":80") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
