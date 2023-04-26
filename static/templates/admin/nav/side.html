@@ -1,0 +1,16 @@
+{{ define "admin/nav/side.html" }}
+<div class="layui-side">
+    <div class="layui-side-scroll">
+        <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <li class="layui-nav-item {{ if eq .menu 1 }} layui-nav-itemed {{ end }}">
+                <a class="" href="javascript:;">卡片管理</a>
+                <dl class="layui-nav-child">
+                    <dd {{ if eq .url "/admin/card" }} class="layui-this" {{ end }}><a href="/admin/card">卡片一览</a></dd>
+                    <dd {{ if eq .url "/admin/deck" }} class="layui-this" {{ end }}><a href="/admin/deck">编队管理</a></dd>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+</div>
+{{ end }}

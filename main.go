@@ -6,7 +6,12 @@ import (
 	"honoka-chan/middleware"
 	_ "honoka-chan/tools"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +23,19 @@ func main() {
 	// Router
 	r := gin.Default()
 	r.Static("/static", "static")
-	r.LoadHTMLGlob("static/templates/**/*.html")
+
+	var files []string
+	filepath.Walk("static/templates", func(path string, info os.FileInfo, err error) error {
+		if strings.HasSuffix(path, ".html") {
+			files = append(files, path)
+		}
+		return nil
+	})
+	r.LoadHTMLFiles(files...)
+
+	// session
+	store := cookie.NewStore([]byte("llsif"))
+	r.Use(sessions.Sessions("llsif", store))
 
 	// /
 	r.Any("/", func(ctx *gin.Context) {
@@ -96,11 +113,37 @@ func main() {
 	r.GET("/webview.php/announce/index", handler.AnnounceIndex)
 	// Server APIs
 
-	// Web
 	// Manga
 	r.GET("/manga", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "common/manga.html", gin.H{})
 	})
+
+	// WebUI
+	w := r.Group("admin").Use(middleware.WebAuth)
+	{
+		w.GET("/index", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "admin/index.html", gin.H{
+				"url": strings.Split(ctx.Request.URL.String(), "?")[0],
+			})
+		})
+		w.GET("/login", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "admin/login.html", gin.H{})
+		})
+		w.POST("/login", handler.WebLogin)
+		w.GET("/logout", handler.WebLogout)
+		w.GET("/card", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "admin/card.html", gin.H{
+				"menu": 1,
+				"url":  strings.Split(ctx.Request.URL.String(), "?")[0],
+			})
+		})
+		w.GET("/deck", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "admin/card.html", gin.H{
+				"menu": 1,
+				"url":  strings.Split(ctx.Request.URL.String(), "?")[0],
+			})
+		})
+	}
 
 	r.Run(":80") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

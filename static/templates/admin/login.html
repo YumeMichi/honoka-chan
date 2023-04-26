@@ -1,0 +1,113 @@
+{{ define "admin/login.html" }}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIF 小助手</title>
+    {{ template "admin/nav/css.html" . }}
+
+    <style>
+        body {
+            background: url("/static/images/admin/top-bg.jpg") no-repeat;
+            background-size: cover;
+        }
+
+        .login-btn {
+            margin-top: 1%;
+            border: 0px;
+            color: azure;
+            background: #e4007f;
+        }
+
+        .login-btn:hover {
+            color: aliceblue;
+        }
+
+        .layui-input {
+            width: 85%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layui-container">
+        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius login-btn">点击登录</button>
+    </div>
+    <script src="/static/js/layui.js"></script>
+    <script>
+        layui.use('layer', function () {
+            var $ = layui.$
+                , layer = layui.layer;
+
+            $(".login-btn").click(function () {
+                layer.open({
+                    type: 1,
+                    area: ['600px', '280px'],
+                    title: "登录",
+                    content: $('#login-form'),
+                    shade: 0
+                })
+            })
+
+            $("#login-submit").click(function () {
+                let area = $("#area option:selected").val();
+                let user = $("#sifuser").val();
+                let pass = $("#sifpass").val();
+                console.log(area)
+                console.log(user)
+                console.log(pass)
+                $.post("/admin/login", { area: area, user: user, pass: pass }, function (data) {
+                    if (data.code != 0) {
+                        layer.msg(data.message)
+                        return
+                    }
+                    layer.msg(data.message)
+                    setTimeout(function () {
+                        window.location.href = data.redirect;
+                    }, 1500)
+                })
+            })
+        });
+    </script>
+</body>
+
+<div id="login-form" style="display: none; padding: 10px;">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">地区</label>
+            <div class="layui-input-block">
+                <select name="area" id="area" lay-verify="required">
+                    <option value="86" selected>中国大陆（+86）</option>
+                    <option value="852">中国香港（+852）</option>
+                    <option value="853">中国澳门（+853）</option>
+                    <option value="886">中国台湾（+886）</option>
+                    <option value="1">美国（+1）</option>
+                    <option value="81">日本（+81）</option>
+                    <option value="82">韩国（+82）</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="sifuser" id="sifuser" required lay-verify="required" placeholder="请输入账号"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="sifpass" id="sifpass" required lay-verify="required" placeholder="请输入密码"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+    <div class="layui-input-block">
+        <button class="layui-btn" id="login-submit">登录</button>
+    </div>
+</div>
+
+</html>
+{{ end }}
