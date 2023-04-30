@@ -1,0 +1,77 @@
+{{ define "admin/upload.html" }}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>SIF 小助手</title>
+    {{ template "admin/nav/css.html" . }}
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        {{ template "admin/nav/header.html" . }}
+        {{ template "admin/nav/side.html" . }}
+
+        <div class="layui-body">
+            <form class="layui-form layui-col-md4" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文件</label>
+                    <div class="layui-input-block">
+                        <button type="button" name="file" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">帮助</h2>
+                                <div class="layui-colla-content">
+                                    <ol>
+                                        <li>仅支持导入LLHelper队伍信息</li>
+                                        <li>仅需要设置技能等级，卡片默认等级MAX，宝石请在游戏内设置</li>
+                                        <li>仅支持导入UR卡片</li>
+                                        <li>仅支持导入国服拥有的卡片</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn" id="test9">开始导入</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {{ template "admin/nav/footer.html" . }}
+    </div>
+    <script src="/static/js/layui.js"></script>
+    <script>
+        layui.use(['upload', 'layer'], function () {
+            var $ = layui.jquery
+                , upload = layui.upload
+                , layer = layui.layer;
+
+            upload.render({
+                elem: '#test8'
+                , url: '/admin/upload' // 此处配置你自己的上传接口即可
+                , auto: false
+                , accept: 'file' // 普通文件
+                , exts: 'sd' // 只允许上传 .sd 文件
+                , size: 50 // 限制文件大小，单位 KB
+                , bindAction: '#test9'
+                , done: function (res) {
+                    layer.msg(res.msg);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
+{{ end }}

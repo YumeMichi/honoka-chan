@@ -2,8 +2,8 @@ honoka-chan
 honoka-chan.exe
 
 data
+temp
 
 assets/data.db
-assets/unit.sd
 
 .vscode

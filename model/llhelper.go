@@ -1,4 +1,4 @@
-package llhelper
+package model
 
 type Data struct {
 	Version   int           `json:"version"`

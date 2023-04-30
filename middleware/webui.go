@@ -11,7 +11,7 @@ import (
 func WebAuth(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	requestUrl := strings.Split(ctx.Request.URL.String(), "?")[0] // 过滤 GET 参数
-	_, ok := session.Get("username").(string)
+	userId, ok := session.Get("userid").(int)
 	if ok {
 		if requestUrl == "/admin/login" {
 			ctx.Redirect(http.StatusFound, "/admin/index")
@@ -23,6 +23,7 @@ func WebAuth(ctx *gin.Context) {
 			ctx.Abort()
 		}
 	}
+	ctx.Set("userid", userId)
 
 	ctx.Next()
 }

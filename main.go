@@ -2,7 +2,6 @@ package main
 
 import (
 	"honoka-chan/handler"
-	_ "honoka-chan/llhelper"
 	"honoka-chan/middleware"
 	_ "honoka-chan/tools"
 	"net/http"
@@ -137,12 +136,13 @@ func main() {
 				"url":  strings.Split(ctx.Request.URL.String(), "?")[0],
 			})
 		})
-		w.GET("/deck", func(ctx *gin.Context) {
-			ctx.HTML(http.StatusOK, "admin/card.html", gin.H{
+		w.GET("/upload", func(ctx *gin.Context) {
+			ctx.HTML(http.StatusOK, "admin/upload.html", gin.H{
 				"menu": 1,
 				"url":  strings.Split(ctx.Request.URL.String(), "?")[0],
 			})
 		})
+		w.POST("/upload", handler.Upload)
 	}
 
 	r.Run(":80") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
