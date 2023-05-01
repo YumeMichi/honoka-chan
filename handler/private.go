@@ -125,10 +125,7 @@ func Handshake(ctx *gin.Context) {
 	params, err := url.ParseQuery(string(decryptedBody))
 	CheckErr(err)
 	randKey := params.Get("randkey")
-	deviceId := params.Get("deviceid")
-	if deviceId == "" {
-		deviceId = ctx.Request.Header.Get("X-DEVICEID")
-	}
+	deviceId := ctx.Request.Header.Get("X-DEVICEID")
 	// fmt.Println(randKey)
 	// fmt.Println(deviceId)
 
