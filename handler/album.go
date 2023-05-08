@@ -10,10 +10,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
 )
 
-type AlbumSearchResult struct {
+type AlbumRes struct {
 	UnitId int `xorm:"unit_id"`
 	Rarity int `xorm:"rarity"`
 }
@@ -26,7 +25,7 @@ func AlbumSeriesAll(ctx *gin.Context) {
 
 	albumSeriesAllRes := []model.AlbumSeriesRes{}
 	for _, albumId := range albumIds {
-		unitList := []AlbumSearchResult{}
+		unitList := []AlbumRes{}
 		err = MainEng.Table("unit_m").Where("album_series_id = ?", albumId).Cols("unit_id,rarity").Find(&unitList)
 		CheckErr(err)
 
@@ -62,9 +61,7 @@ func AlbumSeriesAll(ctx *gin.Context) {
 				albumSeries.HighestLovePerUnit = 1000
 
 				// IsSigned
-				exists, err := MainEng.Table("unit_sign_asset_m").Where("unit_id = ?", unit.UnitId).Exist()
-				CheckErr(err)
-				albumSeries.SignFlag = exists
+				albumSeries.SignFlag = IsSigned(unit.UnitId)
 			}
 
 			albumSeriesAll = append(albumSeriesAll, albumSeries)

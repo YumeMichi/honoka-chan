@@ -17,7 +17,6 @@ import (
 
 	"github.com/forgoer/openssl"
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type LoginResp struct {
@@ -50,7 +49,7 @@ type LoginAutoResp struct {
 	Result  int    `json:"result"`
 	Message string `json:"message"`
 	Autokey string `json:"autokey"`
-	Userid  string `json:"userid"`
+	UserId  string `json:"userid"`
 	Ticket  string `json:"ticket"`
 }
 
@@ -222,21 +221,17 @@ func LoginAuto(ctx *gin.Context) {
 		return
 	}
 
-	stmt, err := UserEng.DB().Prepare("SELECT userid,ticket AS ct FROM users WHERE autokey = ?")
-	CheckErr(err)
-	defer stmt.Close()
-
-	var userid, ticket string
-	err = stmt.QueryRow(autoKey).Scan(&userid, &ticket)
+	var userId, ticket string
+	_, err = UserEng.Table("users").Cols("userid,ticket").Where("autokey = ?", autoKey).Get(&userId, &ticket)
 	CheckErr(err)
 
 	var resp string
-	if userid != "" {
+	if userId != "" {
 		autoResp := LoginAutoResp{
 			Result:  0,
 			Message: "ok",
 			Autokey: autoKey,
-			Userid:  userid,
+			UserId:  userId,
 			Ticket:  ticket,
 		}
 		data, err := json.Marshal(autoResp)
@@ -314,18 +309,10 @@ func AccountLogin(ctx *gin.Context) {
 	// 	"userid" INTEGER,
 	// 	"key" INTEGER
 	//   );`
-	stmt, err := UserEng.DB().Prepare("SELECT password,autokey,ticket,userid FROM users WHERE phone = ?")
+	var pass, autoKey, ticket, userId string
+	_, err = UserEng.Table("users").Cols("password,autokey,ticket,userid").Where("phone = ?", phone).
+		Get(&pass, &autoKey, &ticket, &userId)
 	CheckErr(err)
-	defer stmt.Close()
-
-	var pass, autokey, ticket, userid string
-	rows, err := stmt.Query(phone)
-	CheckErr(err)
-	defer rows.Close()
-	for rows.Next() {
-		err = rows.Scan(&pass, &autokey, &ticket, &userid)
-		CheckErr(err)
-	}
 
 	loginResp := LoginResp{}
 	loginCode := 0
@@ -336,15 +323,16 @@ func AccountLogin(ctx *gin.Context) {
 		session := UserEng.NewSession()
 		defer session.Close()
 
+		// 开始会话
 		if err = session.Begin(); err != nil {
 			session.Rollback()
 			panic(err)
 		}
 
 		pass = openssl.Md5ToString(password)
-		autokey = "AUTO" + strings.ToUpper(utils.RandomStr(32))
-		userid = strconv.Itoa(int(loginTime))
-		ticket = "9999999" + userid + userid
+		autoKey = "AUTO" + strings.ToUpper(utils.RandomStr(32))
+		userId = strconv.Itoa(int(loginTime))
+		ticket = "9999999" + userId + userId
 		userStmt, err := session.DB().Prepare("INSERT INTO users(phone,password,autokey,ticket,userid,last_login_time) VALUES (?,?,?,?,?,?)")
 		if err != nil {
 			session.Rollback()
@@ -352,7 +340,7 @@ func AccountLogin(ctx *gin.Context) {
 		}
 		defer userStmt.Close()
 
-		_, err = userStmt.Exec(phone, pass, autokey, ticket, userid, loginTime)
+		_, err = userStmt.Exec(phone, pass, autoKey, ticket, userId, loginTime)
 		if err != nil {
 			session.Rollback()
 			panic(err)
@@ -367,12 +355,13 @@ func AccountLogin(ctx *gin.Context) {
 		}
 		// 方便起见初始化 userid 和 key 一样
 		// 注意：user_key 表中的 key 是上文生成的用于登录的 userid，而 userid 则是用于 Authorize Token 生成用的
-		_, err = keyStmt.Exec(userid, userid)
+		_, err = keyStmt.Exec(userId, userId)
 		if err != nil {
 			session.Rollback()
 			panic(err)
 		}
 
+		// 结束会话
 		if err = session.Commit(); err != nil {
 			session.Rollback()
 			panic(err)
@@ -381,32 +370,32 @@ func AccountLogin(ctx *gin.Context) {
 		tools.InitUserData(int(loginTime))
 
 		// Login Response
-		loginResp.Autokey = autokey
+		loginResp.Autokey = autoKey
 		loginResp.HasRealInfo = 1
 		loginResp.Message = "ok"
 		loginResp.RealInfoForce = 1
 		loginResp.Ticket = ticket
 		loginResp.UserAttribute = "0"
-		loginResp.Userid = userid
+		loginResp.Userid = userId
 	} else {
 		// 已注册
 		if openssl.Md5ToString(password) == pass {
 			// 密码正确
 			// Login Response
-			loginResp.Autokey = autokey // 注意：更换设备（deviceId 发生变化）应重新生成 autokey
+			loginResp.Autokey = autoKey // 注意：更换设备（deviceId 发生变化）应重新生成 autokey
 			loginResp.HasRealInfo = 1
 			loginResp.Message = "ok"
 			loginResp.RealInfoForce = 1
-			loginResp.Ticket = "9999999" + userid + strconv.Itoa(int(loginTime)) // 实际登录用的密码（每次登录都会重新生成新的）
+			loginResp.Ticket = "9999999" + userId + strconv.Itoa(int(loginTime)) // 实际登录用的密码（每次登录都会重新生成新的）
 			loginResp.UserAttribute = "0"
-			loginResp.Userid = userid // 实际登录用的账号
+			loginResp.Userid = userId // 实际登录用的账号
 
 			// 更新信息
 			userStmt, err := UserEng.DB().Prepare("UPDATE users SET autokey=?,ticket=?,last_login_time=? WHERE userid=?")
 			CheckErr(err)
 			defer userStmt.Close()
 
-			_, err = userStmt.Exec(autokey, ticket, loginTime, userid)
+			_, err = userStmt.Exec(autoKey, ticket, loginTime, userId)
 			CheckErr(err)
 			// aff, _ := res.RowsAffected()
 			// fmt.Println("RowsAffected:", aff)

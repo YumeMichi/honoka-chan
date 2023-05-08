@@ -17,6 +17,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type EventRes struct {
+	EventScenarioId int    `xorm:"event_scenario_id"`
+	Chapter         int    `xorm:"chapter"`
+	ChapterAsset    string `xorm:"chapter_asset"`
+	OpenDate        string `xorm:"open_date"`
+}
+
+type MultiRes struct {
+	MultiUnitScenarioId       int    `xorm:"multi_unit_scenario_id"`
+	Chapter                   int    `xorm:"chapter"`
+	MultiUnitScenarioBtnAsset string `xorm:"multi_unit_scenario_btn_asset"`
+	OpenDate                  string `xorm:"open_date"`
+}
+
+type MuseumRes struct {
+	MuseumContentsId int `xorm:"museum_contents_id"`
+	SmileBuff        int `xorm:"smile_buff"`
+	PureBuff         int `xorm:"pure_buff"`
+	CoolBuff         int `xorm:"cool_buff"`
+}
+
 func Api(ctx *gin.Context) {
 	apiReq := []model.ApiReq{}
 	err := json.Unmarshal([]byte(ctx.GetString("request_data")), &apiReq)
@@ -226,13 +247,13 @@ func Api(ctx *gin.Context) {
 				CheckErr(err)
 			case "deckInfo":
 				// key = "unit_deck_result"
-				userDeck := []tools.UserDeckData{}
+				userDeck := []model.UserDeckData{}
 				err = UserEng.Table("user_deck_m").Where("user_id = ?", ctx.GetString("userid")).Asc("deck_id").Find(&userDeck)
 				CheckErr(err)
 
 				unitDeckInfo := []model.UnitDeckInfoRes{}
 				for _, deck := range userDeck {
-					deckUnit := []tools.UnitDeckData{}
+					deckUnit := []model.UnitDeckData{}
 					err = UserEng.Table("deck_unit_m").Where("user_deck_id = ?", deck.ID).Asc("position").Find(&deckUnit)
 					CheckErr(err)
 
@@ -379,7 +400,7 @@ func Api(ctx *gin.Context) {
 		case "album":
 			// key = "album_unit_result"
 			albumLists := []model.AlbumResult{}
-			unitList := []AlbumSearchResult{}
+			unitList := []AlbumRes{}
 			err = MainEng.Table("unit_m").Cols("unit_id,rarity").OrderBy("unit_id ASC").Find(&unitList)
 			CheckErr(err)
 			for _, unit := range unitList {
@@ -411,9 +432,7 @@ func Api(ctx *gin.Context) {
 					albumList.TotalLove = 1000
 
 					// IsSigned
-					exists, err := MainEng.Table("unit_sign_asset_m").Where("unit_id = ?", unit.UnitId).Exist()
-					CheckErr(err)
-					albumList.SignFlag = exists
+					albumList.SignFlag = IsSigned(unit.UnitId)
 				}
 				albumLists = append(albumLists, albumList)
 			}
@@ -478,20 +497,16 @@ func Api(ctx *gin.Context) {
 			err = MainEng.Table("event_scenario_m").Cols("event_id").GroupBy("event_id").OrderBy("event_id DESC").Find(&eventIds)
 			CheckErr(err)
 			for _, id := range eventIds {
-				sql := `SELECT event_scenario_id,chapter,chapter_asset,open_date FROM event_scenario_m WHERE event_id = ? ORDER BY chapter DESC`
-				chaps, err := MainEng.DB().Query(sql, id)
-				CheckErr(err)
-				defer chaps.Close()
+				eventRes := []EventRes{}
 				chapsList := []model.EventScenarioChapterList{}
-				var open_date string
-				for chaps.Next() {
-					var event_scenario_id, chapter int
-					var chapter_asset interface{}
-					err = chaps.Scan(&event_scenario_id, &chapter, &chapter_asset, &open_date)
-					CheckErr(err)
+				err = MainEng.Table("event_scenario_m").Where("event_id = ?", id).Cols("event_scenario_id,chapter,chapter_asset,open_date").
+					OrderBy("chapter DESC").Find(&eventRes)
+				CheckErr(err)
+				for _, res := range eventRes {
 					chapList := model.EventScenarioChapterList{
-						EventScenarioID: event_scenario_id,
-						Chapter:         chapter,
+						EventScenarioID: res.EventScenarioId,
+						Chapter:         res.Chapter,
+						ChapterAsset:    res.ChapterAsset,
 						Status:          2,
 						OpenFlashFlag:   0,
 						IsReward:        false,
@@ -499,16 +514,12 @@ func Api(ctx *gin.Context) {
 						ItemID:          1200,
 						Amount:          1,
 					}
-					if chapter_asset != nil {
-						chapList.ChapterAsset = chapter_asset.(string)
-					}
-
 					chapsList = append(chapsList, chapList)
 				}
 
 				eventList := model.EventScenarioList{
 					EventID:     id,
-					OpenDate:    strings.ReplaceAll(open_date, "/", "-"),
+					OpenDate:    strings.ReplaceAll(eventRes[0].OpenDate, "/", "-"),
 					ChapterList: chapsList,
 				}
 
@@ -525,7 +536,7 @@ func Api(ctx *gin.Context) {
 			}
 			eventScenarioResp := model.EventScenarioStatusResp{
 				Result: model.EventScenarioStatusRes{
-					EventScenarioList: eventsList, //
+					EventScenarioList: eventsList,
 				},
 				Status:     200,
 				CommandNum: false,
@@ -540,26 +551,22 @@ func Api(ctx *gin.Context) {
 			err = MainEng.Table("multi_unit_scenario_m").Cols("multi_unit_id").GroupBy("multi_unit_id").OrderBy("multi_unit_id ASC").Find(&multiIds)
 			CheckErr(err)
 			for _, id := range multiIds {
-				sql := `SELECT multi_unit_scenario_btn_asset,open_date,multi_unit_scenario_id,chapter FROM multi_unit_scenario_m a LEFT JOIN multi_unit_scenario_open_m b ON a.multi_unit_id = b.multi_unit_id WHERE a.multi_unit_id = ?`
-				units, err := MainEng.DB().Query(sql, id)
+				multiRes := MultiRes{}
+				_, err = MainEng.Table("multi_unit_scenario_m").
+					Join("LEFT", "multi_unit_scenario_open_m", "multi_unit_scenario_m.multi_unit_id = multi_unit_scenario_open_m.multi_unit_id").
+					Cols("multi_unit_scenario_btn_asset,open_date,multi_unit_scenario_id,chapter").
+					Where("multi_unit_scenario_m.multi_unit_id = ?", id).Get(&multiRes)
 				CheckErr(err)
-				defer units.Close()
-				var multi_unit_scenario_id, chapter int
-				var multi_unit_scenario_btn_asset, open_date string
-				for units.Next() {
-					err = units.Scan(&multi_unit_scenario_btn_asset, &open_date, &multi_unit_scenario_id, &chapter)
-					CheckErr(err)
-				}
 
 				multiUnitsList = append(multiUnitsList, model.MultiUnitScenarioStatusList{
 					MultiUnitID:               id,
 					Status:                    2,
-					MultiUnitScenarioBtnAsset: multi_unit_scenario_btn_asset,
-					OpenDate:                  strings.ReplaceAll(open_date, "/", "-"),
+					MultiUnitScenarioBtnAsset: multiRes.MultiUnitScenarioBtnAsset,
+					OpenDate:                  strings.ReplaceAll(multiRes.OpenDate, "/", "-"),
 					ChapterList: []model.MultiUnitScenarioChapterList{
 						{
-							MultiUnitScenarioID: multi_unit_scenario_id,
-							Chapter:             chapter,
+							MultiUnitScenarioID: multiRes.MultiUnitScenarioId,
+							Chapter:             multiRes.Chapter,
 							Status:              2,
 						},
 					},
@@ -827,31 +834,27 @@ func Api(ctx *gin.Context) {
 			CheckErr(err)
 		case "museum":
 			// key = "museum_result"
-			sql := `SELECT museum_contents_id,smile_buff,pure_buff,cool_buff FROM museum_contents_m ORDER BY museum_contents_id ASC`
-			rows, err := MainEng.DB().Query(sql)
+			museumRes := []MuseumRes{}
+			var museumIds []int
+			var smileBuff, pureBuff, coolBuff int
+			err = MainEng.Table("museum_contents_m").Cols("museum_contents_id,smile_buff,pure_buff,cool_buff").
+				OrderBy("museum_contents_id ASC").Find(&museumRes)
 			CheckErr(err)
-			defer rows.Close()
-			var smileBuf, pureBuf, coolBuf int
-			var mIds []int
-			for rows.Next() {
-				var museum_contents_id, smile_buff, pure_buff, cool_buff int
-				err = rows.Scan(&museum_contents_id, &smile_buff, &pure_buff, &cool_buff)
-				CheckErr(err)
-				smileBuf += smile_buff
-				pureBuf += pure_buff
-				coolBuf += cool_buff
-				mIds = append(mIds, museum_contents_id)
+			for _, res := range museumRes {
+				smileBuff += res.SmileBuff
+				pureBuff += res.PureBuff
+				coolBuff += res.CoolBuff
+				museumIds = append(museumIds, res.MuseumContentsId)
 			}
-
 			museumInfoResp := model.MuseumInfoResp{
 				Result: model.MuseumInfoRes{
 					MuseumInfo: model.Museum{
 						Parameter: model.MuseumParameter{
-							Smile: smileBuf,
-							Pure:  pureBuf,
-							Cool:  coolBuf,
+							Smile: smileBuff,
+							Pure:  pureBuff,
+							Cool:  coolBuff,
 						},
-						ContentsIDList: mIds,
+						ContentsIDList: museumIds,
 					},
 				},
 				Status:     200,
@@ -863,8 +866,8 @@ func Api(ctx *gin.Context) {
 		case "profile":
 			if v.Action == "liveCnt" {
 				// key = "profile_livecnt_result"
-				difficultyResp := tools.DifficultyResp{
-					Result: []tools.DifficultyResult{
+				difficultyResp := model.DifficultyResp{
+					Result: []model.DifficultyRes{
 						{
 							Difficulty: 1,
 							ClearCnt:   315,
@@ -898,7 +901,7 @@ func Api(ctx *gin.Context) {
 				love := utils.ReadAllText("assets/love.json")
 				err := json.Unmarshal([]byte(love), &result)
 				CheckErr(err)
-				loveResp := tools.LoveResp{
+				loveResp := model.LoveResp{
 					Result:     result,
 					Status:     200,
 					CommandNum: false,
@@ -921,7 +924,7 @@ func Api(ctx *gin.Context) {
 				userUnit, err := UserEng.Table("user_unit_m").Where("user_id = ?", ctx.GetString("userid")).Count()
 				CheckErr(err)
 
-				unitData := tools.UnitData{}
+				unitData := model.UnitData{}
 				exists, err = MainEng.Table("common_unit_m").Where("unit_owning_user_id = ?", pref.UnitOwningUserID).Get(&unitData)
 				CheckErr(err)
 				isCommon := true
@@ -956,7 +959,7 @@ func Api(ctx *gin.Context) {
 				_, err = MainEng.Table("common_accessory_m").Where("accessory_owning_user_id = ?", accessoryOwningId).
 					Cols("accessory_id,exp").Get(&accessoryId, &exp)
 				CheckErr(err)
-				accessoryInfo := tools.AccessoryInfo{
+				accessoryInfo := model.AccessoryInfo{
 					AccessoryOwningUserID: accessoryOwningId,
 					AccessoryID:           accessoryId,
 					Exp:                   exp,
@@ -972,9 +975,9 @@ func Api(ctx *gin.Context) {
 					Cols("unit_removable_skill_id").Find(&removeSkillIds)
 				CheckErr(err)
 
-				profileResp := tools.ProfileResp{
-					Result: tools.ProfileResult{
-						UserInfo: tools.UserInfo{
+				profileResp := model.ProfileResp{
+					Result: model.ProfileRes{
+						UserInfo: model.ProfileUserInfo{
 							UserID:               pref.UserID,
 							Name:                 pref.UserName,
 							Level:                pref.UserLevel,
@@ -987,7 +990,7 @@ func Api(ctx *gin.Context) {
 							ElapsedTimeFromLogin: "14\u5c0f\u65f6\u524d",
 							Introduction:         pref.UserDesc,
 						},
-						CenterUnitInfo: tools.CenterUnitInfo{
+						CenterUnitInfo: model.CenterUnitInfo{
 							UnitOwningUserID:           unitData.UnitOwningUserID,
 							UnitID:                     unitData.UnitID,
 							Exp:                        unitData.Exp,
@@ -1017,13 +1020,13 @@ func Api(ctx *gin.Context) {
 							SettingAwardID:             pref.AwardID,
 							RemovableSkillIds:          removeSkillIds,
 							AccessoryInfo:              accessoryInfo,
-							Costume:                    tools.Costume{},
+							Costume:                    model.Costume{},
 							TotalSmile:                 smileMax,
 							TotalCute:                  pureMax,
 							TotalCool:                  coolMax,
 							TotalHp:                    maxHp,
 						},
-						NaviUnitInfo: tools.NaviUnitInfo{
+						NaviUnitInfo: model.NaviUnitInfo{
 							UnitOwningUserID:            unitData.UnitOwningUserID,
 							UnitID:                      unitData.UnitID,
 							Exp:                         unitData.Exp,

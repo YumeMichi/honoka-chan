@@ -1,6 +1,6 @@
 package model
 
-// module: banner, action: bannerList
+// BannerList ...
 type BannerList struct {
 	BannerType       int    `json:"banner_type"`
 	TargetID         int    `json:"target_id"`

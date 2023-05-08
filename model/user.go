@@ -39,3 +39,10 @@ type UserNaviResp struct {
 	CommandNum bool        `json:"commandNum"`
 	TimeStamp  int64       `json:"timeStamp"`
 }
+
+// NotificationResp ...
+type NotificationResp struct {
+	ResponseData []interface{} `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}

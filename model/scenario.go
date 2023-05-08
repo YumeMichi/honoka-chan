@@ -72,3 +72,27 @@ type EventScenarioStatusResp struct {
 	CommandNum bool                   `json:"commandNum"`
 	TimeStamp  int64                  `json:"timeStamp"`
 }
+
+// ScenarioResp ...
+type ScenarioResp struct {
+	ResponseData ScenarioRes   `json:"response_data"`
+	ReleaseInfo  []interface{} `json:"release_info"`
+	StatusCode   int           `json:"status_code"`
+}
+
+// ScenarioRes ...
+type ScenarioRes struct {
+	ScenarioID         int   `json:"scenario_id"`
+	ScenarioAdjustment int   `json:"scenario_adjustment"`
+	ServerTimestamp    int64 `json:"server_timestamp"`
+}
+
+// ScenarioReq ...
+type ScenarioReq struct {
+	Module     string `json:"module"`
+	Action     string `json:"action"`
+	TimeStamp  int    `json:"timeStamp"`
+	Mgd        int    `json:"mgd"`
+	CommandNum string `json:"commandNum"`
+	ScenarioID int    `json:"scenario_id"`
+}

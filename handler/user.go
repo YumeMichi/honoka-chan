@@ -14,14 +14,8 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type NotificationResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
-}
-
 func SetNotificationToken(ctx *gin.Context) {
-	notifResp := NotificationResp{
+	notifResp := model.NotificationResp{
 		ResponseData: []interface{}{},
 		ReleaseInfo:  []interface{}{},
 		StatusCode:   200,

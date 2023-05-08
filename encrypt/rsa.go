@@ -73,6 +73,7 @@ func RSA_Gen(bits int) {
 	//3. save to file
 	pem.Encode(publickeyfile, &publickeyblock)
 }
+
 func RSA_Encrypt(plainText []byte, publickeypath string) []byte {
 	//open publickeyfile
 	publickeyfile, err := os.Open(publickeypath)

@@ -5,43 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"honoka-chan/encrypt"
+	"honoka-chan/model"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-type ProductResp struct {
-	ResponseData ProductData   `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
-}
-type RestrictionInfo struct {
-	Restricted bool `json:"restricted"`
-}
-type UnderAgeInfo struct {
-	BirthSet    bool        `json:"birth_set"`
-	HasLimit    bool        `json:"has_limit"`
-	LimitAmount interface{} `json:"limit_amount"`
-	MonthUsed   int         `json:"month_used"`
-}
-type ProductData struct {
-	RestrictionInfo  RestrictionInfo `json:"restriction_info"`
-	UnderAgeInfo     UnderAgeInfo    `json:"under_age_info"`
-	SnsProductList   []interface{}   `json:"sns_product_list"`
-	ProductList      []interface{}   `json:"product_list"`
-	SubscriptionList []interface{}   `json:"subscription_list"`
-	ShowPointShop    bool            `json:"show_point_shop"`
-	ServerTimestamp  int64           `json:"server_timestamp"`
-}
-
 func ProductList(ctx *gin.Context) {
-	prodReesp := ProductResp{
-		ResponseData: ProductData{
-			RestrictionInfo: RestrictionInfo{
+	prodReesp := model.ProductResp{
+		ResponseData: model.ProductRes{
+			RestrictionInfo: model.RestrictionInfo{
 				Restricted: false,
 			},
-			UnderAgeInfo: UnderAgeInfo{
+			UnderAgeInfo: model.UnderAgeInfo{
 				BirthSet:    true,
 				HasLimit:    false,
 				LimitAmount: nil,

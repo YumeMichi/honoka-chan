@@ -5,40 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"honoka-chan/encrypt"
+	"honoka-chan/model"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-type MultiUnitStartUpResp struct {
-	ResponseData MultiUnitStartUpData `json:"response_data"`
-	ReleaseInfo  []interface{}        `json:"release_info"`
-	StatusCode   int                  `json:"status_code"`
-}
-
-type MultiUnitStartUpData struct {
-	MultiUnitScenarioID int   `json:"multi_unit_scenario_id"`
-	ScenarioAdjustment  int   `json:"scenario_adjustment"`
-	ServerTimestamp     int64 `json:"server_timestamp"`
-}
-
-type MultiUnitStartUpReq struct {
-	Module              string `json:"module"`
-	Action              string `json:"action"`
-	TimeStamp           int    `json:"timeStamp"`
-	Mgd                 int    `json:"mgd"`
-	MultiUnitScenarioID int    `json:"multi_unit_scenario_id"`
-	CommandNum          string `json:"commandNum"`
-}
-
 func MultiUnitStartUp(ctx *gin.Context) {
-	startReq := MultiUnitStartUpReq{}
+	startReq := model.MultiUnitStartUpReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
 	CheckErr(err)
 
-	startResp := MultiUnitStartUpResp{
-		ResponseData: MultiUnitStartUpData{
+	startResp := model.MultiUnitStartUpResp{
+		ResponseData: model.MultiUnitStartUpRes{
 			MultiUnitScenarioID: startReq.MultiUnitScenarioID,
 			ScenarioAdjustment:  50,
 			ServerTimestamp:     time.Now().Unix(),

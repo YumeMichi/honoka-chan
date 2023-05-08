@@ -2,6 +2,8 @@ package tools
 
 import (
 	"fmt"
+	"honoka-chan/config"
+	"honoka-chan/model"
 	"time"
 )
 
@@ -30,14 +32,14 @@ type UserPref struct {
 func InitUserData(userId int) {
 	userList := []UserData{}
 	if userId != 0 {
-		err := UserEng.Table("users").Where("userid = ?", userId).Find(&userList)
+		err := config.UserEng.Table("users").Where("userid = ?", userId).Find(&userList)
 		CheckErr(err)
 	} else {
-		err := UserEng.Table("users").Asc("id").Find(&userList)
+		err := config.UserEng.Table("users").Asc("id").Find(&userList)
 		CheckErr(err)
 	}
 
-	session := UserEng.NewSession()
+	session := config.UserEng.NewSession()
 	defer session.Close()
 
 	if err := session.Begin(); err != nil {
@@ -46,13 +48,13 @@ func InitUserData(userId int) {
 
 	for _, user := range userList {
 		// 检查用户配置
-		exists, err := UserEng.Table("user_preference_m").Where("user_id = ?", user.UserID).Exist()
+		exists, err := config.UserEng.Table("user_preference_m").Where("user_id = ?", user.UserID).Exist()
 		CheckErr(err)
 
 		if !exists {
 			// 默认中心成员（）
 			var oId int
-			_, err = MainEng.Table("common_unit_m").Cols("unit_owning_user_id").Where("unit_id = ?", 31).Get(&oId)
+			_, err = config.MainEng.Table("common_unit_m").Cols("unit_owning_user_id").Where("unit_id = ?", 31).Get(&oId)
 			CheckErr(err)
 			fmt.Println("Center UnitOwningUserID:", oId)
 			userPref := UserPref{
@@ -71,12 +73,12 @@ func InitUserData(userId int) {
 		}
 
 		// 检查用户卡组配置
-		exists, err = UserEng.Table("user_deck_m").Where("user_id = ?", user.UserID).Asc("deck_id").Exist()
+		exists, err = config.UserEng.Table("user_deck_m").Where("user_id = ?", user.UserID).Asc("deck_id").Exist()
 		CheckErr(err)
 		fmt.Println("UserDeck exists:", exists)
 
 		if !exists {
-			userDeck := UserDeckData{
+			userDeck := model.UserDeckData{
 				DeckID:     1,
 				MainFlag:   1,
 				DeckName:   "队伍A",
@@ -95,14 +97,14 @@ func InitUserData(userId int) {
 
 			// 默认卡组
 			unitIds := []int{}
-			err = MainEng.Table("unit_m").Cols("unit_id").Where("album_series_id = ?", 615).Find(&unitIds)
+			err = config.MainEng.Table("unit_m").Cols("unit_id").Where("album_series_id = ?", 615).Find(&unitIds)
 			if err != nil {
 				session.Rollback()
 				panic(err)
 			}
 
-			unitData := []UnitData{}
-			err = MainEng.Table("common_unit_m").In("unit_id", unitIds).Find(&unitData)
+			unitData := []model.UnitData{}
+			err = config.MainEng.Table("common_unit_m").In("unit_id", unitIds).Find(&unitData)
 			if err != nil {
 				session.Rollback()
 				panic(err)
@@ -111,7 +113,7 @@ func InitUserData(userId int) {
 
 			position := 1
 			for _, unit := range unitData {
-				unitDeckData := UnitDeckData{
+				unitDeckData := model.UnitDeckData{
 					UserDeckID:       userDeckId,
 					UnitOwningUserID: unit.UnitOwningUserID,
 					UnitID:           unit.UnitID,

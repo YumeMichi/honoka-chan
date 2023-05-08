@@ -27,3 +27,10 @@ func CheckErr(err error) {
 		panic(err)
 	}
 }
+
+func IsSigned(unitId int) bool {
+	exists, err := MainEng.Table("unit_sign_asset_m").Where("unit_id = ?", unitId).Exist()
+	CheckErr(err)
+
+	return exists
+}

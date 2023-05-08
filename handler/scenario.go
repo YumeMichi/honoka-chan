@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"honoka-chan/encrypt"
+	"honoka-chan/model"
 	"honoka-chan/utils"
 	"net/http"
 	"time"
@@ -12,34 +13,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ScenarioResp struct {
-	ResponseData ScenarioData  `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
-}
-
-type ScenarioData struct {
-	ScenarioID         int   `json:"scenario_id"`
-	ScenarioAdjustment int   `json:"scenario_adjustment"`
-	ServerTimestamp    int64 `json:"server_timestamp"`
-}
-
-type ScenarioReq struct {
-	Module     string `json:"module"`
-	Action     string `json:"action"`
-	TimeStamp  int    `json:"timeStamp"`
-	Mgd        int    `json:"mgd"`
-	CommandNum string `json:"commandNum"`
-	ScenarioID int    `json:"scenario_id"`
-}
-
 func ScenarioStartup(ctx *gin.Context) {
-	startReq := ScenarioReq{}
+	startReq := model.ScenarioReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
 	CheckErr(err)
 
-	startResp := ScenarioResp{
-		ResponseData: ScenarioData{
+	startResp := model.ScenarioResp{
+		ResponseData: model.ScenarioRes{
 			ScenarioID:         startReq.ScenarioID,
 			ScenarioAdjustment: 50,
 			ServerTimestamp:    time.Now().Unix(),

@@ -1,5 +1,6 @@
 package model
 
+// Data ...
 type Data struct {
 	Version   int           `json:"version"`
 	Team      []Team        `json:"team"`
@@ -7,11 +8,13 @@ type Data struct {
 	Submember []interface{} `json:"submember"`
 }
 
+// Accessory ...
 type Accessory struct {
 	ID    string `json:"id"`
 	Level int    `json:"level"`
 }
 
+// Team ...
 type Team struct {
 	Hp         int       `json:"hp"`
 	Smile      int       `json:"smile"`

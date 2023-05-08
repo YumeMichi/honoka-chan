@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"honoka-chan/model"
-	"honoka-chan/tools"
 	"honoka-chan/utils"
 	"net/http"
 	"path"
@@ -130,7 +129,7 @@ func Upload(ctx *gin.Context) {
 			skillExp = 29900
 		}
 
-		unitData := tools.UnitData{
+		unitData := model.UnitData{
 			UserID:                      ctx.GetInt("userid"),
 			UnitID:                      unitId,
 			Exp:                         unitExp + diffExp,

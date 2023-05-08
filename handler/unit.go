@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
-	"honoka-chan/tools"
 	"net/http"
 	"strconv"
 	"time"
@@ -76,7 +75,7 @@ func SetDeck(ctx *gin.Context) {
 	// 遍历新队伍
 	for _, deck := range deckReq.UnitDeckList {
 		// 新队伍信息
-		userDeck := tools.UserDeckData{
+		userDeck := model.UserDeckData{
 			DeckID:     deck.UnitDeckID,
 			MainFlag:   deck.MainFlag,
 			DeckName:   deck.DeckName,
@@ -94,7 +93,7 @@ func SetDeck(ctx *gin.Context) {
 		// 队伍成员信息
 		for _, unit := range deck.UnitDeckDetail {
 			// 成员信息
-			newUnitData := tools.UnitData{}
+			newUnitData := model.UnitData{}
 			exists, err := session.Table("user_unit_m").Where("unit_owning_user_id = ?", unit.UnitOwningUserID).Exist()
 			if err != nil {
 				session.Rollback()
@@ -129,7 +128,7 @@ func SetDeck(ctx *gin.Context) {
 			// fmt.Println("新的成员信息:", newUnitData)
 
 			// 插入新成员信息
-			newUnitDeckData := tools.UnitDeckData{}
+			newUnitDeckData := model.UnitDeckData{}
 			b, err := json.Marshal(newUnitData)
 			if err != nil {
 				session.Rollback()
@@ -191,10 +190,10 @@ func SetDeckName(ctx *gin.Context) {
 		ctx.String(http.StatusForbidden, ErrorMsg)
 		return
 	}
-	userDeck := tools.UserDeckData{
+	userDeck := model.UserDeckData{
 		DeckName: deckReq.DeckName,
 	}
-	_, err = UserEng.Table("user_deck_m").Update(&userDeck, &tools.UserDeckData{
+	_, err = UserEng.Table("user_deck_m").Update(&userDeck, &model.UserDeckData{
 		UserID: userId,
 		DeckID: deckReq.UnitDeckID,
 	})
@@ -245,6 +244,7 @@ func WearAccessory(ctx *gin.Context) {
 			panic(err)
 		}
 	}
+
 	// 佩戴饰品
 	for _, v := range req.Wear {
 		fmt.Println("Wear:", v.AccessoryOwningUserID, v.UnitOwningUserID)
@@ -256,6 +256,8 @@ func WearAccessory(ctx *gin.Context) {
 		_, err := session.Table("accessory_wear_m").Insert(&data)
 		CheckErr(err)
 	}
+
+	// 结束事务
 	if err := session.Commit(); err != nil {
 		session.Rollback()
 		panic(err)
@@ -306,6 +308,7 @@ func RemoveSkillEquip(ctx *gin.Context) {
 			panic(err)
 		}
 	}
+
 	// 佩戴宝石
 	for _, v := range req.Equip {
 		fmt.Println("Equip:", v.UnitOwningUserID, v.UnitRemovableSkillID)
@@ -317,6 +320,8 @@ func RemoveSkillEquip(ctx *gin.Context) {
 		_, err := session.Table("skill_equip_m").Insert(&data)
 		CheckErr(err)
 	}
+
+	// 结束事务
 	if err := session.Commit(); err != nil {
 		session.Rollback()
 		panic(err)

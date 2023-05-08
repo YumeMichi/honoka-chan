@@ -29,3 +29,27 @@ type MultiUnitScenarioStatusResp struct {
 	CommandNum bool                       `json:"commandNum"`
 	TimeStamp  int64                      `json:"timeStamp"`
 }
+
+// MultiUnitStartUpResp ...
+type MultiUnitStartUpResp struct {
+	ResponseData MultiUnitStartUpRes `json:"response_data"`
+	ReleaseInfo  []interface{}       `json:"release_info"`
+	StatusCode   int                 `json:"status_code"`
+}
+
+// MultiUnitStartUpRes ...
+type MultiUnitStartUpRes struct {
+	MultiUnitScenarioID int   `json:"multi_unit_scenario_id"`
+	ScenarioAdjustment  int   `json:"scenario_adjustment"`
+	ServerTimestamp     int64 `json:"server_timestamp"`
+}
+
+// MultiUnitStartUpReq ...
+type MultiUnitStartUpReq struct {
+	Module              string `json:"module"`
+	Action              string `json:"action"`
+	TimeStamp           int    `json:"timeStamp"`
+	Mgd                 int    `json:"mgd"`
+	MultiUnitScenarioID int    `json:"multi_unit_scenario_id"`
+	CommandNum          string `json:"commandNum"`
+}

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"honoka-chan/encrypt"
+	"honoka-chan/model"
 	"honoka-chan/utils"
 	"net/http"
 	"time"
@@ -12,34 +13,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type SubScenarioResp struct {
-	ResponseData SubScenarioData `json:"response_data"`
-	ReleaseInfo  []interface{}   `json:"release_info"`
-	StatusCode   int             `json:"status_code"`
-}
-
-type SubScenarioData struct {
-	SubscenarioID      int   `json:"subscenario_id"`
-	ScenarioAdjustment int   `json:"scenario_adjustment"`
-	ServerTimestamp    int64 `json:"server_timestamp"`
-}
-
-type SubScenarioReq struct {
-	Module        string `json:"module"`
-	Action        string `json:"action"`
-	TimeStamp     int    `json:"timeStamp"`
-	SubscenarioID int    `json:"subscenario_id"`
-	Mgd           int    `json:"mgd"`
-	CommandNum    string `json:"commandNum"`
-}
-
 func SubScenarioStartup(ctx *gin.Context) {
-	startReq := SubScenarioReq{}
+	startReq := model.SubScenarioReq{}
 	err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &startReq)
 	CheckErr(err)
 
-	startResp := SubScenarioResp{
-		ResponseData: SubScenarioData{
+	startResp := model.SubScenarioResp{
+		ResponseData: model.SubScenarioRes{
 			SubscenarioID:      startReq.SubscenarioID,
 			ScenarioAdjustment: 50,
 			ServerTimestamp:    time.Now().Unix(),
