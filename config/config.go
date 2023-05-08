@@ -7,7 +7,7 @@ import (
 	"honoka-chan/utils"
 	"os"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 	"xorm.io/xorm"
 )
 
@@ -32,7 +32,7 @@ func init() {
 		utils.WriteAllText(UserDb, utils.ReadAllText(ExampleDb))
 	}
 
-	eng, err := xorm.NewEngine("sqlite3", MainDb)
+	eng, err := xorm.NewEngine("sqlite", MainDb)
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ func init() {
 	MainEng.SetMaxOpenConns(50)
 	MainEng.SetMaxIdleConns(10)
 
-	eng, err = xorm.NewEngine("sqlite3", UserDb)
+	eng, err = xorm.NewEngine("sqlite", UserDb)
 	if err != nil {
 		panic(err)
 	}
