@@ -1,16 +1,28 @@
 package router
 
 import (
+	"encoding/base64"
+	"fmt"
+	"honoka-chan/config"
+	"honoka-chan/encrypt"
 	"honoka-chan/handler"
 	"honoka-chan/middleware"
+	"honoka-chan/utils"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
+)
+
+var (
+	sessionKey = "12345678123456781234567812345678"
 )
 
 func SifRouter(r *gin.Engine) {
@@ -137,5 +149,122 @@ func SifRouter(r *gin.Engine) {
 			})
 		})
 		w.POST("/upload", handler.Upload)
+	}
+}
+
+func AsRouter(r *gin.Engine) {
+
+	s := r.Group("ep3071")
+	{
+		s.POST("/login/login", func(ctx *gin.Context) {
+			body, err := io.ReadAll(ctx.Request.Body)
+			if err != nil {
+				panic(err)
+			}
+			defer ctx.Request.Body.Close()
+
+			var mask string
+			req := gjson.Parse(string(body))
+			req.ForEach(func(key, value gjson.Result) bool {
+				if value.Get("mask").String() != "" {
+					mask = value.Get("mask").String()
+					return false
+				}
+				return true
+			})
+			fmt.Println("Request data:", req.String())
+			fmt.Println("Mask:", mask)
+
+			mask64, err := base64.StdEncoding.DecodeString(mask)
+			if err != nil {
+				panic(err)
+			}
+			randomBytes := encrypt.RSA_DecryptOAEP(mask64, "privatekey.pem")
+			fmt.Println("Random Bytes:", randomBytes)
+
+			newKey := utils.SliceXor(randomBytes, []byte(sessionKey))
+			newKey64 := base64.StdEncoding.EncodeToString(newKey)
+
+			loginBody := strings.ReplaceAll(utils.ReadAllText("data/login_body.txt"), "SESSION_KEY", newKey64)
+			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, loginBody)
+
+			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
+			fmt.Println(ep)
+
+			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(config.StartUpKey))
+			fmt.Println(sign)
+
+			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
+			// fmt.Println(res)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, res)
+		})
+		s.POST("/bootstrap/fetchBootstrap", func(ctx *gin.Context) {
+			body, err := io.ReadAll(ctx.Request.Body)
+			if err != nil {
+				panic(err)
+			}
+			defer ctx.Request.Body.Close()
+			fmt.Println(string(body))
+
+			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
+			fmt.Println(ep)
+
+			bootstrapBody := utils.ReadAllText("data/bootstrap_body.txt")
+			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, bootstrapBody)
+			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(sessionKey))
+			fmt.Println(sign)
+
+			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
+			// fmt.Println(res)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, res)
+		})
+		s.POST("/billing/fetchBillingHistory", func(ctx *gin.Context) {
+			body, err := io.ReadAll(ctx.Request.Body)
+			if err != nil {
+				panic(err)
+			}
+			defer ctx.Request.Body.Close()
+			fmt.Println(string(body))
+
+			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
+			fmt.Println(ep)
+
+			bootstrapBody := utils.ReadAllText("data/bill_body.txt")
+			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, bootstrapBody)
+			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(sessionKey))
+			fmt.Println(sign)
+
+			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
+			// fmt.Println(res)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, res)
+		})
+		s.POST("/notice/fetchNotice", func(ctx *gin.Context) {
+			body, err := io.ReadAll(ctx.Request.Body)
+			if err != nil {
+				panic(err)
+			}
+			defer ctx.Request.Body.Close()
+			fmt.Println(string(body))
+
+			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
+			fmt.Println(ep)
+
+			bootstrapBody := utils.ReadAllText("data/notice_body.txt")
+			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, bootstrapBody)
+			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(sessionKey))
+			fmt.Println(sign)
+
+			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
+			// fmt.Println(res)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, res)
+		})
 	}
 }

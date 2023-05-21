@@ -22,6 +22,10 @@ var (
 	UserEng   *xorm.Engine
 
 	PackageVersion = "97.4.6"
+
+	// LLAS
+	StartUpKey    = "e0xrykyuBrLlwZhd"
+	MasterVersion = "8d6246b7c4264db4"
 )
 
 func init() {

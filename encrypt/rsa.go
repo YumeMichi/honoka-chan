@@ -171,3 +171,31 @@ func RSA_Sign_SHA1(cipherText []byte, privatekeypath string) []byte {
 
 	return signature
 }
+
+func RSA_DecryptOAEP(cipherText []byte, privatekeypath string) []byte {
+	//open privatekeyfile
+	privatekeyfile, err := os.Open(privatekeypath)
+	if err != nil {
+		panic(err)
+	}
+	defer privatekeyfile.Close()
+	//get privatekeyfile content
+	privatekeyinfo, _ := privatekeyfile.Stat()
+	buf := make([]byte, privatekeyinfo.Size())
+	privatekeyfile.Read(buf)
+	//pem decode
+	privatekeyblock, _ := pem.Decode(buf)
+	//X509 decode
+	parseKey, err := x509.ParsePKCS8PrivateKey(privatekeyblock.Bytes)
+	if err != nil {
+		panic(err)
+	}
+	privateKey := parseKey.(*rsa.PrivateKey)
+	//decrypt the cipher
+	plainText, err := rsa.DecryptOAEP(sha1.New(), rand.Reader, privateKey, cipherText, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	return plainText
+}
