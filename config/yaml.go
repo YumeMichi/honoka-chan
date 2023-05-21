@@ -52,7 +52,7 @@ func Load(p string) *AppConfigs {
 	}
 	c = AppConfigs{}
 	_ = yaml.Unmarshal([]byte(utils.ReadAllText(p)), &c)
-	fmt.Println(ConfName + "loaded!")
+	// fmt.Println(ConfName + "loaded!")
 	return &c
 }
 

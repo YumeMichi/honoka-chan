@@ -75,7 +75,7 @@ func InitUserData(userId int) {
 		// 检查用户卡组配置
 		exists, err = config.UserEng.Table("user_deck_m").Where("user_id = ?", user.UserID).Asc("deck_id").Exist()
 		CheckErr(err)
-		fmt.Println("UserDeck exists:", exists)
+		// fmt.Println("UserDeck exists:", exists)
 
 		if !exists {
 			userDeck := model.UserDeckData{
