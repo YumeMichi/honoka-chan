@@ -221,6 +221,12 @@ type AsCardInfo struct {
 	IsNew                      bool `json:"is_new"`
 }
 
+// AsSuitInfo ...
+type AsSuitInfo struct {
+	SuitMasterID int  `json:"suit_master_id"`
+	IsNew        bool `json:"is_new"`
+}
+
 // AsReq ...
 type AsReq interface{}
 

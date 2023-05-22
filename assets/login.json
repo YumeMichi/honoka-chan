@@ -18322,6 +18322,51 @@
             }
         ],
         "user_suit_by_suit_id": [
+            100101,
+            {
+                "suit_master_id": 100101,
+                "is_new": false
+            },
+            100102,
+            {
+                "suit_master_id": 100102,
+                "is_new": false
+            },
+            100103,
+            {
+                "suit_master_id": 100103,
+                "is_new": false
+            },
+            100104,
+            {
+                "suit_master_id": 100104,
+                "is_new": false
+            },
+            100105,
+            {
+                "suit_master_id": 100105,
+                "is_new": false
+            },
+            100106,
+            {
+                "suit_master_id": 100106,
+                "is_new": false
+            },
+            100107,
+            {
+                "suit_master_id": 100107,
+                "is_new": false
+            },
+            100108,
+            {
+                "suit_master_id": 100108,
+                "is_new": false
+            },
+            100109,
+            {
+                "suit_master_id": 100109,
+                "is_new": false
+            },
             300101,
             {
                 "suit_master_id": 300101,
@@ -18342,39 +18387,159 @@
                 "suit_master_id": 300104,
                 "is_new": false
             },
+            300105,
+            {
+                "suit_master_id": 300105,
+                "is_new": false
+            },
             300106,
             {
                 "suit_master_id": 300106,
                 "is_new": false
             },
+            300107,
+            {
+                "suit_master_id": 300107,
+                "is_new": false
+            },
+            300108,
+            {
+                "suit_master_id": 300108,
+                "is_new": false
+            },
+            300109,
+            {
+                "suit_master_id": 300109,
+                "is_new": false
+            },
+            300110,
+            {
+                "suit_master_id": 300110,
+                "is_new": false
+            },
+            300111,
+            {
+                "suit_master_id": 300111,
+                "is_new": false
+            },
+            300112,
+            {
+                "suit_master_id": 300112,
+                "is_new": false
+            },
+            300114,
+            {
+                "suit_master_id": 300114,
+                "is_new": false
+            },
+            300115,
+            {
+                "suit_master_id": 300115,
+                "is_new": false
+            },
+            300116,
+            {
+                "suit_master_id": 300116,
+                "is_new": false
+            },
+            300201,
+            {
+                "suit_master_id": 300201,
+                "is_new": false
+            },
             300202,
             {
                 "suit_master_id": 300202,
-                "is_new": true
+                "is_new": false
+            },
+            300203,
+            {
+                "suit_master_id": 300203,
+                "is_new": false
+            },
+            300204,
+            {
+                "suit_master_id": 300204,
+                "is_new": false
+            },
+            300205,
+            {
+                "suit_master_id": 300205,
+                "is_new": false
             },
             300206,
             {
                 "suit_master_id": 300206,
                 "is_new": false
             },
+            300207,
+            {
+                "suit_master_id": 300207,
+                "is_new": false
+            },
+            300208,
+            {
+                "suit_master_id": 300208,
+                "is_new": false
+            },
+            300209,
+            {
+                "suit_master_id": 300209,
+                "is_new": false
+            },
+            300210,
+            {
+                "suit_master_id": 300210,
+                "is_new": false
+            },
+            300211,
+            {
+                "suit_master_id": 300211,
+                "is_new": false
+            },
+            300212,
+            {
+                "suit_master_id": 300212,
+                "is_new": false
+            },
+            300214,
+            {
+                "suit_master_id": 300214,
+                "is_new": false
+            },
+            300215,
+            {
+                "suit_master_id": 300215,
+                "is_new": false
+            },
+            300216,
+            {
+                "suit_master_id": 300216,
+                "is_new": false
+            },
             300301,
             {
                 "suit_master_id": 300301,
-                "is_new": true
+                "is_new": false
             },
             300302,
             {
                 "suit_master_id": 300302,
-                "is_new": true
+                "is_new": false
             },
             300303,
             {
                 "suit_master_id": 300303,
-                "is_new": true
+                "is_new": false
             },
             300304,
             {
                 "suit_master_id": 300304,
+                "is_new": false
+            },
+            300305,
+            {
+                "suit_master_id": 300305,
                 "is_new": false
             },
             300306,
@@ -18382,34 +18547,224 @@
                 "suit_master_id": 300306,
                 "is_new": false
             },
+            300307,
+            {
+                "suit_master_id": 300307,
+                "is_new": false
+            },
+            300308,
+            {
+                "suit_master_id": 300308,
+                "is_new": false
+            },
+            300309,
+            {
+                "suit_master_id": 300309,
+                "is_new": false
+            },
+            300310,
+            {
+                "suit_master_id": 300310,
+                "is_new": false
+            },
+            300311,
+            {
+                "suit_master_id": 300311,
+                "is_new": false
+            },
+            300312,
+            {
+                "suit_master_id": 300312,
+                "is_new": false
+            },
+            300314,
+            {
+                "suit_master_id": 300314,
+                "is_new": false
+            },
+            300315,
+            {
+                "suit_master_id": 300315,
+                "is_new": false
+            },
+            300316,
+            {
+                "suit_master_id": 300316,
+                "is_new": false
+            },
+            300401,
+            {
+                "suit_master_id": 300401,
+                "is_new": false
+            },
             300402,
             {
                 "suit_master_id": 300402,
-                "is_new": true
+                "is_new": false
+            },
+            300403,
+            {
+                "suit_master_id": 300403,
+                "is_new": false
+            },
+            300404,
+            {
+                "suit_master_id": 300404,
+                "is_new": false
+            },
+            300405,
+            {
+                "suit_master_id": 300405,
+                "is_new": false
             },
             300406,
             {
                 "suit_master_id": 300406,
                 "is_new": false
             },
+            300407,
+            {
+                "suit_master_id": 300407,
+                "is_new": false
+            },
+            300408,
+            {
+                "suit_master_id": 300408,
+                "is_new": false
+            },
+            300409,
+            {
+                "suit_master_id": 300409,
+                "is_new": false
+            },
+            300410,
+            {
+                "suit_master_id": 300410,
+                "is_new": false
+            },
+            300411,
+            {
+                "suit_master_id": 300411,
+                "is_new": false
+            },
+            300412,
+            {
+                "suit_master_id": 300412,
+                "is_new": false
+            },
+            300414,
+            {
+                "suit_master_id": 300414,
+                "is_new": false
+            },
+            300415,
+            {
+                "suit_master_id": 300415,
+                "is_new": false
+            },
+            300416,
+            {
+                "suit_master_id": 300416,
+                "is_new": false
+            },
+            300501,
+            {
+                "suit_master_id": 300501,
+                "is_new": false
+            },
             300502,
             {
                 "suit_master_id": 300502,
-                "is_new": true
+                "is_new": false
+            },
+            300503,
+            {
+                "suit_master_id": 300503,
+                "is_new": false
+            },
+            300504,
+            {
+                "suit_master_id": 300504,
+                "is_new": false
+            },
+            300505,
+            {
+                "suit_master_id": 300505,
+                "is_new": false
             },
             300506,
             {
                 "suit_master_id": 300506,
                 "is_new": false
             },
+            300507,
+            {
+                "suit_master_id": 300507,
+                "is_new": false
+            },
+            300508,
+            {
+                "suit_master_id": 300508,
+                "is_new": false
+            },
+            300509,
+            {
+                "suit_master_id": 300509,
+                "is_new": false
+            },
+            300510,
+            {
+                "suit_master_id": 300510,
+                "is_new": false
+            },
+            300511,
+            {
+                "suit_master_id": 300511,
+                "is_new": false
+            },
+            300512,
+            {
+                "suit_master_id": 300512,
+                "is_new": false
+            },
+            300514,
+            {
+                "suit_master_id": 300514,
+                "is_new": false
+            },
+            300515,
+            {
+                "suit_master_id": 300515,
+                "is_new": false
+            },
+            300516,
+            {
+                "suit_master_id": 300516,
+                "is_new": false
+            },
+            300601,
+            {
+                "suit_master_id": 300601,
+                "is_new": false
+            },
             300602,
             {
                 "suit_master_id": 300602,
-                "is_new": true
+                "is_new": false
+            },
+            300603,
+            {
+                "suit_master_id": 300603,
+                "is_new": false
             },
             300604,
             {
                 "suit_master_id": 300604,
+                "is_new": false
+            },
+            300605,
+            {
+                "suit_master_id": 300605,
                 "is_new": false
             },
             300606,
@@ -18417,39 +18772,2019 @@
                 "suit_master_id": 300606,
                 "is_new": false
             },
+            300607,
+            {
+                "suit_master_id": 300607,
+                "is_new": false
+            },
+            300608,
+            {
+                "suit_master_id": 300608,
+                "is_new": false
+            },
+            300609,
+            {
+                "suit_master_id": 300609,
+                "is_new": false
+            },
+            300610,
+            {
+                "suit_master_id": 300610,
+                "is_new": false
+            },
+            300611,
+            {
+                "suit_master_id": 300611,
+                "is_new": false
+            },
+            300612,
+            {
+                "suit_master_id": 300612,
+                "is_new": false
+            },
+            300614,
+            {
+                "suit_master_id": 300614,
+                "is_new": false
+            },
+            300615,
+            {
+                "suit_master_id": 300615,
+                "is_new": false
+            },
+            300616,
+            {
+                "suit_master_id": 300616,
+                "is_new": false
+            },
+            300701,
+            {
+                "suit_master_id": 300701,
+                "is_new": false
+            },
             300702,
             {
                 "suit_master_id": 300702,
-                "is_new": true
+                "is_new": false
+            },
+            300703,
+            {
+                "suit_master_id": 300703,
+                "is_new": false
+            },
+            300704,
+            {
+                "suit_master_id": 300704,
+                "is_new": false
+            },
+            300705,
+            {
+                "suit_master_id": 300705,
+                "is_new": false
             },
             300706,
             {
                 "suit_master_id": 300706,
                 "is_new": false
             },
+            300707,
+            {
+                "suit_master_id": 300707,
+                "is_new": false
+            },
+            300708,
+            {
+                "suit_master_id": 300708,
+                "is_new": false
+            },
+            300709,
+            {
+                "suit_master_id": 300709,
+                "is_new": false
+            },
+            300710,
+            {
+                "suit_master_id": 300710,
+                "is_new": false
+            },
+            300711,
+            {
+                "suit_master_id": 300711,
+                "is_new": false
+            },
+            300712,
+            {
+                "suit_master_id": 300712,
+                "is_new": false
+            },
+            300714,
+            {
+                "suit_master_id": 300714,
+                "is_new": false
+            },
+            300715,
+            {
+                "suit_master_id": 300715,
+                "is_new": false
+            },
+            300716,
+            {
+                "suit_master_id": 300716,
+                "is_new": false
+            },
+            300801,
+            {
+                "suit_master_id": 300801,
+                "is_new": false
+            },
             300802,
             {
                 "suit_master_id": 300802,
-                "is_new": true
+                "is_new": false
+            },
+            300803,
+            {
+                "suit_master_id": 300803,
+                "is_new": false
+            },
+            300804,
+            {
+                "suit_master_id": 300804,
+                "is_new": false
+            },
+            300805,
+            {
+                "suit_master_id": 300805,
+                "is_new": false
             },
             300806,
             {
                 "suit_master_id": 300806,
                 "is_new": false
             },
+            300807,
+            {
+                "suit_master_id": 300807,
+                "is_new": false
+            },
+            300808,
+            {
+                "suit_master_id": 300808,
+                "is_new": false
+            },
+            300809,
+            {
+                "suit_master_id": 300809,
+                "is_new": false
+            },
+            300810,
+            {
+                "suit_master_id": 300810,
+                "is_new": false
+            },
+            300811,
+            {
+                "suit_master_id": 300811,
+                "is_new": false
+            },
+            300812,
+            {
+                "suit_master_id": 300812,
+                "is_new": false
+            },
+            300814,
+            {
+                "suit_master_id": 300814,
+                "is_new": false
+            },
+            300815,
+            {
+                "suit_master_id": 300815,
+                "is_new": false
+            },
+            300816,
+            {
+                "suit_master_id": 300816,
+                "is_new": false
+            },
+            300901,
+            {
+                "suit_master_id": 300901,
+                "is_new": false
+            },
             300902,
             {
                 "suit_master_id": 300902,
-                "is_new": true
+                "is_new": false
+            },
+            300903,
+            {
+                "suit_master_id": 300903,
+                "is_new": false
+            },
+            300904,
+            {
+                "suit_master_id": 300904,
+                "is_new": false
+            },
+            300905,
+            {
+                "suit_master_id": 300905,
+                "is_new": false
             },
             300906,
             {
                 "suit_master_id": 300906,
                 "is_new": false
             },
+            300907,
+            {
+                "suit_master_id": 300907,
+                "is_new": false
+            },
+            300908,
+            {
+                "suit_master_id": 300908,
+                "is_new": false
+            },
+            300909,
+            {
+                "suit_master_id": 300909,
+                "is_new": false
+            },
+            300910,
+            {
+                "suit_master_id": 300910,
+                "is_new": false
+            },
+            300912,
+            {
+                "suit_master_id": 300912,
+                "is_new": false
+            },
+            300913,
+            {
+                "suit_master_id": 300913,
+                "is_new": false
+            },
+            300914,
+            {
+                "suit_master_id": 300914,
+                "is_new": false
+            },
+            300915,
+            {
+                "suit_master_id": 300915,
+                "is_new": false
+            },
+            300916,
+            {
+                "suit_master_id": 300916,
+                "is_new": false
+            },
+            310101,
+            {
+                "suit_master_id": 310101,
+                "is_new": false
+            },
+            310102,
+            {
+                "suit_master_id": 310102,
+                "is_new": false
+            },
+            310103,
+            {
+                "suit_master_id": 310103,
+                "is_new": false
+            },
+            310104,
+            {
+                "suit_master_id": 310104,
+                "is_new": false
+            },
+            310105,
+            {
+                "suit_master_id": 310105,
+                "is_new": false
+            },
+            310106,
+            {
+                "suit_master_id": 310106,
+                "is_new": false
+            },
+            310107,
+            {
+                "suit_master_id": 310107,
+                "is_new": false
+            },
+            310108,
+            {
+                "suit_master_id": 310108,
+                "is_new": false
+            },
+            310109,
+            {
+                "suit_master_id": 310109,
+                "is_new": false
+            },
+            310110,
+            {
+                "suit_master_id": 310110,
+                "is_new": false
+            },
+            310111,
+            {
+                "suit_master_id": 310111,
+                "is_new": false
+            },
+            310114,
+            {
+                "suit_master_id": 310114,
+                "is_new": false
+            },
+            310115,
+            {
+                "suit_master_id": 310115,
+                "is_new": false
+            },
+            310116,
+            {
+                "suit_master_id": 310116,
+                "is_new": false
+            },
+            310118,
+            {
+                "suit_master_id": 310118,
+                "is_new": false
+            },
+            310119,
+            {
+                "suit_master_id": 310119,
+                "is_new": false
+            },
+            310120,
+            {
+                "suit_master_id": 310120,
+                "is_new": false
+            },
+            310121,
+            {
+                "suit_master_id": 310121,
+                "is_new": false
+            },
+            310122,
+            {
+                "suit_master_id": 310122,
+                "is_new": false
+            },
+            310201,
+            {
+                "suit_master_id": 310201,
+                "is_new": false
+            },
+            310202,
+            {
+                "suit_master_id": 310202,
+                "is_new": false
+            },
+            310203,
+            {
+                "suit_master_id": 310203,
+                "is_new": false
+            },
+            310204,
+            {
+                "suit_master_id": 310204,
+                "is_new": false
+            },
+            310205,
+            {
+                "suit_master_id": 310205,
+                "is_new": false
+            },
+            310206,
+            {
+                "suit_master_id": 310206,
+                "is_new": false
+            },
+            310207,
+            {
+                "suit_master_id": 310207,
+                "is_new": false
+            },
+            310208,
+            {
+                "suit_master_id": 310208,
+                "is_new": false
+            },
+            310209,
+            {
+                "suit_master_id": 310209,
+                "is_new": false
+            },
+            310210,
+            {
+                "suit_master_id": 310210,
+                "is_new": false
+            },
+            310211,
+            {
+                "suit_master_id": 310211,
+                "is_new": false
+            },
+            310214,
+            {
+                "suit_master_id": 310214,
+                "is_new": false
+            },
+            310215,
+            {
+                "suit_master_id": 310215,
+                "is_new": false
+            },
+            310216,
+            {
+                "suit_master_id": 310216,
+                "is_new": false
+            },
+            310218,
+            {
+                "suit_master_id": 310218,
+                "is_new": false
+            },
+            310219,
+            {
+                "suit_master_id": 310219,
+                "is_new": false
+            },
+            310220,
+            {
+                "suit_master_id": 310220,
+                "is_new": false
+            },
+            310221,
+            {
+                "suit_master_id": 310221,
+                "is_new": false
+            },
+            310222,
+            {
+                "suit_master_id": 310222,
+                "is_new": false
+            },
+            310301,
+            {
+                "suit_master_id": 310301,
+                "is_new": false
+            },
+            310302,
+            {
+                "suit_master_id": 310302,
+                "is_new": false
+            },
+            310303,
+            {
+                "suit_master_id": 310303,
+                "is_new": false
+            },
+            310304,
+            {
+                "suit_master_id": 310304,
+                "is_new": false
+            },
+            310305,
+            {
+                "suit_master_id": 310305,
+                "is_new": false
+            },
+            310306,
+            {
+                "suit_master_id": 310306,
+                "is_new": false
+            },
+            310307,
+            {
+                "suit_master_id": 310307,
+                "is_new": false
+            },
+            310308,
+            {
+                "suit_master_id": 310308,
+                "is_new": false
+            },
+            310309,
+            {
+                "suit_master_id": 310309,
+                "is_new": false
+            },
+            310310,
+            {
+                "suit_master_id": 310310,
+                "is_new": false
+            },
+            310311,
+            {
+                "suit_master_id": 310311,
+                "is_new": false
+            },
+            310314,
+            {
+                "suit_master_id": 310314,
+                "is_new": false
+            },
+            310315,
+            {
+                "suit_master_id": 310315,
+                "is_new": false
+            },
+            310316,
+            {
+                "suit_master_id": 310316,
+                "is_new": false
+            },
+            310317,
+            {
+                "suit_master_id": 310317,
+                "is_new": false
+            },
+            310319,
+            {
+                "suit_master_id": 310319,
+                "is_new": false
+            },
+            310320,
+            {
+                "suit_master_id": 310320,
+                "is_new": false
+            },
+            310321,
+            {
+                "suit_master_id": 310321,
+                "is_new": false
+            },
+            310322,
+            {
+                "suit_master_id": 310322,
+                "is_new": false
+            },
+            310323,
+            {
+                "suit_master_id": 310323,
+                "is_new": false
+            },
+            310401,
+            {
+                "suit_master_id": 310401,
+                "is_new": false
+            },
+            310402,
+            {
+                "suit_master_id": 310402,
+                "is_new": false
+            },
+            310403,
+            {
+                "suit_master_id": 310403,
+                "is_new": false
+            },
+            310404,
+            {
+                "suit_master_id": 310404,
+                "is_new": false
+            },
+            310405,
+            {
+                "suit_master_id": 310405,
+                "is_new": false
+            },
+            310406,
+            {
+                "suit_master_id": 310406,
+                "is_new": false
+            },
+            310407,
+            {
+                "suit_master_id": 310407,
+                "is_new": false
+            },
+            310408,
+            {
+                "suit_master_id": 310408,
+                "is_new": false
+            },
+            310409,
+            {
+                "suit_master_id": 310409,
+                "is_new": false
+            },
+            310410,
+            {
+                "suit_master_id": 310410,
+                "is_new": false
+            },
+            310411,
+            {
+                "suit_master_id": 310411,
+                "is_new": false
+            },
+            310414,
+            {
+                "suit_master_id": 310414,
+                "is_new": false
+            },
+            310415,
+            {
+                "suit_master_id": 310415,
+                "is_new": false
+            },
+            310416,
+            {
+                "suit_master_id": 310416,
+                "is_new": false
+            },
+            310417,
+            {
+                "suit_master_id": 310417,
+                "is_new": false
+            },
+            310419,
+            {
+                "suit_master_id": 310419,
+                "is_new": false
+            },
+            310420,
+            {
+                "suit_master_id": 310420,
+                "is_new": false
+            },
+            310421,
+            {
+                "suit_master_id": 310421,
+                "is_new": false
+            },
+            310422,
+            {
+                "suit_master_id": 310422,
+                "is_new": false
+            },
+            310423,
+            {
+                "suit_master_id": 310423,
+                "is_new": false
+            },
+            310501,
+            {
+                "suit_master_id": 310501,
+                "is_new": false
+            },
+            310502,
+            {
+                "suit_master_id": 310502,
+                "is_new": false
+            },
+            310503,
+            {
+                "suit_master_id": 310503,
+                "is_new": false
+            },
+            310504,
+            {
+                "suit_master_id": 310504,
+                "is_new": false
+            },
+            310505,
+            {
+                "suit_master_id": 310505,
+                "is_new": false
+            },
+            310506,
+            {
+                "suit_master_id": 310506,
+                "is_new": false
+            },
+            310507,
+            {
+                "suit_master_id": 310507,
+                "is_new": false
+            },
+            310508,
+            {
+                "suit_master_id": 310508,
+                "is_new": false
+            },
+            310509,
+            {
+                "suit_master_id": 310509,
+                "is_new": false
+            },
+            310510,
+            {
+                "suit_master_id": 310510,
+                "is_new": false
+            },
+            310511,
+            {
+                "suit_master_id": 310511,
+                "is_new": false
+            },
+            310514,
+            {
+                "suit_master_id": 310514,
+                "is_new": false
+            },
+            310515,
+            {
+                "suit_master_id": 310515,
+                "is_new": false
+            },
+            310516,
+            {
+                "suit_master_id": 310516,
+                "is_new": false
+            },
+            310518,
+            {
+                "suit_master_id": 310518,
+                "is_new": false
+            },
+            310519,
+            {
+                "suit_master_id": 310519,
+                "is_new": false
+            },
+            310520,
+            {
+                "suit_master_id": 310520,
+                "is_new": false
+            },
+            310521,
+            {
+                "suit_master_id": 310521,
+                "is_new": false
+            },
+            310522,
+            {
+                "suit_master_id": 310522,
+                "is_new": false
+            },
+            310524,
+            {
+                "suit_master_id": 310524,
+                "is_new": false
+            },
+            310601,
+            {
+                "suit_master_id": 310601,
+                "is_new": false
+            },
+            310602,
+            {
+                "suit_master_id": 310602,
+                "is_new": false
+            },
+            310603,
+            {
+                "suit_master_id": 310603,
+                "is_new": false
+            },
+            310604,
+            {
+                "suit_master_id": 310604,
+                "is_new": false
+            },
+            310605,
+            {
+                "suit_master_id": 310605,
+                "is_new": false
+            },
+            310606,
+            {
+                "suit_master_id": 310606,
+                "is_new": false
+            },
+            310607,
+            {
+                "suit_master_id": 310607,
+                "is_new": false
+            },
+            310608,
+            {
+                "suit_master_id": 310608,
+                "is_new": false
+            },
+            310609,
+            {
+                "suit_master_id": 310609,
+                "is_new": false
+            },
+            310610,
+            {
+                "suit_master_id": 310610,
+                "is_new": false
+            },
+            310611,
+            {
+                "suit_master_id": 310611,
+                "is_new": false
+            },
+            310614,
+            {
+                "suit_master_id": 310614,
+                "is_new": false
+            },
+            310615,
+            {
+                "suit_master_id": 310615,
+                "is_new": false
+            },
+            310616,
+            {
+                "suit_master_id": 310616,
+                "is_new": false
+            },
+            310618,
+            {
+                "suit_master_id": 310618,
+                "is_new": false
+            },
+            310619,
+            {
+                "suit_master_id": 310619,
+                "is_new": false
+            },
+            310620,
+            {
+                "suit_master_id": 310620,
+                "is_new": false
+            },
+            310621,
+            {
+                "suit_master_id": 310621,
+                "is_new": false
+            },
+            310622,
+            {
+                "suit_master_id": 310622,
+                "is_new": false
+            },
+            310624,
+            {
+                "suit_master_id": 310624,
+                "is_new": false
+            },
+            310701,
+            {
+                "suit_master_id": 310701,
+                "is_new": false
+            },
+            310702,
+            {
+                "suit_master_id": 310702,
+                "is_new": false
+            },
+            310703,
+            {
+                "suit_master_id": 310703,
+                "is_new": false
+            },
+            310704,
+            {
+                "suit_master_id": 310704,
+                "is_new": false
+            },
+            310705,
+            {
+                "suit_master_id": 310705,
+                "is_new": false
+            },
+            310706,
+            {
+                "suit_master_id": 310706,
+                "is_new": false
+            },
+            310707,
+            {
+                "suit_master_id": 310707,
+                "is_new": false
+            },
+            310708,
+            {
+                "suit_master_id": 310708,
+                "is_new": false
+            },
+            310709,
+            {
+                "suit_master_id": 310709,
+                "is_new": false
+            },
+            310710,
+            {
+                "suit_master_id": 310710,
+                "is_new": false
+            },
+            310711,
+            {
+                "suit_master_id": 310711,
+                "is_new": false
+            },
+            310714,
+            {
+                "suit_master_id": 310714,
+                "is_new": false
+            },
+            310715,
+            {
+                "suit_master_id": 310715,
+                "is_new": false
+            },
+            310716,
+            {
+                "suit_master_id": 310716,
+                "is_new": false
+            },
+            310717,
+            {
+                "suit_master_id": 310717,
+                "is_new": false
+            },
+            310719,
+            {
+                "suit_master_id": 310719,
+                "is_new": false
+            },
+            310720,
+            {
+                "suit_master_id": 310720,
+                "is_new": false
+            },
+            310721,
+            {
+                "suit_master_id": 310721,
+                "is_new": false
+            },
+            310722,
+            {
+                "suit_master_id": 310722,
+                "is_new": false
+            },
+            310723,
+            {
+                "suit_master_id": 310723,
+                "is_new": false
+            },
+            310801,
+            {
+                "suit_master_id": 310801,
+                "is_new": false
+            },
+            310802,
+            {
+                "suit_master_id": 310802,
+                "is_new": false
+            },
+            310803,
+            {
+                "suit_master_id": 310803,
+                "is_new": false
+            },
+            310804,
+            {
+                "suit_master_id": 310804,
+                "is_new": false
+            },
+            310805,
+            {
+                "suit_master_id": 310805,
+                "is_new": false
+            },
+            310806,
+            {
+                "suit_master_id": 310806,
+                "is_new": false
+            },
+            310807,
+            {
+                "suit_master_id": 310807,
+                "is_new": false
+            },
+            310808,
+            {
+                "suit_master_id": 310808,
+                "is_new": false
+            },
+            310809,
+            {
+                "suit_master_id": 310809,
+                "is_new": false
+            },
+            310810,
+            {
+                "suit_master_id": 310810,
+                "is_new": false
+            },
+            310811,
+            {
+                "suit_master_id": 310811,
+                "is_new": false
+            },
+            310814,
+            {
+                "suit_master_id": 310814,
+                "is_new": false
+            },
+            310815,
+            {
+                "suit_master_id": 310815,
+                "is_new": false
+            },
+            310816,
+            {
+                "suit_master_id": 310816,
+                "is_new": false
+            },
+            310818,
+            {
+                "suit_master_id": 310818,
+                "is_new": false
+            },
+            310819,
+            {
+                "suit_master_id": 310819,
+                "is_new": false
+            },
+            310820,
+            {
+                "suit_master_id": 310820,
+                "is_new": false
+            },
+            310821,
+            {
+                "suit_master_id": 310821,
+                "is_new": false
+            },
+            310822,
+            {
+                "suit_master_id": 310822,
+                "is_new": false
+            },
+            310901,
+            {
+                "suit_master_id": 310901,
+                "is_new": false
+            },
+            310902,
+            {
+                "suit_master_id": 310902,
+                "is_new": false
+            },
+            310903,
+            {
+                "suit_master_id": 310903,
+                "is_new": false
+            },
+            310904,
+            {
+                "suit_master_id": 310904,
+                "is_new": false
+            },
+            310905,
+            {
+                "suit_master_id": 310905,
+                "is_new": false
+            },
+            310906,
+            {
+                "suit_master_id": 310906,
+                "is_new": false
+            },
+            310907,
+            {
+                "suit_master_id": 310907,
+                "is_new": false
+            },
+            310908,
+            {
+                "suit_master_id": 310908,
+                "is_new": false
+            },
+            310909,
+            {
+                "suit_master_id": 310909,
+                "is_new": false
+            },
+            310910,
+            {
+                "suit_master_id": 310910,
+                "is_new": false
+            },
+            310911,
+            {
+                "suit_master_id": 310911,
+                "is_new": false
+            },
+            310914,
+            {
+                "suit_master_id": 310914,
+                "is_new": false
+            },
+            310915,
+            {
+                "suit_master_id": 310915,
+                "is_new": false
+            },
+            310916,
+            {
+                "suit_master_id": 310916,
+                "is_new": false
+            },
+            310918,
+            {
+                "suit_master_id": 310918,
+                "is_new": false
+            },
+            310919,
+            {
+                "suit_master_id": 310919,
+                "is_new": false
+            },
+            310920,
+            {
+                "suit_master_id": 310920,
+                "is_new": false
+            },
+            310921,
+            {
+                "suit_master_id": 310921,
+                "is_new": false
+            },
+            310922,
+            {
+                "suit_master_id": 310922,
+                "is_new": false
+            },
+            310924,
+            {
+                "suit_master_id": 310924,
+                "is_new": false
+            },
+            320101,
+            {
+                "suit_master_id": 320101,
+                "is_new": false
+            },
+            320102,
+            {
+                "suit_master_id": 320102,
+                "is_new": false
+            },
+            320103,
+            {
+                "suit_master_id": 320103,
+                "is_new": false
+            },
+            320104,
+            {
+                "suit_master_id": 320104,
+                "is_new": false
+            },
+            320105,
+            {
+                "suit_master_id": 320105,
+                "is_new": false
+            },
+            320106,
+            {
+                "suit_master_id": 320106,
+                "is_new": false
+            },
+            320107,
+            {
+                "suit_master_id": 320107,
+                "is_new": false
+            },
+            320108,
+            {
+                "suit_master_id": 320108,
+                "is_new": false
+            },
+            320109,
+            {
+                "suit_master_id": 320109,
+                "is_new": false
+            },
+            320111,
+            {
+                "suit_master_id": 320111,
+                "is_new": false
+            },
+            320113,
+            {
+                "suit_master_id": 320113,
+                "is_new": false
+            },
+            320114,
+            {
+                "suit_master_id": 320114,
+                "is_new": false
+            },
+            320116,
+            {
+                "suit_master_id": 320116,
+                "is_new": false
+            },
+            320117,
+            {
+                "suit_master_id": 320117,
+                "is_new": false
+            },
+            320118,
+            {
+                "suit_master_id": 320118,
+                "is_new": false
+            },
+            320119,
+            {
+                "suit_master_id": 320119,
+                "is_new": false
+            },
+            320122,
+            {
+                "suit_master_id": 320122,
+                "is_new": false
+            },
+            320201,
+            {
+                "suit_master_id": 320201,
+                "is_new": false
+            },
+            320202,
+            {
+                "suit_master_id": 320202,
+                "is_new": false
+            },
+            320203,
+            {
+                "suit_master_id": 320203,
+                "is_new": false
+            },
+            320204,
+            {
+                "suit_master_id": 320204,
+                "is_new": false
+            },
+            320205,
+            {
+                "suit_master_id": 320205,
+                "is_new": false
+            },
+            320206,
+            {
+                "suit_master_id": 320206,
+                "is_new": false
+            },
+            320207,
+            {
+                "suit_master_id": 320207,
+                "is_new": false
+            },
+            320208,
+            {
+                "suit_master_id": 320208,
+                "is_new": false
+            },
+            320209,
+            {
+                "suit_master_id": 320209,
+                "is_new": false
+            },
+            320211,
+            {
+                "suit_master_id": 320211,
+                "is_new": false
+            },
+            320213,
+            {
+                "suit_master_id": 320213,
+                "is_new": false
+            },
+            320214,
+            {
+                "suit_master_id": 320214,
+                "is_new": false
+            },
+            320216,
+            {
+                "suit_master_id": 320216,
+                "is_new": false
+            },
+            320217,
+            {
+                "suit_master_id": 320217,
+                "is_new": false
+            },
+            320218,
+            {
+                "suit_master_id": 320218,
+                "is_new": false
+            },
+            320219,
+            {
+                "suit_master_id": 320219,
+                "is_new": false
+            },
+            320301,
+            {
+                "suit_master_id": 320301,
+                "is_new": false
+            },
+            320302,
+            {
+                "suit_master_id": 320302,
+                "is_new": false
+            },
+            320303,
+            {
+                "suit_master_id": 320303,
+                "is_new": false
+            },
+            320304,
+            {
+                "suit_master_id": 320304,
+                "is_new": false
+            },
+            320305,
+            {
+                "suit_master_id": 320305,
+                "is_new": false
+            },
+            320306,
+            {
+                "suit_master_id": 320306,
+                "is_new": false
+            },
+            320307,
+            {
+                "suit_master_id": 320307,
+                "is_new": false
+            },
+            320308,
+            {
+                "suit_master_id": 320308,
+                "is_new": false
+            },
+            320309,
+            {
+                "suit_master_id": 320309,
+                "is_new": false
+            },
+            320311,
+            {
+                "suit_master_id": 320311,
+                "is_new": false
+            },
+            320313,
+            {
+                "suit_master_id": 320313,
+                "is_new": false
+            },
+            320314,
+            {
+                "suit_master_id": 320314,
+                "is_new": false
+            },
+            320316,
+            {
+                "suit_master_id": 320316,
+                "is_new": false
+            },
+            320317,
+            {
+                "suit_master_id": 320317,
+                "is_new": false
+            },
+            320318,
+            {
+                "suit_master_id": 320318,
+                "is_new": false
+            },
+            320319,
+            {
+                "suit_master_id": 320319,
+                "is_new": false
+            },
+            320322,
+            {
+                "suit_master_id": 320322,
+                "is_new": false
+            },
+            320401,
+            {
+                "suit_master_id": 320401,
+                "is_new": false
+            },
+            320402,
+            {
+                "suit_master_id": 320402,
+                "is_new": false
+            },
+            320403,
+            {
+                "suit_master_id": 320403,
+                "is_new": false
+            },
+            320404,
+            {
+                "suit_master_id": 320404,
+                "is_new": false
+            },
+            320405,
+            {
+                "suit_master_id": 320405,
+                "is_new": false
+            },
+            320406,
+            {
+                "suit_master_id": 320406,
+                "is_new": false
+            },
+            320407,
+            {
+                "suit_master_id": 320407,
+                "is_new": false
+            },
+            320408,
+            {
+                "suit_master_id": 320408,
+                "is_new": false
+            },
+            320409,
+            {
+                "suit_master_id": 320409,
+                "is_new": false
+            },
+            320411,
+            {
+                "suit_master_id": 320411,
+                "is_new": false
+            },
+            320413,
+            {
+                "suit_master_id": 320413,
+                "is_new": false
+            },
+            320414,
+            {
+                "suit_master_id": 320414,
+                "is_new": false
+            },
+            320416,
+            {
+                "suit_master_id": 320416,
+                "is_new": false
+            },
+            320417,
+            {
+                "suit_master_id": 320417,
+                "is_new": false
+            },
+            320418,
+            {
+                "suit_master_id": 320418,
+                "is_new": false
+            },
+            320419,
+            {
+                "suit_master_id": 320419,
+                "is_new": false
+            },
+            320501,
+            {
+                "suit_master_id": 320501,
+                "is_new": false
+            },
+            320502,
+            {
+                "suit_master_id": 320502,
+                "is_new": false
+            },
+            320503,
+            {
+                "suit_master_id": 320503,
+                "is_new": false
+            },
+            320504,
+            {
+                "suit_master_id": 320504,
+                "is_new": false
+            },
+            320505,
+            {
+                "suit_master_id": 320505,
+                "is_new": false
+            },
+            320506,
+            {
+                "suit_master_id": 320506,
+                "is_new": false
+            },
+            320507,
+            {
+                "suit_master_id": 320507,
+                "is_new": false
+            },
+            320508,
+            {
+                "suit_master_id": 320508,
+                "is_new": false
+            },
+            320509,
+            {
+                "suit_master_id": 320509,
+                "is_new": false
+            },
+            320511,
+            {
+                "suit_master_id": 320511,
+                "is_new": false
+            },
+            320513,
+            {
+                "suit_master_id": 320513,
+                "is_new": false
+            },
+            320514,
+            {
+                "suit_master_id": 320514,
+                "is_new": false
+            },
+            320516,
+            {
+                "suit_master_id": 320516,
+                "is_new": false
+            },
+            320517,
+            {
+                "suit_master_id": 320517,
+                "is_new": false
+            },
+            320518,
+            {
+                "suit_master_id": 320518,
+                "is_new": false
+            },
+            320519,
+            {
+                "suit_master_id": 320519,
+                "is_new": false
+            },
+            320601,
+            {
+                "suit_master_id": 320601,
+                "is_new": false
+            },
+            320602,
+            {
+                "suit_master_id": 320602,
+                "is_new": false
+            },
+            320603,
+            {
+                "suit_master_id": 320603,
+                "is_new": false
+            },
+            320604,
+            {
+                "suit_master_id": 320604,
+                "is_new": false
+            },
+            320605,
+            {
+                "suit_master_id": 320605,
+                "is_new": false
+            },
+            320606,
+            {
+                "suit_master_id": 320606,
+                "is_new": false
+            },
+            320607,
+            {
+                "suit_master_id": 320607,
+                "is_new": false
+            },
+            320608,
+            {
+                "suit_master_id": 320608,
+                "is_new": false
+            },
+            320609,
+            {
+                "suit_master_id": 320609,
+                "is_new": false
+            },
+            320611,
+            {
+                "suit_master_id": 320611,
+                "is_new": false
+            },
+            320613,
+            {
+                "suit_master_id": 320613,
+                "is_new": false
+            },
+            320614,
+            {
+                "suit_master_id": 320614,
+                "is_new": false
+            },
+            320616,
+            {
+                "suit_master_id": 320616,
+                "is_new": false
+            },
+            320617,
+            {
+                "suit_master_id": 320617,
+                "is_new": false
+            },
+            320618,
+            {
+                "suit_master_id": 320618,
+                "is_new": false
+            },
+            320619,
+            {
+                "suit_master_id": 320619,
+                "is_new": false
+            },
+            320701,
+            {
+                "suit_master_id": 320701,
+                "is_new": false
+            },
+            320702,
+            {
+                "suit_master_id": 320702,
+                "is_new": false
+            },
+            320703,
+            {
+                "suit_master_id": 320703,
+                "is_new": false
+            },
+            320704,
+            {
+                "suit_master_id": 320704,
+                "is_new": false
+            },
+            320705,
+            {
+                "suit_master_id": 320705,
+                "is_new": false
+            },
+            320706,
+            {
+                "suit_master_id": 320706,
+                "is_new": false
+            },
+            320707,
+            {
+                "suit_master_id": 320707,
+                "is_new": false
+            },
+            320708,
+            {
+                "suit_master_id": 320708,
+                "is_new": false
+            },
+            320709,
+            {
+                "suit_master_id": 320709,
+                "is_new": false
+            },
+            320711,
+            {
+                "suit_master_id": 320711,
+                "is_new": false
+            },
+            320713,
+            {
+                "suit_master_id": 320713,
+                "is_new": false
+            },
+            320714,
+            {
+                "suit_master_id": 320714,
+                "is_new": false
+            },
+            320716,
+            {
+                "suit_master_id": 320716,
+                "is_new": false
+            },
+            320717,
+            {
+                "suit_master_id": 320717,
+                "is_new": false
+            },
+            320718,
+            {
+                "suit_master_id": 320718,
+                "is_new": false
+            },
+            320719,
+            {
+                "suit_master_id": 320719,
+                "is_new": false
+            },
+            320801,
+            {
+                "suit_master_id": 320801,
+                "is_new": false
+            },
+            320802,
+            {
+                "suit_master_id": 320802,
+                "is_new": false
+            },
+            320803,
+            {
+                "suit_master_id": 320803,
+                "is_new": false
+            },
+            320804,
+            {
+                "suit_master_id": 320804,
+                "is_new": false
+            },
+            320805,
+            {
+                "suit_master_id": 320805,
+                "is_new": false
+            },
+            320806,
+            {
+                "suit_master_id": 320806,
+                "is_new": false
+            },
+            320807,
+            {
+                "suit_master_id": 320807,
+                "is_new": false
+            },
+            320808,
+            {
+                "suit_master_id": 320808,
+                "is_new": false
+            },
+            320809,
+            {
+                "suit_master_id": 320809,
+                "is_new": false
+            },
+            320811,
+            {
+                "suit_master_id": 320811,
+                "is_new": false
+            },
+            320813,
+            {
+                "suit_master_id": 320813,
+                "is_new": false
+            },
+            320814,
+            {
+                "suit_master_id": 320814,
+                "is_new": false
+            },
+            320816,
+            {
+                "suit_master_id": 320816,
+                "is_new": false
+            },
+            320817,
+            {
+                "suit_master_id": 320817,
+                "is_new": false
+            },
+            320818,
+            {
+                "suit_master_id": 320818,
+                "is_new": false
+            },
+            320819,
+            {
+                "suit_master_id": 320819,
+                "is_new": false
+            },
+            320901,
+            {
+                "suit_master_id": 320901,
+                "is_new": false
+            },
+            320902,
+            {
+                "suit_master_id": 320902,
+                "is_new": false
+            },
+            320903,
+            {
+                "suit_master_id": 320903,
+                "is_new": false
+            },
+            320904,
+            {
+                "suit_master_id": 320904,
+                "is_new": false
+            },
+            320905,
+            {
+                "suit_master_id": 320905,
+                "is_new": false
+            },
+            320906,
+            {
+                "suit_master_id": 320906,
+                "is_new": false
+            },
+            320907,
+            {
+                "suit_master_id": 320907,
+                "is_new": false
+            },
+            320908,
+            {
+                "suit_master_id": 320908,
+                "is_new": false
+            },
+            320909,
+            {
+                "suit_master_id": 320909,
+                "is_new": false
+            },
+            320911,
+            {
+                "suit_master_id": 320911,
+                "is_new": false
+            },
+            320913,
+            {
+                "suit_master_id": 320913,
+                "is_new": false
+            },
+            320914,
+            {
+                "suit_master_id": 320914,
+                "is_new": false
+            },
+            320916,
+            {
+                "suit_master_id": 320916,
+                "is_new": false
+            },
+            320917,
+            {
+                "suit_master_id": 320917,
+                "is_new": false
+            },
+            320918,
+            {
+                "suit_master_id": 320918,
+                "is_new": false
+            },
+            320919,
+            {
+                "suit_master_id": 320919,
+                "is_new": false
+            },
             321003,
             {
                 "suit_master_id": 321003,
+                "is_new": false
+            },
+            321004,
+            {
+                "suit_master_id": 321004,
+                "is_new": false
+            },
+            321005,
+            {
+                "suit_master_id": 321005,
+                "is_new": false
+            },
+            321006,
+            {
+                "suit_master_id": 321006,
+                "is_new": false
+            },
+            321007,
+            {
+                "suit_master_id": 321007,
+                "is_new": false
+            },
+            321009,
+            {
+                "suit_master_id": 321009,
+                "is_new": false
+            },
+            321011,
+            {
+                "suit_master_id": 321011,
+                "is_new": false
+            },
+            321013,
+            {
+                "suit_master_id": 321013,
+                "is_new": false
+            },
+            321015,
+            {
+                "suit_master_id": 321015,
+                "is_new": false
+            },
+            321016,
+            {
+                "suit_master_id": 321016,
+                "is_new": false
+            },
+            321017,
+            {
+                "suit_master_id": 321017,
+                "is_new": false
+            },
+            321018,
+            {
+                "suit_master_id": 321018,
+                "is_new": false
+            },
+            321019,
+            {
+                "suit_master_id": 321019,
+                "is_new": false
+            },
+            321022,
+            {
+                "suit_master_id": 321022,
+                "is_new": false
+            },
+            321103,
+            {
+                "suit_master_id": 321103,
+                "is_new": false
+            },
+            321104,
+            {
+                "suit_master_id": 321104,
+                "is_new": false
+            },
+            321105,
+            {
+                "suit_master_id": 321105,
+                "is_new": false
+            },
+            321106,
+            {
+                "suit_master_id": 321106,
+                "is_new": false
+            },
+            321108,
+            {
+                "suit_master_id": 321108,
+                "is_new": false
+            },
+            321109,
+            {
+                "suit_master_id": 321109,
+                "is_new": false
+            },
+            321203,
+            {
+                "suit_master_id": 321203,
+                "is_new": false
+            },
+            321204,
+            {
+                "suit_master_id": 321204,
+                "is_new": false
+            },
+            321205,
+            {
+                "suit_master_id": 321205,
+                "is_new": false
+            },
+            321206,
+            {
+                "suit_master_id": 321206,
+                "is_new": false
+            },
+            321208,
+            {
+                "suit_master_id": 321208,
+                "is_new": false
+            },
+            321209,
+            {
+                "suit_master_id": 321209,
                 "is_new": false
             },
             100011001,
@@ -18470,7 +20805,7 @@
             100013101,
             {
                 "suit_master_id": 100013101,
-                "is_new": true
+                "is_new": false
             },
             100021001,
             {
@@ -18480,11 +20815,16 @@
             100022001,
             {
                 "suit_master_id": 100022001,
-                "is_new": true
+                "is_new": false
             },
             100023001,
             {
                 "suit_master_id": 100023001,
+                "is_new": false
+            },
+            100023101,
+            {
+                "suit_master_id": 100023101,
                 "is_new": false
             },
             100031001,
@@ -18495,7 +20835,7 @@
             100032001,
             {
                 "suit_master_id": 100032001,
-                "is_new": true
+                "is_new": false
             },
             100033001,
             {
@@ -18515,12 +20855,12 @@
             100042001,
             {
                 "suit_master_id": 100042001,
-                "is_new": true
+                "is_new": false
             },
             100043001,
             {
                 "suit_master_id": 100043001,
-                "is_new": true
+                "is_new": false
             },
             100043101,
             {
@@ -18535,12 +20875,17 @@
             100052001,
             {
                 "suit_master_id": 100052001,
-                "is_new": true
+                "is_new": false
             },
             100053001,
             {
                 "suit_master_id": 100053001,
-                "is_new": true
+                "is_new": false
+            },
+            100053101,
+            {
+                "suit_master_id": 100053101,
+                "is_new": false
             },
             100061001,
             {
@@ -18550,7 +20895,7 @@
             100062001,
             {
                 "suit_master_id": 100062001,
-                "is_new": true
+                "is_new": false
             },
             100063001,
             {
@@ -18560,7 +20905,7 @@
             100063101,
             {
                 "suit_master_id": 100063101,
-                "is_new": true
+                "is_new": false
             },
             100071001,
             {
@@ -18570,11 +20915,16 @@
             100072001,
             {
                 "suit_master_id": 100072001,
-                "is_new": true
+                "is_new": false
             },
             100073001,
             {
                 "suit_master_id": 100073001,
+                "is_new": false
+            },
+            100073101,
+            {
+                "suit_master_id": 100073101,
                 "is_new": false
             },
             100081001,
@@ -18595,7 +20945,7 @@
             100083101,
             {
                 "suit_master_id": 100083101,
-                "is_new": true
+                "is_new": false
             },
             100091001,
             {
@@ -18615,7 +20965,7 @@
             100093101,
             {
                 "suit_master_id": 100093101,
-                "is_new": true
+                "is_new": false
             },
             101011001,
             {
@@ -18625,12 +20975,17 @@
             101012001,
             {
                 "suit_master_id": 101012001,
-                "is_new": true
+                "is_new": false
             },
             101013001,
             {
                 "suit_master_id": 101013001,
-                "is_new": true
+                "is_new": false
+            },
+            101013101,
+            {
+                "suit_master_id": 101013101,
+                "is_new": false
             },
             101021001,
             {
@@ -18640,17 +20995,17 @@
             101022001,
             {
                 "suit_master_id": 101022001,
-                "is_new": true
+                "is_new": false
             },
             101023001,
             {
                 "suit_master_id": 101023001,
-                "is_new": true
+                "is_new": false
             },
             101023101,
             {
                 "suit_master_id": 101023101,
-                "is_new": true
+                "is_new": false
             },
             101031001,
             {
@@ -18660,7 +21015,7 @@
             101032001,
             {
                 "suit_master_id": 101032001,
-                "is_new": true
+                "is_new": false
             },
             101033001,
             {
@@ -18680,21 +21035,26 @@
             101042001,
             {
                 "suit_master_id": 101042001,
-                "is_new": true
+                "is_new": false
             },
             101043001,
             {
                 "suit_master_id": 101043001,
-                "is_new": true
+                "is_new": false
             },
             101043101,
             {
                 "suit_master_id": 101043101,
-                "is_new": true
+                "is_new": false
             },
             101051001,
             {
                 "suit_master_id": 101051001,
+                "is_new": false
+            },
+            101052001,
+            {
+                "suit_master_id": 101052001,
                 "is_new": false
             },
             101053001,
@@ -18732,9 +21092,19 @@
                 "suit_master_id": 101071001,
                 "is_new": false
             },
+            101072001,
+            {
+                "suit_master_id": 101072001,
+                "is_new": false
+            },
             101073001,
             {
                 "suit_master_id": 101073001,
+                "is_new": false
+            },
+            101073101,
+            {
+                "suit_master_id": 101073101,
                 "is_new": false
             },
             101081001,
@@ -18745,11 +21115,16 @@
             101082001,
             {
                 "suit_master_id": 101082001,
-                "is_new": true
+                "is_new": false
             },
             101083001,
             {
                 "suit_master_id": 101083001,
+                "is_new": false
+            },
+            101083101,
+            {
+                "suit_master_id": 101083101,
                 "is_new": false
             },
             101091001,
@@ -18760,17 +21135,17 @@
             101092001,
             {
                 "suit_master_id": 101092001,
-                "is_new": true
+                "is_new": false
             },
             101093001,
             {
                 "suit_master_id": 101093001,
-                "is_new": true
+                "is_new": false
             },
             101093101,
             {
                 "suit_master_id": 101093101,
-                "is_new": true
+                "is_new": false
             },
             102011001,
             {
@@ -18780,11 +21155,16 @@
             102012001,
             {
                 "suit_master_id": 102012001,
-                "is_new": true
+                "is_new": false
             },
             102021001,
             {
                 "suit_master_id": 102021001,
+                "is_new": false
+            },
+            102022001,
+            {
+                "suit_master_id": 102022001,
                 "is_new": false
             },
             102031001,
@@ -18792,9 +21172,19 @@
                 "suit_master_id": 102031001,
                 "is_new": false
             },
+            102032001,
+            {
+                "suit_master_id": 102032001,
+                "is_new": false
+            },
             102041001,
             {
                 "suit_master_id": 102041001,
+                "is_new": false
+            },
+            102042001,
+            {
+                "suit_master_id": 102042001,
                 "is_new": false
             },
             102051001,
@@ -18805,11 +21195,16 @@
             102052001,
             {
                 "suit_master_id": 102052001,
-                "is_new": true
+                "is_new": false
             },
             102061001,
             {
                 "suit_master_id": 102061001,
+                "is_new": false
+            },
+            102062001,
+            {
+                "suit_master_id": 102062001,
                 "is_new": false
             },
             102071001,
@@ -18820,7 +21215,7 @@
             102072001,
             {
                 "suit_master_id": 102072001,
-                "is_new": true
+                "is_new": false
             },
             102081001,
             {
@@ -18830,7 +21225,7 @@
             102082001,
             {
                 "suit_master_id": 102082001,
-                "is_new": true
+                "is_new": false
             },
             102091001,
             {
@@ -18840,7 +21235,7 @@
             102092001,
             {
                 "suit_master_id": 102092001,
-                "is_new": true
+                "is_new": false
             },
             102101001,
             {
@@ -18857,9 +21252,19 @@
                 "suit_master_id": 102111001,
                 "is_new": false
             },
+            102112001,
+            {
+                "suit_master_id": 102112001,
+                "is_new": false
+            },
             102121001,
             {
                 "suit_master_id": 102121001,
+                "is_new": false
+            },
+            102122001,
+            {
+                "suit_master_id": 102122001,
                 "is_new": false
             },
             200012001,
@@ -18872,9 +21277,29 @@
                 "suit_master_id": 200013001,
                 "is_new": false
             },
+            200013002,
+            {
+                "suit_master_id": 200013002,
+                "is_new": false
+            },
             200013101,
             {
                 "suit_master_id": 200013101,
+                "is_new": false
+            },
+            200013102,
+            {
+                "suit_master_id": 200013102,
+                "is_new": false
+            },
+            200022001,
+            {
+                "suit_master_id": 200022001,
+                "is_new": false
+            },
+            200022002,
+            {
+                "suit_master_id": 200022002,
                 "is_new": false
             },
             200023001,
@@ -18887,14 +21312,39 @@
                 "suit_master_id": 200023002,
                 "is_new": false
             },
+            200023003,
+            {
+                "suit_master_id": 200023003,
+                "is_new": false
+            },
             200023101,
             {
                 "suit_master_id": 200023101,
-                "is_new": true
+                "is_new": false
+            },
+            200023102,
+            {
+                "suit_master_id": 200023102,
+                "is_new": false
+            },
+            200023103,
+            {
+                "suit_master_id": 200023103,
+                "is_new": false
             },
             200032001,
             {
                 "suit_master_id": 200032001,
+                "is_new": false
+            },
+            200032002,
+            {
+                "suit_master_id": 200032002,
+                "is_new": false
+            },
+            200032003,
+            {
+                "suit_master_id": 200032003,
                 "is_new": false
             },
             200033001,
@@ -18902,9 +21352,49 @@
                 "suit_master_id": 200033001,
                 "is_new": false
             },
+            200033002,
+            {
+                "suit_master_id": 200033002,
+                "is_new": false
+            },
+            200033102,
+            {
+                "suit_master_id": 200033102,
+                "is_new": false
+            },
+            200042001,
+            {
+                "suit_master_id": 200042001,
+                "is_new": false
+            },
             200043001,
             {
                 "suit_master_id": 200043001,
+                "is_new": false
+            },
+            200043002,
+            {
+                "suit_master_id": 200043002,
+                "is_new": false
+            },
+            200043101,
+            {
+                "suit_master_id": 200043101,
+                "is_new": false
+            },
+            200043102,
+            {
+                "suit_master_id": 200043102,
+                "is_new": false
+            },
+            200052001,
+            {
+                "suit_master_id": 200052001,
+                "is_new": false
+            },
+            200052002,
+            {
+                "suit_master_id": 200052002,
                 "is_new": false
             },
             200053001,
@@ -18912,14 +21402,89 @@
                 "suit_master_id": 200053001,
                 "is_new": false
             },
+            200053002,
+            {
+                "suit_master_id": 200053002,
+                "is_new": false
+            },
+            200053101,
+            {
+                "suit_master_id": 200053101,
+                "is_new": false
+            },
+            200053102,
+            {
+                "suit_master_id": 200053102,
+                "is_new": false
+            },
+            200062001,
+            {
+                "suit_master_id": 200062001,
+                "is_new": false
+            },
             200063001,
             {
                 "suit_master_id": 200063001,
                 "is_new": false
             },
+            200063002,
+            {
+                "suit_master_id": 200063002,
+                "is_new": false
+            },
+            200063102,
+            {
+                "suit_master_id": 200063102,
+                "is_new": false
+            },
+            200072001,
+            {
+                "suit_master_id": 200072001,
+                "is_new": false
+            },
+            200073001,
+            {
+                "suit_master_id": 200073001,
+                "is_new": false
+            },
+            200073002,
+            {
+                "suit_master_id": 200073002,
+                "is_new": false
+            },
+            200073101,
+            {
+                "suit_master_id": 200073101,
+                "is_new": false
+            },
+            200073102,
+            {
+                "suit_master_id": 200073102,
+                "is_new": false
+            },
+            200082001,
+            {
+                "suit_master_id": 200082001,
+                "is_new": false
+            },
             200083001,
             {
                 "suit_master_id": 200083001,
+                "is_new": false
+            },
+            200083002,
+            {
+                "suit_master_id": 200083002,
+                "is_new": false
+            },
+            200083101,
+            {
+                "suit_master_id": 200083101,
+                "is_new": false
+            },
+            200083102,
+            {
+                "suit_master_id": 200083102,
                 "is_new": false
             },
             200093001,
@@ -18930,11 +21495,141 @@
             200093002,
             {
                 "suit_master_id": 200093002,
-                "is_new": true
+                "is_new": false
+            },
+            200093102,
+            {
+                "suit_master_id": 200093102,
+                "is_new": false
+            },
+            201012001,
+            {
+                "suit_master_id": 201012001,
+                "is_new": false
+            },
+            201012002,
+            {
+                "suit_master_id": 201012002,
+                "is_new": false
+            },
+            201013001,
+            {
+                "suit_master_id": 201013001,
+                "is_new": false
+            },
+            201013002,
+            {
+                "suit_master_id": 201013002,
+                "is_new": false
+            },
+            201013101,
+            {
+                "suit_master_id": 201013101,
+                "is_new": false
+            },
+            201013102,
+            {
+                "suit_master_id": 201013102,
+                "is_new": false
+            },
+            201023001,
+            {
+                "suit_master_id": 201023001,
+                "is_new": false
+            },
+            201023002,
+            {
+                "suit_master_id": 201023002,
+                "is_new": false
+            },
+            201023101,
+            {
+                "suit_master_id": 201023101,
+                "is_new": false
+            },
+            201023102,
+            {
+                "suit_master_id": 201023102,
+                "is_new": false
+            },
+            201032001,
+            {
+                "suit_master_id": 201032001,
+                "is_new": false
+            },
+            201032002,
+            {
+                "suit_master_id": 201032002,
+                "is_new": false
+            },
+            201033001,
+            {
+                "suit_master_id": 201033001,
+                "is_new": false
+            },
+            201033002,
+            {
+                "suit_master_id": 201033002,
+                "is_new": false
+            },
+            201033003,
+            {
+                "suit_master_id": 201033003,
+                "is_new": false
+            },
+            201033101,
+            {
+                "suit_master_id": 201033101,
+                "is_new": false
+            },
+            201033102,
+            {
+                "suit_master_id": 201033102,
+                "is_new": false
+            },
+            201033103,
+            {
+                "suit_master_id": 201033103,
+                "is_new": false
+            },
+            201042001,
+            {
+                "suit_master_id": 201042001,
+                "is_new": false
+            },
+            201042002,
+            {
+                "suit_master_id": 201042002,
+                "is_new": false
             },
             201043001,
             {
                 "suit_master_id": 201043001,
+                "is_new": false
+            },
+            201043002,
+            {
+                "suit_master_id": 201043002,
+                "is_new": false
+            },
+            201043101,
+            {
+                "suit_master_id": 201043101,
+                "is_new": false
+            },
+            201043102,
+            {
+                "suit_master_id": 201043102,
+                "is_new": false
+            },
+            201052001,
+            {
+                "suit_master_id": 201052001,
+                "is_new": false
+            },
+            201052002,
+            {
+                "suit_master_id": 201052002,
                 "is_new": false
             },
             201053001,
@@ -18942,9 +21637,54 @@
                 "suit_master_id": 201053001,
                 "is_new": false
             },
+            201053002,
+            {
+                "suit_master_id": 201053002,
+                "is_new": false
+            },
+            201053003,
+            {
+                "suit_master_id": 201053003,
+                "is_new": false
+            },
+            201053102,
+            {
+                "suit_master_id": 201053102,
+                "is_new": false
+            },
+            201053103,
+            {
+                "suit_master_id": 201053103,
+                "is_new": false
+            },
+            201062001,
+            {
+                "suit_master_id": 201062001,
+                "is_new": false
+            },
+            201062002,
+            {
+                "suit_master_id": 201062002,
+                "is_new": false
+            },
             201063001,
             {
                 "suit_master_id": 201063001,
+                "is_new": false
+            },
+            201063002,
+            {
+                "suit_master_id": 201063002,
+                "is_new": false
+            },
+            201063102,
+            {
+                "suit_master_id": 201063102,
+                "is_new": false
+            },
+            201072001,
+            {
+                "suit_master_id": 201072001,
                 "is_new": false
             },
             201073001,
@@ -18952,19 +21692,189 @@
                 "suit_master_id": 201073001,
                 "is_new": false
             },
+            201073002,
+            {
+                "suit_master_id": 201073002,
+                "is_new": false
+            },
+            201073101,
+            {
+                "suit_master_id": 201073101,
+                "is_new": false
+            },
+            201073102,
+            {
+                "suit_master_id": 201073102,
+                "is_new": false
+            },
+            201083001,
+            {
+                "suit_master_id": 201083001,
+                "is_new": false
+            },
+            201083002,
+            {
+                "suit_master_id": 201083002,
+                "is_new": false
+            },
+            201083102,
+            {
+                "suit_master_id": 201083102,
+                "is_new": false
+            },
+            201092001,
+            {
+                "suit_master_id": 201092001,
+                "is_new": false
+            },
+            201093001,
+            {
+                "suit_master_id": 201093001,
+                "is_new": false
+            },
+            201093002,
+            {
+                "suit_master_id": 201093002,
+                "is_new": false
+            },
+            201093101,
+            {
+                "suit_master_id": 201093101,
+                "is_new": false
+            },
+            201093102,
+            {
+                "suit_master_id": 201093102,
+                "is_new": false
+            },
+            202012001,
+            {
+                "suit_master_id": 202012001,
+                "is_new": false
+            },
             202013001,
             {
                 "suit_master_id": 202013001,
                 "is_new": false
             },
+            202013002,
+            {
+                "suit_master_id": 202013002,
+                "is_new": false
+            },
+            202013101,
+            {
+                "suit_master_id": 202013101,
+                "is_new": false
+            },
+            202013102,
+            {
+                "suit_master_id": 202013102,
+                "is_new": false
+            },
+            202022001,
+            {
+                "suit_master_id": 202022001,
+                "is_new": false
+            },
+            202023001,
+            {
+                "suit_master_id": 202023001,
+                "is_new": false
+            },
+            202023002,
+            {
+                "suit_master_id": 202023002,
+                "is_new": false
+            },
+            202023003,
+            {
+                "suit_master_id": 202023003,
+                "is_new": false
+            },
+            202023101,
+            {
+                "suit_master_id": 202023101,
+                "is_new": false
+            },
+            202023102,
+            {
+                "suit_master_id": 202023102,
+                "is_new": false
+            },
+            202023103,
+            {
+                "suit_master_id": 202023103,
+                "is_new": false
+            },
+            202032001,
+            {
+                "suit_master_id": 202032001,
+                "is_new": false
+            },
+            202032002,
+            {
+                "suit_master_id": 202032002,
+                "is_new": false
+            },
+            202032003,
+            {
+                "suit_master_id": 202032003,
+                "is_new": false
+            },
             202033001,
             {
                 "suit_master_id": 202033001,
-                "is_new": true
+                "is_new": false
+            },
+            202033002,
+            {
+                "suit_master_id": 202033002,
+                "is_new": false
+            },
+            202033003,
+            {
+                "suit_master_id": 202033003,
+                "is_new": false
+            },
+            202033101,
+            {
+                "suit_master_id": 202033101,
+                "is_new": false
+            },
+            202033102,
+            {
+                "suit_master_id": 202033102,
+                "is_new": false
+            },
+            202033103,
+            {
+                "suit_master_id": 202033103,
+                "is_new": false
+            },
+            202042001,
+            {
+                "suit_master_id": 202042001,
+                "is_new": false
             },
             202043001,
             {
                 "suit_master_id": 202043001,
+                "is_new": false
+            },
+            202043002,
+            {
+                "suit_master_id": 202043002,
+                "is_new": false
+            },
+            202043102,
+            {
+                "suit_master_id": 202043102,
+                "is_new": false
+            },
+            202052001,
+            {
+                "suit_master_id": 202052001,
                 "is_new": false
             },
             202053001,
@@ -18975,11 +21885,36 @@
             202053002,
             {
                 "suit_master_id": 202053002,
-                "is_new": true
+                "is_new": false
+            },
+            202053101,
+            {
+                "suit_master_id": 202053101,
+                "is_new": false
+            },
+            202053102,
+            {
+                "suit_master_id": 202053102,
+                "is_new": false
             },
             202063001,
             {
                 "suit_master_id": 202063001,
+                "is_new": false
+            },
+            202063002,
+            {
+                "suit_master_id": 202063002,
+                "is_new": false
+            },
+            202063102,
+            {
+                "suit_master_id": 202063102,
+                "is_new": false
+            },
+            202072001,
+            {
+                "suit_master_id": 202072001,
                 "is_new": false
             },
             202073001,
@@ -18987,9 +21922,69 @@
                 "suit_master_id": 202073001,
                 "is_new": false
             },
+            202073002,
+            {
+                "suit_master_id": 202073002,
+                "is_new": false
+            },
+            202073102,
+            {
+                "suit_master_id": 202073102,
+                "is_new": false
+            },
+            202082001,
+            {
+                "suit_master_id": 202082001,
+                "is_new": false
+            },
             202083001,
             {
                 "suit_master_id": 202083001,
+                "is_new": false
+            },
+            202083002,
+            {
+                "suit_master_id": 202083002,
+                "is_new": false
+            },
+            202083102,
+            {
+                "suit_master_id": 202083102,
+                "is_new": false
+            },
+            202093001,
+            {
+                "suit_master_id": 202093001,
+                "is_new": false
+            },
+            202093002,
+            {
+                "suit_master_id": 202093002,
+                "is_new": false
+            },
+            202093101,
+            {
+                "suit_master_id": 202093101,
+                "is_new": false
+            },
+            202093102,
+            {
+                "suit_master_id": 202093102,
+                "is_new": false
+            },
+            202102001,
+            {
+                "suit_master_id": 202102001,
+                "is_new": false
+            },
+            202102002,
+            {
+                "suit_master_id": 202102002,
+                "is_new": false
+            },
+            202103001,
+            {
+                "suit_master_id": 202103001,
                 "is_new": false
             },
             202103002,
@@ -18997,75 +21992,165 @@
                 "suit_master_id": 202103002,
                 "is_new": false
             },
+            202103101,
+            {
+                "suit_master_id": 202103101,
+                "is_new": false
+            },
+            202103102,
+            {
+                "suit_master_id": 202103102,
+                "is_new": false
+            },
+            202113001,
+            {
+                "suit_master_id": 202113001,
+                "is_new": false
+            },
+            202113101,
+            {
+                "suit_master_id": 202113101,
+                "is_new": false
+            },
             300012001,
             {
                 "suit_master_id": 300012001,
-                "is_new": true
+                "is_new": false
             },
             300012002,
             {
                 "suit_master_id": 300012002,
-                "is_new": true
+                "is_new": false
             },
             300012003,
             {
                 "suit_master_id": 300012003,
-                "is_new": true
+                "is_new": false
+            },
+            300012004,
+            {
+                "suit_master_id": 300012004,
+                "is_new": false
             },
             300013001,
             {
                 "suit_master_id": 300013001,
                 "is_new": false
             },
+            300013002,
+            {
+                "suit_master_id": 300013002,
+                "is_new": false
+            },
+            300013102,
+            {
+                "suit_master_id": 300013102,
+                "is_new": false
+            },
             300022001,
             {
                 "suit_master_id": 300022001,
-                "is_new": true
+                "is_new": false
             },
             300022002,
             {
                 "suit_master_id": 300022002,
-                "is_new": true
+                "is_new": false
+            },
+            300022003,
+            {
+                "suit_master_id": 300022003,
+                "is_new": false
             },
             300023001,
             {
                 "suit_master_id": 300023001,
-                "is_new": true
+                "is_new": false
+            },
+            300023002,
+            {
+                "suit_master_id": 300023002,
+                "is_new": false
+            },
+            300023102,
+            {
+                "suit_master_id": 300023102,
+                "is_new": false
             },
             300032001,
             {
                 "suit_master_id": 300032001,
-                "is_new": true
+                "is_new": false
+            },
+            300032002,
+            {
+                "suit_master_id": 300032002,
+                "is_new": false
             },
             300033001,
             {
                 "suit_master_id": 300033001,
                 "is_new": false
             },
+            300033002,
+            {
+                "suit_master_id": 300033002,
+                "is_new": false
+            },
+            300033102,
+            {
+                "suit_master_id": 300033102,
+                "is_new": false
+            },
             300042001,
             {
                 "suit_master_id": 300042001,
-                "is_new": true
+                "is_new": false
             },
             300042002,
             {
                 "suit_master_id": 300042002,
-                "is_new": true
+                "is_new": false
+            },
+            300042003,
+            {
+                "suit_master_id": 300042003,
+                "is_new": false
+            },
+            300042004,
+            {
+                "suit_master_id": 300042004,
+                "is_new": false
+            },
+            300042005,
+            {
+                "suit_master_id": 300042005,
+                "is_new": false
             },
             300043001,
             {
                 "suit_master_id": 300043001,
-                "is_new": true
+                "is_new": false
+            },
+            300043002,
+            {
+                "suit_master_id": 300043002,
+                "is_new": false
+            },
+            300043102,
+            {
+                "suit_master_id": 300043102,
+                "is_new": false
             },
             300052001,
             {
                 "suit_master_id": 300052001,
-                "is_new": true
+                "is_new": false
             },
             300052002,
             {
                 "suit_master_id": 300052002,
-                "is_new": true
+                "is_new": false
             },
             300053001,
             {
@@ -19080,27 +22165,42 @@
             300062001,
             {
                 "suit_master_id": 300062001,
-                "is_new": true
+                "is_new": false
+            },
+            300062002,
+            {
+                "suit_master_id": 300062002,
+                "is_new": false
+            },
+            300063001,
+            {
+                "suit_master_id": 300063001,
+                "is_new": false
             },
             300063002,
             {
                 "suit_master_id": 300063002,
-                "is_new": true
+                "is_new": false
+            },
+            300063102,
+            {
+                "suit_master_id": 300063102,
+                "is_new": false
             },
             300072001,
             {
                 "suit_master_id": 300072001,
-                "is_new": true
+                "is_new": false
             },
             300072002,
             {
                 "suit_master_id": 300072002,
-                "is_new": true
+                "is_new": false
             },
             300072003,
             {
                 "suit_master_id": 300072003,
-                "is_new": true
+                "is_new": false
             },
             300073001,
             {
@@ -19112,15 +22212,25 @@
                 "suit_master_id": 300073002,
                 "is_new": false
             },
+            300073102,
+            {
+                "suit_master_id": 300073102,
+                "is_new": false
+            },
             300082001,
             {
                 "suit_master_id": 300082001,
-                "is_new": true
+                "is_new": false
             },
             300082002,
             {
                 "suit_master_id": 300082002,
-                "is_new": true
+                "is_new": false
+            },
+            300082003,
+            {
+                "suit_master_id": 300082003,
+                "is_new": false
             },
             300083001,
             {
@@ -19130,16 +22240,31 @@
             300092001,
             {
                 "suit_master_id": 300092001,
-                "is_new": true
+                "is_new": false
             },
             300092002,
             {
                 "suit_master_id": 300092002,
-                "is_new": true
+                "is_new": false
             },
             300093001,
             {
                 "suit_master_id": 300093001,
+                "is_new": false
+            },
+            300093002,
+            {
+                "suit_master_id": 300093002,
+                "is_new": false
+            },
+            300093102,
+            {
+                "suit_master_id": 300093102,
+                "is_new": false
+            },
+            301012001,
+            {
+                "suit_master_id": 301012001,
                 "is_new": false
             },
             301013001,
@@ -19147,109 +22272,269 @@
                 "suit_master_id": 301013001,
                 "is_new": false
             },
+            301013002,
+            {
+                "suit_master_id": 301013002,
+                "is_new": false
+            },
+            301013102,
+            {
+                "suit_master_id": 301013102,
+                "is_new": false
+            },
             301022001,
             {
                 "suit_master_id": 301022001,
-                "is_new": true
+                "is_new": false
             },
             301022002,
             {
                 "suit_master_id": 301022002,
-                "is_new": true
+                "is_new": false
             },
             301022003,
             {
                 "suit_master_id": 301022003,
-                "is_new": true
+                "is_new": false
             },
             301023001,
             {
                 "suit_master_id": 301023001,
-                "is_new": true
+                "is_new": false
             },
             301032001,
             {
                 "suit_master_id": 301032001,
-                "is_new": true
+                "is_new": false
+            },
+            301032002,
+            {
+                "suit_master_id": 301032002,
+                "is_new": false
+            },
+            301033001,
+            {
+                "suit_master_id": 301033001,
+                "is_new": false
+            },
+            301033002,
+            {
+                "suit_master_id": 301033002,
+                "is_new": false
+            },
+            301033102,
+            {
+                "suit_master_id": 301033102,
+                "is_new": false
             },
             301042001,
             {
                 "suit_master_id": 301042001,
-                "is_new": true
+                "is_new": false
             },
             301042002,
             {
                 "suit_master_id": 301042002,
-                "is_new": true
+                "is_new": false
+            },
+            301042003,
+            {
+                "suit_master_id": 301042003,
+                "is_new": false
+            },
+            301042004,
+            {
+                "suit_master_id": 301042004,
+                "is_new": false
             },
             301043001,
             {
                 "suit_master_id": 301043001,
                 "is_new": false
             },
+            301043002,
+            {
+                "suit_master_id": 301043002,
+                "is_new": false
+            },
+            301043102,
+            {
+                "suit_master_id": 301043102,
+                "is_new": false
+            },
             301052001,
             {
                 "suit_master_id": 301052001,
-                "is_new": true
+                "is_new": false
             },
             301052002,
             {
                 "suit_master_id": 301052002,
-                "is_new": true
+                "is_new": false
+            },
+            301052003,
+            {
+                "suit_master_id": 301052003,
+                "is_new": false
             },
             301053001,
             {
                 "suit_master_id": 301053001,
                 "is_new": false
             },
+            301053002,
+            {
+                "suit_master_id": 301053002,
+                "is_new": false
+            },
+            301053102,
+            {
+                "suit_master_id": 301053102,
+                "is_new": false
+            },
             301062001,
             {
                 "suit_master_id": 301062001,
-                "is_new": true
+                "is_new": false
+            },
+            301062002,
+            {
+                "suit_master_id": 301062002,
+                "is_new": false
+            },
+            301062003,
+            {
+                "suit_master_id": 301062003,
+                "is_new": false
             },
             301063001,
             {
                 "suit_master_id": 301063001,
-                "is_new": true
+                "is_new": false
             },
             301063002,
             {
                 "suit_master_id": 301063002,
-                "is_new": true
+                "is_new": false
             },
             301072001,
             {
                 "suit_master_id": 301072001,
-                "is_new": true
+                "is_new": false
+            },
+            301073001,
+            {
+                "suit_master_id": 301073001,
+                "is_new": false
+            },
+            301073002,
+            {
+                "suit_master_id": 301073002,
+                "is_new": false
+            },
+            301073102,
+            {
+                "suit_master_id": 301073102,
+                "is_new": false
+            },
+            301082001,
+            {
+                "suit_master_id": 301082001,
+                "is_new": false
+            },
+            301082002,
+            {
+                "suit_master_id": 301082002,
+                "is_new": false
+            },
+            301082003,
+            {
+                "suit_master_id": 301082003,
+                "is_new": false
             },
             301083001,
             {
                 "suit_master_id": 301083001,
                 "is_new": false
             },
+            301083101,
+            {
+                "suit_master_id": 301083101,
+                "is_new": false
+            },
             301092001,
             {
                 "suit_master_id": 301092001,
-                "is_new": true
+                "is_new": false
             },
             301093001,
             {
                 "suit_master_id": 301093001,
                 "is_new": false
             },
+            301093002,
+            {
+                "suit_master_id": 301093002,
+                "is_new": false
+            },
+            301093102,
+            {
+                "suit_master_id": 301093102,
+                "is_new": false
+            },
             302012001,
             {
                 "suit_master_id": 302012001,
-                "is_new": true
+                "is_new": false
             },
             302012002,
             {
                 "suit_master_id": 302012002,
-                "is_new": true
+                "is_new": false
+            },
+            302012003,
+            {
+                "suit_master_id": 302012003,
+                "is_new": false
             },
             302013001,
             {
                 "suit_master_id": 302013001,
+                "is_new": false
+            },
+            302013002,
+            {
+                "suit_master_id": 302013002,
+                "is_new": false
+            },
+            302013003,
+            {
+                "suit_master_id": 302013003,
+                "is_new": false
+            },
+            302013102,
+            {
+                "suit_master_id": 302013102,
+                "is_new": false
+            },
+            302013103,
+            {
+                "suit_master_id": 302013103,
+                "is_new": false
+            },
+            302022001,
+            {
+                "suit_master_id": 302022001,
+                "is_new": false
+            },
+            302022002,
+            {
+                "suit_master_id": 302022002,
+                "is_new": false
+            },
+            302022003,
+            {
+                "suit_master_id": 302022003,
                 "is_new": false
             },
             302023001,
@@ -19270,72 +22555,162 @@
             302032001,
             {
                 "suit_master_id": 302032001,
-                "is_new": true
+                "is_new": false
+            },
+            302033001,
+            {
+                "suit_master_id": 302033001,
+                "is_new": false
+            },
+            302033101,
+            {
+                "suit_master_id": 302033101,
+                "is_new": false
             },
             302042001,
             {
                 "suit_master_id": 302042001,
-                "is_new": true
+                "is_new": false
             },
             302042002,
             {
                 "suit_master_id": 302042002,
-                "is_new": true
+                "is_new": false
+            },
+            302042003,
+            {
+                "suit_master_id": 302042003,
+                "is_new": false
             },
             302043001,
             {
                 "suit_master_id": 302043001,
-                "is_new": true
+                "is_new": false
+            },
+            302052001,
+            {
+                "suit_master_id": 302052001,
+                "is_new": false
             },
             302052002,
             {
                 "suit_master_id": 302052002,
-                "is_new": true
+                "is_new": false
+            },
+            302052003,
+            {
+                "suit_master_id": 302052003,
+                "is_new": false
+            },
+            302053001,
+            {
+                "suit_master_id": 302053001,
+                "is_new": false
+            },
+            302053101,
+            {
+                "suit_master_id": 302053101,
+                "is_new": false
             },
             302062001,
             {
                 "suit_master_id": 302062001,
-                "is_new": true
+                "is_new": false
             },
             302062002,
             {
                 "suit_master_id": 302062002,
-                "is_new": true
+                "is_new": false
+            },
+            302062003,
+            {
+                "suit_master_id": 302062003,
+                "is_new": false
             },
             302063001,
             {
                 "suit_master_id": 302063001,
-                "is_new": true
+                "is_new": false
+            },
+            302063002,
+            {
+                "suit_master_id": 302063002,
+                "is_new": false
+            },
+            302063102,
+            {
+                "suit_master_id": 302063102,
+                "is_new": false
             },
             302072001,
             {
                 "suit_master_id": 302072001,
-                "is_new": true
+                "is_new": false
+            },
+            302072002,
+            {
+                "suit_master_id": 302072002,
+                "is_new": false
+            },
+            302072003,
+            {
+                "suit_master_id": 302072003,
+                "is_new": false
             },
             302073001,
             {
                 "suit_master_id": 302073001,
                 "is_new": false
             },
+            302073002,
+            {
+                "suit_master_id": 302073002,
+                "is_new": false
+            },
+            302073102,
+            {
+                "suit_master_id": 302073102,
+                "is_new": false
+            },
             302082001,
             {
                 "suit_master_id": 302082001,
-                "is_new": true
+                "is_new": false
             },
             302082002,
             {
                 "suit_master_id": 302082002,
-                "is_new": true
+                "is_new": false
+            },
+            302082003,
+            {
+                "suit_master_id": 302082003,
+                "is_new": false
             },
             302083001,
             {
                 "suit_master_id": 302083001,
-                "is_new": true
+                "is_new": false
+            },
+            302083002,
+            {
+                "suit_master_id": 302083002,
+                "is_new": false
+            },
+            302083102,
+            {
+                "suit_master_id": 302083102,
+                "is_new": false
             },
             302092001,
             {
                 "suit_master_id": 302092001,
-                "is_new": true
+                "is_new": false
+            },
+            302092002,
+            {
+                "suit_master_id": 302092002,
+                "is_new": false
             },
             302093001,
             {
@@ -19347,20 +22722,70 @@
                 "suit_master_id": 302093002,
                 "is_new": false
             },
+            302093003,
+            {
+                "suit_master_id": 302093003,
+                "is_new": false
+            },
+            302093103,
+            {
+                "suit_master_id": 302093103,
+                "is_new": false
+            },
             302102001,
             {
                 "suit_master_id": 302102001,
                 "is_new": false
             },
+            302103001,
+            {
+                "suit_master_id": 302103001,
+                "is_new": false
+            },
+            302103101,
+            {
+                "suit_master_id": 302103101,
+                "is_new": false
+            },
+            302122001,
+            {
+                "suit_master_id": 302122001,
+                "is_new": false
+            },
+            302123001,
+            {
+                "suit_master_id": 302123001,
+                "is_new": false
+            },
+            302123101,
+            {
+                "suit_master_id": 302123101,
+                "is_new": false
+            },
             400012001,
             {
                 "suit_master_id": 400012001,
-                "is_new": true
+                "is_new": false
             },
             400012002,
             {
                 "suit_master_id": 400012002,
-                "is_new": true
+                "is_new": false
+            },
+            400012003,
+            {
+                "suit_master_id": 400012003,
+                "is_new": false
+            },
+            400012004,
+            {
+                "suit_master_id": 400012004,
+                "is_new": false
+            },
+            400012005,
+            {
+                "suit_master_id": 400012005,
+                "is_new": false
             },
             400013001,
             {
@@ -19370,117 +22795,272 @@
             400013002,
             {
                 "suit_master_id": 400013002,
-                "is_new": true
+                "is_new": false
             },
             400013003,
             {
                 "suit_master_id": 400013003,
                 "is_new": false
             },
+            400013004,
+            {
+                "suit_master_id": 400013004,
+                "is_new": false
+            },
+            400013005,
+            {
+                "suit_master_id": 400013005,
+                "is_new": false
+            },
+            400013006,
+            {
+                "suit_master_id": 400013006,
+                "is_new": false
+            },
             400022001,
             {
                 "suit_master_id": 400022001,
-                "is_new": true
+                "is_new": false
             },
             400022002,
             {
                 "suit_master_id": 400022002,
-                "is_new": true
+                "is_new": false
+            },
+            400022003,
+            {
+                "suit_master_id": 400022003,
+                "is_new": false
+            },
+            400022004,
+            {
+                "suit_master_id": 400022004,
+                "is_new": false
+            },
+            400022005,
+            {
+                "suit_master_id": 400022005,
+                "is_new": false
             },
             400023001,
             {
                 "suit_master_id": 400023001,
-                "is_new": true
+                "is_new": false
             },
             400023002,
             {
                 "suit_master_id": 400023002,
-                "is_new": true
+                "is_new": false
+            },
+            400023003,
+            {
+                "suit_master_id": 400023003,
+                "is_new": false
+            },
+            400023004,
+            {
+                "suit_master_id": 400023004,
+                "is_new": false
+            },
+            400023005,
+            {
+                "suit_master_id": 400023005,
+                "is_new": false
             },
             400032001,
             {
                 "suit_master_id": 400032001,
-                "is_new": true
+                "is_new": false
             },
             400032002,
             {
                 "suit_master_id": 400032002,
-                "is_new": true
+                "is_new": false
             },
             400032003,
             {
                 "suit_master_id": 400032003,
-                "is_new": true
+                "is_new": false
             },
             400032004,
             {
                 "suit_master_id": 400032004,
-                "is_new": true
+                "is_new": false
+            },
+            400032005,
+            {
+                "suit_master_id": 400032005,
+                "is_new": false
             },
             400033001,
             {
                 "suit_master_id": 400033001,
-                "is_new": true
+                "is_new": false
+            },
+            400033002,
+            {
+                "suit_master_id": 400033002,
+                "is_new": false
+            },
+            400033003,
+            {
+                "suit_master_id": 400033003,
+                "is_new": false
             },
             400033004,
             {
                 "suit_master_id": 400033004,
-                "is_new": true
+                "is_new": false
+            },
+            400033005,
+            {
+                "suit_master_id": 400033005,
+                "is_new": false
+            },
+            400033006,
+            {
+                "suit_master_id": 400033006,
+                "is_new": false
             },
             400042001,
             {
                 "suit_master_id": 400042001,
-                "is_new": true
+                "is_new": false
+            },
+            400042002,
+            {
+                "suit_master_id": 400042002,
+                "is_new": false
             },
             400042003,
             {
                 "suit_master_id": 400042003,
-                "is_new": true
+                "is_new": false
+            },
+            400042004,
+            {
+                "suit_master_id": 400042004,
+                "is_new": false
             },
             400043001,
             {
                 "suit_master_id": 400043001,
                 "is_new": false
             },
+            400043002,
+            {
+                "suit_master_id": 400043002,
+                "is_new": false
+            },
+            400043003,
+            {
+                "suit_master_id": 400043003,
+                "is_new": false
+            },
+            400043004,
+            {
+                "suit_master_id": 400043004,
+                "is_new": false
+            },
+            400043005,
+            {
+                "suit_master_id": 400043005,
+                "is_new": false
+            },
+            400043006,
+            {
+                "suit_master_id": 400043006,
+                "is_new": false
+            },
             400052001,
             {
                 "suit_master_id": 400052001,
-                "is_new": true
+                "is_new": false
             },
             400052002,
             {
                 "suit_master_id": 400052002,
-                "is_new": true
+                "is_new": false
+            },
+            400052003,
+            {
+                "suit_master_id": 400052003,
+                "is_new": false
+            },
+            400052004,
+            {
+                "suit_master_id": 400052004,
+                "is_new": false
+            },
+            400052005,
+            {
+                "suit_master_id": 400052005,
+                "is_new": false
             },
             400052006,
             {
                 "suit_master_id": 400052006,
-                "is_new": true
+                "is_new": false
+            },
+            400053001,
+            {
+                "suit_master_id": 400053001,
+                "is_new": false
             },
             400053002,
             {
                 "suit_master_id": 400053002,
-                "is_new": true
+                "is_new": false
+            },
+            400053003,
+            {
+                "suit_master_id": 400053003,
+                "is_new": false
+            },
+            400053004,
+            {
+                "suit_master_id": 400053004,
+                "is_new": false
+            },
+            400053005,
+            {
+                "suit_master_id": 400053005,
+                "is_new": false
             },
             400062001,
             {
                 "suit_master_id": 400062001,
-                "is_new": true
+                "is_new": false
             },
             400062002,
             {
                 "suit_master_id": 400062002,
-                "is_new": true
+                "is_new": false
             },
             400062003,
             {
                 "suit_master_id": 400062003,
-                "is_new": true
+                "is_new": false
             },
             400062004,
             {
                 "suit_master_id": 400062004,
-                "is_new": true
+                "is_new": false
+            },
+            400062005,
+            {
+                "suit_master_id": 400062005,
+                "is_new": false
+            },
+            400062006,
+            {
+                "suit_master_id": 400062006,
+                "is_new": false
+            },
+            400062007,
+            {
+                "suit_master_id": 400062007,
+                "is_new": false
             },
             400063001,
             {
@@ -19490,37 +23070,117 @@
             400063002,
             {
                 "suit_master_id": 400063002,
-                "is_new": true
+                "is_new": false
+            },
+            400063003,
+            {
+                "suit_master_id": 400063003,
+                "is_new": false
+            },
+            400063004,
+            {
+                "suit_master_id": 400063004,
+                "is_new": false
+            },
+            400063005,
+            {
+                "suit_master_id": 400063005,
+                "is_new": false
+            },
+            400063006,
+            {
+                "suit_master_id": 400063006,
+                "is_new": false
             },
             400072001,
             {
                 "suit_master_id": 400072001,
-                "is_new": true
+                "is_new": false
             },
             400072002,
             {
                 "suit_master_id": 400072002,
-                "is_new": true
+                "is_new": false
+            },
+            400072003,
+            {
+                "suit_master_id": 400072003,
+                "is_new": false
+            },
+            400072004,
+            {
+                "suit_master_id": 400072004,
+                "is_new": false
+            },
+            400072005,
+            {
+                "suit_master_id": 400072005,
+                "is_new": false
+            },
+            400072006,
+            {
+                "suit_master_id": 400072006,
+                "is_new": false
             },
             400073001,
             {
                 "suit_master_id": 400073001,
-                "is_new": true
+                "is_new": false
+            },
+            400073002,
+            {
+                "suit_master_id": 400073002,
+                "is_new": false
+            },
+            400073003,
+            {
+                "suit_master_id": 400073003,
+                "is_new": false
+            },
+            400073004,
+            {
+                "suit_master_id": 400073004,
+                "is_new": false
+            },
+            400073005,
+            {
+                "suit_master_id": 400073005,
+                "is_new": false
+            },
+            400073006,
+            {
+                "suit_master_id": 400073006,
+                "is_new": false
             },
             400082001,
             {
                 "suit_master_id": 400082001,
-                "is_new": true
+                "is_new": false
             },
             400082002,
             {
                 "suit_master_id": 400082002,
-                "is_new": true
+                "is_new": false
             },
             400082003,
             {
                 "suit_master_id": 400082003,
-                "is_new": true
+                "is_new": false
+            },
+            400082004,
+            {
+                "suit_master_id": 400082004,
+                "is_new": false
+            },
+            400082005,
+            {
+                "suit_master_id": 400082005,
+                "is_new": false
+            },
+            400082006,
+            {
+                "suit_master_id": 400082006,
+                "is_new": false
             },
             400083001,
             {
@@ -19530,12 +23190,27 @@
             400083002,
             {
                 "suit_master_id": 400083002,
-                "is_new": true
+                "is_new": false
             },
             400083003,
             {
                 "suit_master_id": 400083003,
-                "is_new": true
+                "is_new": false
+            },
+            400083004,
+            {
+                "suit_master_id": 400083004,
+                "is_new": false
+            },
+            400083005,
+            {
+                "suit_master_id": 400083005,
+                "is_new": false
+            },
+            400083006,
+            {
+                "suit_master_id": 400083006,
+                "is_new": false
             },
             400092001,
             {
@@ -19545,57 +23220,167 @@
             400092002,
             {
                 "suit_master_id": 400092002,
-                "is_new": true
+                "is_new": false
+            },
+            400092003,
+            {
+                "suit_master_id": 400092003,
+                "is_new": false
             },
             400092004,
             {
                 "suit_master_id": 400092004,
-                "is_new": true
+                "is_new": false
+            },
+            400092005,
+            {
+                "suit_master_id": 400092005,
+                "is_new": false
+            },
+            400092006,
+            {
+                "suit_master_id": 400092006,
+                "is_new": false
             },
             400092007,
             {
                 "suit_master_id": 400092007,
-                "is_new": true
+                "is_new": false
+            },
+            400092008,
+            {
+                "suit_master_id": 400092008,
+                "is_new": false
             },
             400093001,
             {
                 "suit_master_id": 400093001,
                 "is_new": false
             },
+            400093002,
+            {
+                "suit_master_id": 400093002,
+                "is_new": false
+            },
+            400093003,
+            {
+                "suit_master_id": 400093003,
+                "is_new": false
+            },
+            400093004,
+            {
+                "suit_master_id": 400093004,
+                "is_new": false
+            },
+            400093005,
+            {
+                "suit_master_id": 400093005,
+                "is_new": false
+            },
+            400093006,
+            {
+                "suit_master_id": 400093006,
+                "is_new": false
+            },
+            400093007,
+            {
+                "suit_master_id": 400093007,
+                "is_new": false
+            },
             401012001,
             {
                 "suit_master_id": 401012001,
-                "is_new": true
+                "is_new": false
             },
             401012002,
             {
                 "suit_master_id": 401012002,
-                "is_new": true
+                "is_new": false
             },
             401012003,
             {
                 "suit_master_id": 401012003,
-                "is_new": true
+                "is_new": false
+            },
+            401012004,
+            {
+                "suit_master_id": 401012004,
+                "is_new": false
+            },
+            401012005,
+            {
+                "suit_master_id": 401012005,
+                "is_new": false
+            },
+            401012006,
+            {
+                "suit_master_id": 401012006,
+                "is_new": false
+            },
+            401012007,
+            {
+                "suit_master_id": 401012007,
+                "is_new": false
             },
             401013001,
             {
                 "suit_master_id": 401013001,
-                "is_new": true
+                "is_new": false
             },
             401013002,
             {
                 "suit_master_id": 401013002,
-                "is_new": true
+                "is_new": false
+            },
+            401013003,
+            {
+                "suit_master_id": 401013003,
+                "is_new": false
+            },
+            401013004,
+            {
+                "suit_master_id": 401013004,
+                "is_new": false
+            },
+            401013005,
+            {
+                "suit_master_id": 401013005,
+                "is_new": false
             },
             401022001,
             {
                 "suit_master_id": 401022001,
-                "is_new": true
+                "is_new": false
             },
             401022002,
             {
                 "suit_master_id": 401022002,
-                "is_new": true
+                "is_new": false
+            },
+            401022003,
+            {
+                "suit_master_id": 401022003,
+                "is_new": false
+            },
+            401022004,
+            {
+                "suit_master_id": 401022004,
+                "is_new": false
+            },
+            401022005,
+            {
+                "suit_master_id": 401022005,
+                "is_new": false
+            },
+            401022006,
+            {
+                "suit_master_id": 401022006,
+                "is_new": false
+            },
+            401022007,
+            {
+                "suit_master_id": 401022007,
+                "is_new": false
             },
             401023001,
             {
@@ -19607,45 +23392,105 @@
                 "suit_master_id": 401023002,
                 "is_new": false
             },
+            401023003,
+            {
+                "suit_master_id": 401023003,
+                "is_new": false
+            },
+            401023004,
+            {
+                "suit_master_id": 401023004,
+                "is_new": false
+            },
+            401023005,
+            {
+                "suit_master_id": 401023005,
+                "is_new": false
+            },
+            401023006,
+            {
+                "suit_master_id": 401023006,
+                "is_new": false
+            },
+            401023007,
+            {
+                "suit_master_id": 401023007,
+                "is_new": false
+            },
             401032001,
             {
                 "suit_master_id": 401032001,
-                "is_new": true
+                "is_new": false
             },
             401032002,
             {
                 "suit_master_id": 401032002,
-                "is_new": true
+                "is_new": false
             },
             401032003,
             {
                 "suit_master_id": 401032003,
-                "is_new": true
+                "is_new": false
             },
             401032004,
             {
                 "suit_master_id": 401032004,
-                "is_new": true
+                "is_new": false
+            },
+            401032005,
+            {
+                "suit_master_id": 401032005,
+                "is_new": false
+            },
+            401032006,
+            {
+                "suit_master_id": 401032006,
+                "is_new": false
             },
             401033001,
             {
                 "suit_master_id": 401033001,
-                "is_new": true
+                "is_new": false
             },
             401033002,
             {
                 "suit_master_id": 401033002,
-                "is_new": true
+                "is_new": false
             },
             401033003,
             {
                 "suit_master_id": 401033003,
-                "is_new": true
+                "is_new": false
+            },
+            401033004,
+            {
+                "suit_master_id": 401033004,
+                "is_new": false
+            },
+            401033005,
+            {
+                "suit_master_id": 401033005,
+                "is_new": false
+            },
+            401042001,
+            {
+                "suit_master_id": 401042001,
+                "is_new": false
             },
             401042002,
             {
                 "suit_master_id": 401042002,
-                "is_new": true
+                "is_new": false
+            },
+            401042003,
+            {
+                "suit_master_id": 401042003,
+                "is_new": false
+            },
+            401042004,
+            {
+                "suit_master_id": 401042004,
+                "is_new": false
             },
             401043001,
             {
@@ -19655,21 +23500,51 @@
             401043002,
             {
                 "suit_master_id": 401043002,
-                "is_new": true
+                "is_new": false
             },
             401043003,
             {
                 "suit_master_id": 401043003,
-                "is_new": true
+                "is_new": false
+            },
+            401043004,
+            {
+                "suit_master_id": 401043004,
+                "is_new": false
+            },
+            401043005,
+            {
+                "suit_master_id": 401043005,
+                "is_new": false
+            },
+            401043006,
+            {
+                "suit_master_id": 401043006,
+                "is_new": false
             },
             401052001,
             {
                 "suit_master_id": 401052001,
-                "is_new": true
+                "is_new": false
             },
             401052002,
             {
                 "suit_master_id": 401052002,
+                "is_new": false
+            },
+            401052003,
+            {
+                "suit_master_id": 401052003,
+                "is_new": false
+            },
+            401052004,
+            {
+                "suit_master_id": 401052004,
+                "is_new": false
+            },
+            401052005,
+            {
+                "suit_master_id": 401052005,
                 "is_new": false
             },
             401053001,
@@ -19680,41 +23555,126 @@
             401053002,
             {
                 "suit_master_id": 401053002,
-                "is_new": true
+                "is_new": false
             },
             401053003,
             {
                 "suit_master_id": 401053003,
-                "is_new": true
+                "is_new": false
+            },
+            401053004,
+            {
+                "suit_master_id": 401053004,
+                "is_new": false
+            },
+            401053005,
+            {
+                "suit_master_id": 401053005,
+                "is_new": false
+            },
+            401062001,
+            {
+                "suit_master_id": 401062001,
+                "is_new": false
             },
             401062002,
             {
                 "suit_master_id": 401062002,
-                "is_new": true
+                "is_new": false
+            },
+            401062003,
+            {
+                "suit_master_id": 401062003,
+                "is_new": false
+            },
+            401062004,
+            {
+                "suit_master_id": 401062004,
+                "is_new": false
+            },
+            401062005,
+            {
+                "suit_master_id": 401062005,
+                "is_new": false
             },
             401063001,
             {
                 "suit_master_id": 401063001,
                 "is_new": false
             },
+            401063002,
+            {
+                "suit_master_id": 401063002,
+                "is_new": false
+            },
+            401063003,
+            {
+                "suit_master_id": 401063003,
+                "is_new": false
+            },
+            401063004,
+            {
+                "suit_master_id": 401063004,
+                "is_new": false
+            },
+            401063005,
+            {
+                "suit_master_id": 401063005,
+                "is_new": false
+            },
+            401063006,
+            {
+                "suit_master_id": 401063006,
+                "is_new": false
+            },
+            401072001,
+            {
+                "suit_master_id": 401072001,
+                "is_new": false
+            },
             401072002,
             {
                 "suit_master_id": 401072002,
-                "is_new": true
+                "is_new": false
             },
             401072003,
             {
                 "suit_master_id": 401072003,
-                "is_new": true
+                "is_new": false
+            },
+            401072004,
+            {
+                "suit_master_id": 401072004,
+                "is_new": false
             },
             401072005,
             {
                 "suit_master_id": 401072005,
-                "is_new": true
+                "is_new": false
+            },
+            401072006,
+            {
+                "suit_master_id": 401072006,
+                "is_new": false
+            },
+            401072007,
+            {
+                "suit_master_id": 401072007,
+                "is_new": false
+            },
+            401072008,
+            {
+                "suit_master_id": 401072008,
+                "is_new": false
             },
             401073001,
             {
                 "suit_master_id": 401073001,
+                "is_new": false
+            },
+            401073002,
+            {
+                "suit_master_id": 401073002,
                 "is_new": false
             },
             401073003,
@@ -19722,40 +23682,130 @@
                 "suit_master_id": 401073003,
                 "is_new": false
             },
+            401073004,
+            {
+                "suit_master_id": 401073004,
+                "is_new": false
+            },
+            401073005,
+            {
+                "suit_master_id": 401073005,
+                "is_new": false
+            },
+            401073006,
+            {
+                "suit_master_id": 401073006,
+                "is_new": false
+            },
             401082001,
             {
                 "suit_master_id": 401082001,
-                "is_new": true
+                "is_new": false
             },
             401082002,
             {
                 "suit_master_id": 401082002,
-                "is_new": true
+                "is_new": false
             },
             401082003,
             {
                 "suit_master_id": 401082003,
-                "is_new": true
+                "is_new": false
+            },
+            401082004,
+            {
+                "suit_master_id": 401082004,
+                "is_new": false
+            },
+            401082005,
+            {
+                "suit_master_id": 401082005,
+                "is_new": false
+            },
+            401082006,
+            {
+                "suit_master_id": 401082006,
+                "is_new": false
+            },
+            401082007,
+            {
+                "suit_master_id": 401082007,
+                "is_new": false
             },
             401083001,
             {
                 "suit_master_id": 401083001,
                 "is_new": false
             },
+            401083002,
+            {
+                "suit_master_id": 401083002,
+                "is_new": false
+            },
+            401083003,
+            {
+                "suit_master_id": 401083003,
+                "is_new": false
+            },
+            401083004,
+            {
+                "suit_master_id": 401083004,
+                "is_new": false
+            },
+            401083005,
+            {
+                "suit_master_id": 401083005,
+                "is_new": false
+            },
+            401083006,
+            {
+                "suit_master_id": 401083006,
+                "is_new": false
+            },
+            401083007,
+            {
+                "suit_master_id": 401083007,
+                "is_new": false
+            },
             401092001,
             {
                 "suit_master_id": 401092001,
-                "is_new": true
+                "is_new": false
             },
             401092002,
             {
                 "suit_master_id": 401092002,
-                "is_new": true
+                "is_new": false
+            },
+            401092003,
+            {
+                "suit_master_id": 401092003,
+                "is_new": false
             },
             401092004,
             {
                 "suit_master_id": 401092004,
-                "is_new": true
+                "is_new": false
+            },
+            401092005,
+            {
+                "suit_master_id": 401092005,
+                "is_new": false
+            },
+            401092006,
+            {
+                "suit_master_id": 401092006,
+                "is_new": false
+            },
+            401092007,
+            {
+                "suit_master_id": 401092007,
+                "is_new": false
+            },
+            401092008,
+            {
+                "suit_master_id": 401092008,
+                "is_new": false
             },
             401093001,
             {
@@ -19765,87 +23815,277 @@
             401093002,
             {
                 "suit_master_id": 401093002,
-                "is_new": true
+                "is_new": false
+            },
+            401093003,
+            {
+                "suit_master_id": 401093003,
+                "is_new": false
+            },
+            401093004,
+            {
+                "suit_master_id": 401093004,
+                "is_new": false
+            },
+            401093005,
+            {
+                "suit_master_id": 401093005,
+                "is_new": false
+            },
+            401093006,
+            {
+                "suit_master_id": 401093006,
+                "is_new": false
             },
             402012001,
             {
                 "suit_master_id": 402012001,
-                "is_new": true
+                "is_new": false
             },
             402012002,
             {
                 "suit_master_id": 402012002,
-                "is_new": true
+                "is_new": false
+            },
+            402012003,
+            {
+                "suit_master_id": 402012003,
+                "is_new": false
+            },
+            402012004,
+            {
+                "suit_master_id": 402012004,
+                "is_new": false
+            },
+            402012005,
+            {
+                "suit_master_id": 402012005,
+                "is_new": false
+            },
+            402012006,
+            {
+                "suit_master_id": 402012006,
+                "is_new": false
             },
             402013001,
             {
                 "suit_master_id": 402013001,
                 "is_new": false
             },
+            402013002,
+            {
+                "suit_master_id": 402013002,
+                "is_new": false
+            },
+            402013003,
+            {
+                "suit_master_id": 402013003,
+                "is_new": false
+            },
+            402013004,
+            {
+                "suit_master_id": 402013004,
+                "is_new": false
+            },
+            402013005,
+            {
+                "suit_master_id": 402013005,
+                "is_new": false
+            },
             402022001,
             {
                 "suit_master_id": 402022001,
-                "is_new": true
+                "is_new": false
             },
             402022002,
             {
                 "suit_master_id": 402022002,
-                "is_new": true
+                "is_new": false
             },
             402022003,
             {
                 "suit_master_id": 402022003,
-                "is_new": true
+                "is_new": false
+            },
+            402022004,
+            {
+                "suit_master_id": 402022004,
+                "is_new": false
+            },
+            402022005,
+            {
+                "suit_master_id": 402022005,
+                "is_new": false
+            },
+            402022006,
+            {
+                "suit_master_id": 402022006,
+                "is_new": false
             },
             402023001,
             {
                 "suit_master_id": 402023001,
                 "is_new": false
             },
+            402023002,
+            {
+                "suit_master_id": 402023002,
+                "is_new": false
+            },
+            402023003,
+            {
+                "suit_master_id": 402023003,
+                "is_new": false
+            },
+            402023004,
+            {
+                "suit_master_id": 402023004,
+                "is_new": false
+            },
             402032001,
             {
                 "suit_master_id": 402032001,
-                "is_new": true
+                "is_new": false
             },
             402032002,
             {
                 "suit_master_id": 402032002,
-                "is_new": true
+                "is_new": false
+            },
+            402032003,
+            {
+                "suit_master_id": 402032003,
+                "is_new": false
             },
             402032004,
             {
                 "suit_master_id": 402032004,
                 "is_new": false
             },
+            402032005,
+            {
+                "suit_master_id": 402032005,
+                "is_new": false
+            },
+            402032006,
+            {
+                "suit_master_id": 402032006,
+                "is_new": false
+            },
+            402033001,
+            {
+                "suit_master_id": 402033001,
+                "is_new": false
+            },
+            402033002,
+            {
+                "suit_master_id": 402033002,
+                "is_new": false
+            },
             402033003,
             {
                 "suit_master_id": 402033003,
-                "is_new": true
+                "is_new": false
+            },
+            402033004,
+            {
+                "suit_master_id": 402033004,
+                "is_new": false
+            },
+            402033005,
+            {
+                "suit_master_id": 402033005,
+                "is_new": false
             },
             402042001,
             {
                 "suit_master_id": 402042001,
-                "is_new": true
+                "is_new": false
             },
             402042002,
             {
                 "suit_master_id": 402042002,
-                "is_new": true
+                "is_new": false
             },
             402042003,
             {
                 "suit_master_id": 402042003,
-                "is_new": true
+                "is_new": false
+            },
+            402042004,
+            {
+                "suit_master_id": 402042004,
+                "is_new": false
+            },
+            402042005,
+            {
+                "suit_master_id": 402042005,
+                "is_new": false
+            },
+            402042006,
+            {
+                "suit_master_id": 402042006,
+                "is_new": false
+            },
+            402043001,
+            {
+                "suit_master_id": 402043001,
+                "is_new": false
             },
             402043002,
             {
                 "suit_master_id": 402043002,
-                "is_new": true
+                "is_new": false
+            },
+            402043003,
+            {
+                "suit_master_id": 402043003,
+                "is_new": false
+            },
+            402043004,
+            {
+                "suit_master_id": 402043004,
+                "is_new": false
+            },
+            402043005,
+            {
+                "suit_master_id": 402043005,
+                "is_new": false
+            },
+            402043006,
+            {
+                "suit_master_id": 402043006,
+                "is_new": false
+            },
+            402052001,
+            {
+                "suit_master_id": 402052001,
+                "is_new": false
+            },
+            402052002,
+            {
+                "suit_master_id": 402052002,
+                "is_new": false
             },
             402052003,
             {
                 "suit_master_id": 402052003,
-                "is_new": true
+                "is_new": false
+            },
+            402052004,
+            {
+                "suit_master_id": 402052004,
+                "is_new": false
+            },
+            402052005,
+            {
+                "suit_master_id": 402052005,
+                "is_new": false
+            },
+            402052006,
+            {
+                "suit_master_id": 402052006,
+                "is_new": false
             },
             402053001,
             {
@@ -19855,37 +24095,92 @@
             402053002,
             {
                 "suit_master_id": 402053002,
-                "is_new": true
+                "is_new": false
             },
             402053003,
             {
                 "suit_master_id": 402053003,
-                "is_new": true
+                "is_new": false
+            },
+            402053004,
+            {
+                "suit_master_id": 402053004,
+                "is_new": false
+            },
+            402053005,
+            {
+                "suit_master_id": 402053005,
+                "is_new": false
+            },
+            402053006,
+            {
+                "suit_master_id": 402053006,
+                "is_new": false
+            },
+            402053007,
+            {
+                "suit_master_id": 402053007,
+                "is_new": false
             },
             402062001,
             {
                 "suit_master_id": 402062001,
-                "is_new": true
+                "is_new": false
             },
             402062002,
             {
                 "suit_master_id": 402062002,
-                "is_new": true
+                "is_new": false
+            },
+            402062003,
+            {
+                "suit_master_id": 402062003,
+                "is_new": false
             },
             402062004,
             {
                 "suit_master_id": 402062004,
-                "is_new": true
+                "is_new": false
+            },
+            402062005,
+            {
+                "suit_master_id": 402062005,
+                "is_new": false
             },
             402062006,
             {
                 "suit_master_id": 402062006,
-                "is_new": true
+                "is_new": false
+            },
+            402062007,
+            {
+                "suit_master_id": 402062007,
+                "is_new": false
+            },
+            402063001,
+            {
+                "suit_master_id": 402063001,
+                "is_new": false
+            },
+            402063002,
+            {
+                "suit_master_id": 402063002,
+                "is_new": false
             },
             402063003,
             {
                 "suit_master_id": 402063003,
-                "is_new": true
+                "is_new": false
+            },
+            402063004,
+            {
+                "suit_master_id": 402063004,
+                "is_new": false
+            },
+            402063005,
+            {
+                "suit_master_id": 402063005,
+                "is_new": false
             },
             402072001,
             {
@@ -19895,57 +24190,202 @@
             402072002,
             {
                 "suit_master_id": 402072002,
-                "is_new": true
+                "is_new": false
+            },
+            402072003,
+            {
+                "suit_master_id": 402072003,
+                "is_new": false
+            },
+            402072004,
+            {
+                "suit_master_id": 402072004,
+                "is_new": false
+            },
+            402072005,
+            {
+                "suit_master_id": 402072005,
+                "is_new": false
             },
             402073001,
             {
                 "suit_master_id": 402073001,
-                "is_new": true
+                "is_new": false
             },
             402073002,
             {
                 "suit_master_id": 402073002,
-                "is_new": true
+                "is_new": false
+            },
+            402073003,
+            {
+                "suit_master_id": 402073003,
+                "is_new": false
             },
             402073004,
             {
                 "suit_master_id": 402073004,
-                "is_new": true
+                "is_new": false
+            },
+            402073005,
+            {
+                "suit_master_id": 402073005,
+                "is_new": false
             },
             402082001,
             {
                 "suit_master_id": 402082001,
-                "is_new": true
+                "is_new": false
             },
             402082002,
             {
                 "suit_master_id": 402082002,
                 "is_new": false
             },
+            402082003,
+            {
+                "suit_master_id": 402082003,
+                "is_new": false
+            },
+            402082004,
+            {
+                "suit_master_id": 402082004,
+                "is_new": false
+            },
+            402082005,
+            {
+                "suit_master_id": 402082005,
+                "is_new": false
+            },
+            402082006,
+            {
+                "suit_master_id": 402082006,
+                "is_new": false
+            },
             402083001,
             {
                 "suit_master_id": 402083001,
-                "is_new": true
+                "is_new": false
+            },
+            402083002,
+            {
+                "suit_master_id": 402083002,
+                "is_new": false
+            },
+            402083003,
+            {
+                "suit_master_id": 402083003,
+                "is_new": false
+            },
+            402083004,
+            {
+                "suit_master_id": 402083004,
+                "is_new": false
+            },
+            402083005,
+            {
+                "suit_master_id": 402083005,
+                "is_new": false
+            },
+            402092001,
+            {
+                "suit_master_id": 402092001,
+                "is_new": false
             },
             402092002,
             {
                 "suit_master_id": 402092002,
-                "is_new": true
+                "is_new": false
             },
             402092003,
             {
                 "suit_master_id": 402092003,
-                "is_new": true
+                "is_new": false
             },
             402092004,
             {
                 "suit_master_id": 402092004,
-                "is_new": true
+                "is_new": false
+            },
+            402092005,
+            {
+                "suit_master_id": 402092005,
+                "is_new": false
+            },
+            402092006,
+            {
+                "suit_master_id": 402092006,
+                "is_new": false
+            },
+            402092007,
+            {
+                "suit_master_id": 402092007,
+                "is_new": false
+            },
+            402093001,
+            {
+                "suit_master_id": 402093001,
+                "is_new": false
+            },
+            402093002,
+            {
+                "suit_master_id": 402093002,
+                "is_new": false
+            },
+            402093003,
+            {
+                "suit_master_id": 402093003,
+                "is_new": false
+            },
+            402093004,
+            {
+                "suit_master_id": 402093004,
+                "is_new": false
+            },
+            402093005,
+            {
+                "suit_master_id": 402093005,
+                "is_new": false
+            },
+            402102001,
+            {
+                "suit_master_id": 402102001,
+                "is_new": false
             },
             402102002,
             {
                 "suit_master_id": 402102002,
-                "is_new": true
+                "is_new": false
+            },
+            402103001,
+            {
+                "suit_master_id": 402103001,
+                "is_new": false
+            },
+            402103002,
+            {
+                "suit_master_id": 402103002,
+                "is_new": false
+            },
+            402112001,
+            {
+                "suit_master_id": 402112001,
+                "is_new": false
+            },
+            402112002,
+            {
+                "suit_master_id": 402112002,
+                "is_new": false
+            },
+            402113001,
+            {
+                "suit_master_id": 402113001,
+                "is_new": false
+            },
+            402123001,
+            {
+                "suit_master_id": 402123001,
+                "is_new": false
             }
         ],
         "user_live_deck_by_id": [

@@ -149,6 +149,30 @@ func init() {
 	// mm, err = json.Marshal(resp)
 	// CheckErr(err)
 	// fmt.Println(string(mm))
+
+	// eng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
+	// CheckErr(err)
+	// err = eng.Ping()
+	// CheckErr(err)
+
+	// suitIds := []int{}
+	// err = eng.Table("m_suit").Cols("id").OrderBy("id ASC").Find(&suitIds)
+	// CheckErr(err)
+
+	// jsonStr := "["
+	// for _, suit := range suitIds {
+	// 	suitInfo := model.AsSuitInfo{
+	// 		SuitMasterID: suit,
+	// 		IsNew:        false,
+	// 	}
+	// 	m, err := json.Marshal(suitInfo)
+	// 	CheckErr(err)
+
+	// 	jsonStr += fmt.Sprintf("%d,%s,", suit, string(m))
+	// }
+	// jsonStr = strings.TrimRight(jsonStr, ",")
+	// jsonStr += "]"
+	// fmt.Println(jsonStr)
 }
 
 func main() {
