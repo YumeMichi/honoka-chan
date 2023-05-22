@@ -45,14 +45,14 @@ type AsLoginRes struct {
 // UserModel ...
 type UserModel struct {
 	UserStatus                                                                 AsUserStatus  `json:"user_status"`
-	UserMemberByMemberID                                                       []interface{} `json:"user_member_by_member_id"`
+	UserMemberByMemberID                                                       interface{}   `json:"user_member_by_member_id"`
 	UserCardByCardID                                                           []interface{} `json:"user_card_by_card_id"`
 	UserSuitBySuitID                                                           []interface{} `json:"user_suit_by_suit_id"`
 	UserLiveDeckByID                                                           []interface{} `json:"user_live_deck_by_id"`
 	UserLivePartyByID                                                          []interface{} `json:"user_live_party_by_id"`
 	UserLessonDeckByID                                                         []interface{} `json:"user_lesson_deck_by_id"`
 	UserLiveMvDeckByID                                                         []interface{} `json:"user_live_mv_deck_by_id"`
-	UserLiveMvDeckCustomByID                                                   []interface{} `json:"user_live_mv_deck_custom_by_id"`
+	UserLiveMvDeckCustomByID                                                   interface{}   `json:"user_live_mv_deck_custom_by_id"`
 	UserLiveDifficultyByDifficultyID                                           []interface{} `json:"user_live_difficulty_by_difficulty_id"`
 	UserStoryMainByStoryMainID                                                 []interface{} `json:"user_story_main_by_story_main_id"`
 	UserStoryMainSelectedByStoryMainCellID                                     []interface{} `json:"user_story_main_selected_by_story_main_cell_id"`
@@ -126,7 +126,7 @@ type Message struct {
 type AsUserStatus struct {
 	Name                                      Name        `json:"name"`
 	Nickname                                  Nickname    `json:"nickname"`
-	LastLoginAt                               int         `json:"last_login_at"`
+	LastLoginAt                               int64       `json:"last_login_at"`
 	Rank                                      int         `json:"rank"`
 	Exp                                       int         `json:"exp"`
 	Message                                   Message     `json:"message"`

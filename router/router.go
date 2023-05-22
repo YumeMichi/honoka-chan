@@ -306,5 +306,244 @@ func AsRouter(r *gin.Engine) {
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, string(mm))
 		})
+		s.POST("/card/updateCardNewFlag", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/updateCardNewFlag.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/bootstrap/getClearedPlatformAchievement", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/getClearedPlatformAchievement.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/live/fetchLiveMusicSelect", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/fetchLiveMusicSelect.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/liveMv/start", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/liveMvStart.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/liveMv/saveDeck", func(ctx *gin.Context) {
+			body, err := io.ReadAll(ctx.Request.Body)
+			if err != nil {
+				panic(err)
+			}
+			defer ctx.Request.Body.Close()
+			// fmt.Println(string(body))
+
+			req := []model.AsReq{}
+			err = json.Unmarshal(body, &req)
+			if err != nil {
+				panic(err)
+			}
+
+			reqBody, ok := req[0].(map[string]interface{})
+			if !ok {
+				panic("Assertion failed!")
+			}
+
+			reqB, err := json.Marshal(reqBody)
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(string(reqB))
+
+			saveReq := model.LiveSaveDeckReq{}
+			err = json.Unmarshal(reqB, &saveReq)
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(saveReq)
+
+			userLiveMvDeckInfo := model.UserLiveMvDeckInfo{
+				LiveMasterID: saveReq.LiveMasterID,
+			}
+
+			memberIds := map[int]int{}
+			for k, v := range saveReq.MemberMasterIDByPos {
+				if k%2 == 0 {
+					memberId := saveReq.MemberMasterIDByPos[k+1]
+					memberIds[v] = memberId
+
+					switch v {
+					case 1:
+						userLiveMvDeckInfo.MemberMasterID1 = memberId
+					case 2:
+						userLiveMvDeckInfo.MemberMasterID2 = memberId
+					case 3:
+						userLiveMvDeckInfo.MemberMasterID3 = memberId
+					case 4:
+						userLiveMvDeckInfo.MemberMasterID4 = memberId
+					case 5:
+						userLiveMvDeckInfo.MemberMasterID5 = memberId
+					case 6:
+						userLiveMvDeckInfo.MemberMasterID6 = memberId
+					case 7:
+						userLiveMvDeckInfo.MemberMasterID7 = memberId
+					case 8:
+						userLiveMvDeckInfo.MemberMasterID8 = memberId
+					case 9:
+						userLiveMvDeckInfo.MemberMasterID9 = memberId
+					case 10:
+						userLiveMvDeckInfo.MemberMasterID10 = memberId
+					case 11:
+						userLiveMvDeckInfo.MemberMasterID11 = memberId
+					case 12:
+						userLiveMvDeckInfo.MemberMasterID12 = memberId
+					}
+				}
+			}
+			// fmt.Println(memberIds)
+
+			suitIds := map[int]int{}
+			for k, v := range saveReq.SuitMasterIDByPos {
+				if k%2 == 0 {
+					suitId := saveReq.SuitMasterIDByPos[k+1]
+					suitIds[v] = suitId
+
+					switch v {
+					case 1:
+						userLiveMvDeckInfo.SuitMasterID1 = suitId
+					case 2:
+						userLiveMvDeckInfo.SuitMasterID2 = suitId
+					case 3:
+						userLiveMvDeckInfo.SuitMasterID3 = suitId
+					case 4:
+						userLiveMvDeckInfo.SuitMasterID4 = suitId
+					case 5:
+						userLiveMvDeckInfo.SuitMasterID5 = suitId
+					case 6:
+						userLiveMvDeckInfo.SuitMasterID6 = suitId
+					case 7:
+						userLiveMvDeckInfo.SuitMasterID7 = suitId
+					case 8:
+						userLiveMvDeckInfo.SuitMasterID8 = suitId
+					case 9:
+						userLiveMvDeckInfo.SuitMasterID9 = suitId
+					case 10:
+						userLiveMvDeckInfo.SuitMasterID10 = suitId
+					case 11:
+						userLiveMvDeckInfo.SuitMasterID11 = suitId
+					case 12:
+						userLiveMvDeckInfo.SuitMasterID12 = suitId
+					}
+				}
+			}
+			// fmt.Println(suitIds)
+
+			userLiveMvDeckCustomByID := []model.UserLiveMvDeckCustomByID{}
+			userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, saveReq.LiveMasterID)
+			userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, userLiveMvDeckInfo)
+			// fmt.Println(userLiveMvDeckCustomByID)
+
+			viewStatusIds := map[int]int{}
+			for k, v := range saveReq.ViewStatusByPos {
+				if k%2 == 0 {
+					viewStatusId := saveReq.ViewStatusByPos[k+1]
+					viewStatusIds[v] = viewStatusId
+				}
+			}
+			// fmt.Println(viewStatusIds)
+
+			userMemberByMemberID := []model.UserMemberByMemberID{}
+			for k, v := range memberIds {
+				userMemberByMemberID = append(userMemberByMemberID, v)
+				userMemberByMemberID = append(userMemberByMemberID, model.UserMemberInfo{
+					MemberMasterID:           v,
+					CustomBackgroundMasterID: 103506600,
+					SuitMasterID:             suitIds[k],
+					LovePoint:                0,
+					LovePointLimit:           999999,
+					LoveLevel:                1,
+					ViewStatus:               viewStatusIds[k],
+					IsNew:                    true,
+				})
+			}
+			// fmt.Println(userMemberByMemberID)
+
+			saveResp := model.LiveSaveDeckResp{
+				UserModel: model.UserModel{
+					UserStatus:                                              CommonUserStatus(),
+					UserMemberByMemberID:                                    userMemberByMemberID,
+					UserCardByCardID:                                        []interface{}{},
+					UserSuitBySuitID:                                        []interface{}{},
+					UserLiveDeckByID:                                        []interface{}{},
+					UserLivePartyByID:                                       []interface{}{},
+					UserLessonDeckByID:                                      []interface{}{},
+					UserLiveMvDeckByID:                                      []interface{}{},
+					UserLiveMvDeckCustomByID:                                userLiveMvDeckCustomByID,
+					UserLiveDifficultyByDifficultyID:                        []interface{}{},
+					UserStoryMainByStoryMainID:                              []interface{}{},
+					UserStoryMainSelectedByStoryMainCellID:                  []interface{}{},
+					UserVoiceByVoiceID:                                      []interface{}{},
+					UserEmblemByEmblemID:                                    []interface{}{},
+					UserGachaTicketByTicketID:                               []interface{}{},
+					UserGachaPointByPointID:                                 []interface{}{},
+					UserLessonEnhancingItemByItemID:                         []interface{}{},
+					UserTrainingMaterialByItemID:                            []interface{}{},
+					UserGradeUpItemByItemID:                                 []interface{}{},
+					UserCustomBackgroundByID:                                []interface{}{},
+					UserStorySideByID:                                       []interface{}{},
+					UserStoryMemberByID:                                     []interface{}{},
+					UserCommunicationMemberDetailBadgeByID:                  []interface{}{},
+					UserStoryEventHistoryByID:                               []interface{}{},
+					UserRecoveryLpByID:                                      []interface{}{},
+					UserRecoveryApByID:                                      []interface{}{},
+					UserMissionByMissionID:                                  []interface{}{},
+					UserDailyMissionByMissionID:                             []interface{}{},
+					UserWeeklyMissionByMissionID:                            []interface{}{},
+					UserInfoTriggerBasicByTriggerID:                         []interface{}{},
+					UserInfoTriggerCardGradeUpByTriggerID:                   []interface{}{},
+					UserInfoTriggerMemberGuildSupportItemExpiredByTriggerID: []interface{}{},
+					UserInfoTriggerMemberLoveLevelUpByTriggerID:             []interface{}{},
+					UserAccessoryByUserAccessoryID:                          []interface{}{},
+					UserAccessoryLevelUpItemByID:                            []interface{}{},
+					UserAccessoryRarityUpItemByID:                           []interface{}{},
+					UserUnlockScenesByEnum:                                  []interface{}{},
+					UserSceneTipsByEnum:                                     []interface{}{},
+					UserRuleDescriptionByID:                                 []interface{}{},
+					UserExchangeEventPointByID:                              []interface{}{},
+					UserSchoolIdolFestivalIDRewardMissionByID:               []interface{}{},
+					UserGpsPresentReceivedByID:                              []interface{}{},
+					UserEventMarathonByEventMasterID:                        []interface{}{},
+					UserEventMiningByEventMasterID:                          []interface{}{},
+					UserEventCoopByEventMasterID:                            []interface{}{},
+					UserLiveSkipTicketByID:                                  []interface{}{},
+					UserStoryEventUnlockItemByID:                            []interface{}{},
+					UserEventMarathonBoosterByID:                            []interface{}{},
+					UserReferenceBookByID:                                   []interface{}{},
+					UserReviewRequestProcessFlowByID:                        []interface{}{},
+					UserRankExpByID:                                         []interface{}{},
+					UserShareByID:                                           []interface{}{},
+					UserTowerByTowerID:                                      []interface{}{},
+					UserRecoveryTowerCardUsedCountItemByRecoveryTowerCardUsedCountItemMasterID: []interface{}{},
+					UserStoryLinkageByID:             []interface{}{},
+					UserSubscriptionStatusByID:       []interface{}{},
+					UserStoryMainPartDigestMovieByID: []interface{}{},
+					UserMemberGuildByID:              []interface{}{},
+					UserMemberGuildSupportItemByID:   []interface{}{},
+					UserDailyTheaterByDailyTheaterID: []interface{}{},
+					UserPlayListByID:                 []interface{}{},
+				},
+			}
+			respB, err := json.Marshal(saveResp)
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(string(b))
+
+			resp := SignResp(ctx.GetString("ep"), string(respB), sessionKey)
+			// fmt.Println(resp)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
 	}
 }
