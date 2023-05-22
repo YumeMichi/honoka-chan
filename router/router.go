@@ -2,11 +2,13 @@ package router
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"honoka-chan/config"
 	"honoka-chan/encrypt"
 	"honoka-chan/handler"
 	"honoka-chan/middleware"
+	"honoka-chan/model"
 	"honoka-chan/utils"
 	"io"
 	"net/http"
@@ -153,8 +155,8 @@ func SifRouter(r *gin.Engine) {
 }
 
 func AsRouter(r *gin.Engine) {
-
-	s := r.Group("ep3071")
+	r.Static("/llas-dev/static", "static/llas-dev/static")
+	s := r.Group("ep3071").Use(middleware.CommonAs)
 	{
 		s.POST("/login/login", func(ctx *gin.Context) {
 			body, err := io.ReadAll(ctx.Request.Body)
@@ -172,99 +174,137 @@ func AsRouter(r *gin.Engine) {
 				}
 				return true
 			})
-			fmt.Println("Request data:", req.String())
-			fmt.Println("Mask:", mask)
+			// fmt.Println("Request data:", req.String())
+			// fmt.Println("Mask:", mask)
 
 			mask64, err := base64.StdEncoding.DecodeString(mask)
 			if err != nil {
 				panic(err)
 			}
 			randomBytes := encrypt.RSA_DecryptOAEP(mask64, "privatekey.pem")
-			fmt.Println("Random Bytes:", randomBytes)
+			// fmt.Println("Random Bytes:", randomBytes)
 
 			newKey := utils.SliceXor(randomBytes, []byte(sessionKey))
 			newKey64 := base64.StdEncoding.EncodeToString(newKey)
 
-			loginBody := strings.ReplaceAll(utils.ReadAllText("data/login_body.txt"), "SESSION_KEY", newKey64)
-			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, loginBody)
-
-			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
-			fmt.Println(ep)
-
-			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(config.StartUpKey))
-			fmt.Println(sign)
-
-			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
-			// fmt.Println(res)
+			loginBody := strings.ReplaceAll(utils.ReadAllText("assets/login.json"), "SESSION_KEY", newKey64)
+			resp := SignResp(ctx.GetString("ep"), loginBody, config.StartUpKey)
 
 			ctx.Header("Content-Type", "application/json")
-			ctx.String(http.StatusOK, res)
+			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/bootstrap/fetchBootstrap", func(ctx *gin.Context) {
-			body, err := io.ReadAll(ctx.Request.Body)
-			if err != nil {
-				panic(err)
-			}
-			defer ctx.Request.Body.Close()
-			fmt.Println(string(body))
-
-			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
-			fmt.Println(ep)
-
-			bootstrapBody := utils.ReadAllText("data/bootstrap_body.txt")
-			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, bootstrapBody)
-			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(sessionKey))
-			fmt.Println(sign)
-
-			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
-			// fmt.Println(res)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/bootstrap.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
-			ctx.String(http.StatusOK, res)
+			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/billing/fetchBillingHistory", func(ctx *gin.Context) {
-			body, err := io.ReadAll(ctx.Request.Body)
-			if err != nil {
-				panic(err)
-			}
-			defer ctx.Request.Body.Close()
-			fmt.Println(string(body))
-
-			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
-			fmt.Println(ep)
-
-			bootstrapBody := utils.ReadAllText("data/bill_body.txt")
-			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, bootstrapBody)
-			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(sessionKey))
-			fmt.Println(sign)
-
-			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
-			// fmt.Println(res)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/billing.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
-			ctx.String(http.StatusOK, res)
+			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/notice/fetchNotice", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/notice.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/asset/getPackUrl", func(ctx *gin.Context) {
 			body, err := io.ReadAll(ctx.Request.Body)
 			if err != nil {
 				panic(err)
 			}
 			defer ctx.Request.Body.Close()
-			fmt.Println(string(body))
+			// fmt.Println(string(body))
+
+			req := []model.AsReq{}
+			err = json.Unmarshal(body, &req)
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(req)
+
+			packBody, ok := req[0].(map[string]interface{})
+			if !ok {
+				panic("Assertion failed!")
+			}
+			// fmt.Println(packBody)
+
+			packNames, ok := packBody["pack_names"].([]interface{})
+			if !ok {
+				panic("Assertion failed!")
+			}
+
+			// 生成更新包 map
+			packageList := []string{}
+			urlList := []string{}
+
+			err = json.Unmarshal([]byte(utils.ReadAllText("assets/packages.json")), &packageList)
+			if err != nil {
+				panic(err)
+			}
+
+			err = json.Unmarshal([]byte(utils.ReadAllText("assets/urls.json")), &urlList)
+			if err != nil {
+				panic(err)
+			}
+
+			if len(packageList) != len(urlList) {
+				fmt.Println("File size not match!")
+				return
+			}
+
+			packageUrls := map[string]string{}
+			for k, p := range packageList {
+				packageUrls[p] = urlList[k]
+			}
+
+			// Response
+			respUrls := []string{}
+			for _, pack := range packNames {
+				packName, ok := pack.(string)
+				if !ok {
+					panic("Assertion failed!")
+				}
+				// fmt.Println(packageUrls[packName])
+				respUrls = append(respUrls, packageUrls[packName])
+			}
+
+			urlResp := model.PackUrlRespBody{
+				UrlList: respUrls,
+			}
+
+			resp := []model.AsResp{}
+			resp = append(resp, time.Now().UnixMilli()) // 时间戳
+			resp = append(resp, config.MasterVersion)   // 版本号
+			resp = append(resp, 0)                      // 固定值
+			resp = append(resp, urlResp)                // 数据体
+
+			mm, err := json.Marshal(resp)
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(string(mm))
+
+			signBody := mm[1 : len(mm)-1]
+			// fmt.Println(string(signBody))
 
 			ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
-			fmt.Println(ep)
+			// fmt.Println(ep)
 
-			bootstrapBody := utils.ReadAllText("data/notice_body.txt")
-			signBody := fmt.Sprintf("%d,\"%s\",0,%s", time.Now().UnixMilli(), config.MasterVersion, bootstrapBody)
-			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+signBody), []byte(sessionKey))
-			fmt.Println(sign)
+			sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+string(signBody)), []byte(sessionKey))
 
-			res := fmt.Sprintf("[%s,\"%s\"]", signBody, sign)
-			// fmt.Println(res)
+			resp = append(resp, sign)
+			mm, err = json.Marshal(resp)
+			if err != nil {
+				panic(err)
+			}
+			// fmt.Println(string(mm))
 
 			ctx.Header("Content-Type", "application/json")
-			ctx.String(http.StatusOK, res)
+			ctx.String(http.StatusOK, string(mm))
 		})
 	}
 }

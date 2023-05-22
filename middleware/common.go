@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -73,6 +74,13 @@ func Common(ctx *gin.Context) {
 	ctx.Header("Server-Version", "97.4.6")
 	ctx.Header("version_up", "0")
 	ctx.Header("status_code", "200")
+
+	ctx.Next()
+}
+
+func CommonAs(ctx *gin.Context) {
+	ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
+	ctx.Set("ep", ep)
 
 	ctx.Next()
 }
