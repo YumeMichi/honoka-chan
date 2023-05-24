@@ -182,26 +182,26 @@ func AsRouter(r *gin.Engine) {
 			newKey := utils.SliceXor(randomBytes, []byte(sessionKey))
 			newKey64 := base64.StdEncoding.EncodeToString(newKey)
 
-			loginBody := strings.ReplaceAll(utils.ReadAllText("assets/login.json"), "SESSION_KEY", newKey64)
+			loginBody := strings.ReplaceAll(utils.ReadAllText("assets/as/login.json"), "SESSION_KEY", newKey64)
 			resp := SignResp(ctx.GetString("ep"), loginBody, config.StartUpKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/bootstrap/fetchBootstrap", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/bootstrap.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchBootstrap.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/billing/fetchBillingHistory", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/billing.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchBillingHistory.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/notice/fetchNotice", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/notice.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchNotice.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
@@ -231,12 +231,12 @@ func AsRouter(r *gin.Engine) {
 			packageList := []string{}
 			urlList := []string{}
 
-			err = json.Unmarshal([]byte(utils.ReadAllText("assets/packages.json")), &packageList)
+			err = json.Unmarshal([]byte(utils.ReadAllText("assets/as/packages.json")), &packageList)
 			if err != nil {
 				panic(err)
 			}
 
-			err = json.Unmarshal([]byte(utils.ReadAllText("assets/urls.json")), &urlList)
+			err = json.Unmarshal([]byte(utils.ReadAllText("assets/as/urls.json")), &urlList)
 			if err != nil {
 				panic(err)
 			}
@@ -297,25 +297,25 @@ func AsRouter(r *gin.Engine) {
 			ctx.String(http.StatusOK, string(mm))
 		})
 		s.POST("/card/updateCardNewFlag", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/updateCardNewFlag.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/updateCardNewFlag.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/bootstrap/getClearedPlatformAchievement", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/getClearedPlatformAchievement.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/getClearedPlatformAchievement.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/live/fetchLiveMusicSelect", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/fetchLiveMusicSelect.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchLiveMusicSelect.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/liveMv/start", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/liveMvStart.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/liveMvStart.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
@@ -541,14 +541,14 @@ func AsRouter(r *gin.Engine) {
 				return true
 			})
 
-			signBody := strings.ReplaceAll(utils.ReadAllText("assets/fetchCommunicationMemberDetail.json"), `"MEMBER_ID"`, memberId)
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/fetchCommunicationMemberDetail.json"), `"MEMBER_ID"`, memberId)
 			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/navi/tapLovePoint", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/tapLovePoint.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/tapLovePoint.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
@@ -564,26 +564,26 @@ func AsRouter(r *gin.Engine) {
 				return true
 			})
 
-			signBody := strings.ReplaceAll(utils.ReadAllText("assets/updateUserCommunicationMemberDetailBadge.json"), `"MEMBER_MASTER_ID"`, memberMasterId)
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/updateUserCommunicationMemberDetailBadge.json"), `"MEMBER_MASTER_ID"`, memberMasterId)
 			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/communicationMember/updateUserLiveDifficultyNewFlag", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/updateUserLiveDifficultyNewFlag.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/updateUserLiveDifficultyNewFlag.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/communicationMember/finishUserStorySide", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/finishUserStorySide.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/finishUserStorySide.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/communicationMember/finishUserStoryMember", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/finishUserStoryMember.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/finishUserStoryMember.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
@@ -601,7 +601,7 @@ func AsRouter(r *gin.Engine) {
 				return true
 			})
 
-			signBody := strings.ReplaceAll(utils.ReadAllText("assets/setTheme.json"), `"MEMBER_MASTER_ID"`, memberMasterId)
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/setTheme.json"), `"MEMBER_MASTER_ID"`, memberMasterId)
 			signBody = strings.ReplaceAll(signBody, `"BACKGROUND_MASTER_ID"`, backgroundMasterId)
 			signBody = strings.ReplaceAll(signBody, `"SUIT_MASTER_ID"`, suitMasterId)
 			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
@@ -610,13 +610,13 @@ func AsRouter(r *gin.Engine) {
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/userProfile/fetchProfile", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/fetchProfile.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchProfile.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/emblem/fetchEmblem", func(ctx *gin.Context) {
-			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/fetchEmblem.json"), sessionKey)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchEmblem.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
@@ -631,7 +631,7 @@ func AsRouter(r *gin.Engine) {
 				}
 				return true
 			})
-			signBody := strings.ReplaceAll(utils.ReadAllText("assets/activateEmblem.json"), `"EMBLEM_ID"`, emblemId)
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/activateEmblem.json"), `"EMBLEM_ID"`, emblemId)
 			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 			ctx.Header("Content-Type", "application/json")

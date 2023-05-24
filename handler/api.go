@@ -752,7 +752,7 @@ func Api(ctx *gin.Context) {
 			CheckErr(err)
 		case "stamp":
 			// key = "stamp_result"
-			stampResp := utils.ReadAllText("assets/stamp.json")
+			stampResp := utils.ReadAllText("assets/sif/stamp.json")
 			var mStampResp interface{}
 			err = json.Unmarshal([]byte(stampResp), &mStampResp)
 			CheckErr(err)
@@ -806,7 +806,7 @@ func Api(ctx *gin.Context) {
 			CheckErr(err)
 		case "item":
 			// key = "item_list_result"
-			itemResp := utils.ReadAllText("assets/item.json")
+			itemResp := utils.ReadAllText("assets/sif/item.json")
 			var mItemResp interface{}
 			err = json.Unmarshal([]byte(itemResp), &mItemResp)
 			CheckErr(err)
@@ -898,7 +898,7 @@ func Api(ctx *gin.Context) {
 			} else if v.Action == "cardRanking" {
 				// key = "profile_card_ranking_result"
 				var result []interface{}
-				love := utils.ReadAllText("assets/love.json")
+				love := utils.ReadAllText("assets/sif/love.json")
 				err := json.Unmarshal([]byte(love), &result)
 				CheckErr(err)
 				loveResp := model.LoveResp{

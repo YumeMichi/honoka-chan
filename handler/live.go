@@ -18,7 +18,7 @@ import (
 )
 
 func PartyList(ctx *gin.Context) {
-	resp := utils.ReadAllText("assets/partylist.json")
+	resp := utils.ReadAllText("assets/sif/partylist.json")
 
 	nonce := ctx.GetInt("nonce")
 	nonce++
@@ -298,7 +298,7 @@ func PlayLive(ctx *gin.Context) {
 		// 好友主唱技能加成
 		// TODO 好友支援存入数据库
 		var tomoUnitId int64
-		partyList := gjson.Parse(utils.ReadAllText("assets/partylist.json")).Get("response_data.party_list")
+		partyList := gjson.Parse(utils.ReadAllText("assets/sif/partylist.json")).Get("response_data.party_list")
 		partyList.ForEach(func(key, value gjson.Result) bool {
 			if value.Get("user_info.user_id").Int() == playReq.PartyUserID {
 				tomoUnitId = value.Get("center_unit_info.unit_id").Int()

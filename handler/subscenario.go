@@ -41,7 +41,7 @@ func SubScenarioStartup(ctx *gin.Context) {
 }
 
 func SubScenarioReward(ctx *gin.Context) {
-	resp := utils.ReadAllText("assets/subreward.json")
+	resp := utils.ReadAllText("assets/sif/subreward.json")
 
 	nonce := ctx.GetInt("nonce")
 	nonce++

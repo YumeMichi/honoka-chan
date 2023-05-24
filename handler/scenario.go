@@ -43,7 +43,7 @@ func ScenarioStartup(ctx *gin.Context) {
 }
 
 func ScenarioReward(ctx *gin.Context) {
-	resp := utils.ReadAllText("assets/reward.json")
+	resp := utils.ReadAllText("assets/sif/reward.json")
 
 	nonce := ctx.GetInt("nonce")
 	nonce++
