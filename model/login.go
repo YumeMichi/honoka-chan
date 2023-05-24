@@ -227,6 +227,20 @@ type AsSuitInfo struct {
 	IsNew        bool `json:"is_new"`
 }
 
+// AsEmblemInfo ...
+type AsEmblemInfo struct {
+	EmblemMID   int         `json:"emblem_m_id"`
+	IsNew       bool        `json:"is_new"`
+	EmblemParam interface{} `json:"emblem_param"`
+	AcquiredAt  int64       `json:"acquired_at"`
+}
+
+// AsEmblemId ...
+type AsEmblemId struct {
+	EmblemMasterID int  `json:"emblem_master_id"`
+	IsNew          bool `json:"is_new"`
+}
+
 // AsReq ...
 type AsReq interface{}
 

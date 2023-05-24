@@ -173,6 +173,50 @@ func init() {
 	// jsonStr = strings.TrimRight(jsonStr, ",")
 	// jsonStr += "]"
 	// fmt.Println(jsonStr)
+
+	// eng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
+	// CheckErr(err)
+	// err = eng.Ping()
+	// CheckErr(err)
+
+	// emblemIds := []int{}
+	// err = eng.Table("m_emblem").Cols("id").OrderBy("id ASC").Find(&emblemIds)
+	// CheckErr(err)
+
+	// jsonStr := "["
+	// for _, emblem := range emblemIds {
+	// 	emblemInfo := model.AsEmblemInfo{
+	// 		EmblemMID:  emblem,
+	// 		AcquiredAt: time.Now().Unix(),
+	// 	}
+	// 	m, err := json.Marshal(emblemInfo)
+	// 	CheckErr(err)
+
+	// 	jsonStr += fmt.Sprintf("%d,%s,", emblem, string(m))
+	// }
+	// jsonStr = strings.TrimRight(jsonStr, ",")
+	// jsonStr += "]"
+	// fmt.Println(jsonStr)
+
+	// eng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
+	// CheckErr(err)
+	// err = eng.Ping()
+	// CheckErr(err)
+
+	// emblemIds := []int{}
+	// err = eng.Table("m_emblem").Cols("id").OrderBy("id ASC").Find(&emblemIds)
+	// CheckErr(err)
+
+	// ids := []model.AsEmblemId{}
+	// for _, id := range emblemIds {
+	// 	ids = append(ids, model.AsEmblemId{
+	// 		EmblemMasterID: id,
+	// 		IsNew:          false,
+	// 	})
+	// }
+	// m, err := json.Marshal(ids)
+	// CheckErr(err)
+	// fmt.Println(string(m))
 }
 
 func main() {
