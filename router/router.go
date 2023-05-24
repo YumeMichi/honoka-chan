@@ -10,7 +10,6 @@ import (
 	"honoka-chan/middleware"
 	"honoka-chan/model"
 	"honoka-chan/utils"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -159,14 +158,10 @@ func AsRouter(r *gin.Engine) {
 	s := r.Group("ep3071").Use(middleware.CommonAs)
 	{
 		s.POST("/login/login", func(ctx *gin.Context) {
-			body, err := io.ReadAll(ctx.Request.Body)
-			if err != nil {
-				panic(err)
-			}
-			defer ctx.Request.Body.Close()
+			reqBody := ctx.GetString("reqBody")
 
 			var mask string
-			req := gjson.Parse(string(body))
+			req := gjson.Parse(reqBody)
 			req.ForEach(func(key, value gjson.Result) bool {
 				if value.Get("mask").String() != "" {
 					mask = value.Get("mask").String()
@@ -212,15 +207,10 @@ func AsRouter(r *gin.Engine) {
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/asset/getPackUrl", func(ctx *gin.Context) {
-			body, err := io.ReadAll(ctx.Request.Body)
-			if err != nil {
-				panic(err)
-			}
-			defer ctx.Request.Body.Close()
-			// fmt.Println(string(body))
+			reqBody := ctx.GetString("reqBody")
 
 			req := []model.AsReq{}
-			err = json.Unmarshal(body, &req)
+			err := json.Unmarshal([]byte(reqBody), &req)
 			if err != nil {
 				panic(err)
 			}
@@ -331,25 +321,20 @@ func AsRouter(r *gin.Engine) {
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/liveMv/saveDeck", func(ctx *gin.Context) {
-			body, err := io.ReadAll(ctx.Request.Body)
-			if err != nil {
-				panic(err)
-			}
-			defer ctx.Request.Body.Close()
-			// fmt.Println(string(body))
+			reqBody := ctx.GetString("reqBody")
 
 			req := []model.AsReq{}
-			err = json.Unmarshal(body, &req)
+			err := json.Unmarshal([]byte(reqBody), &req)
 			if err != nil {
 				panic(err)
 			}
 
-			reqBody, ok := req[0].(map[string]interface{})
+			body, ok := req[0].(map[string]interface{})
 			if !ok {
 				panic("Assertion failed!")
 			}
 
-			reqB, err := json.Marshal(reqBody)
+			reqB, err := json.Marshal(body)
 			if err != nil {
 				panic(err)
 			}
@@ -541,6 +526,113 @@ func AsRouter(r *gin.Engine) {
 
 			resp := SignResp(ctx.GetString("ep"), string(respB), sessionKey)
 			// fmt.Println(resp)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/communicationMember/fetchCommunicationMemberDetail", func(ctx *gin.Context) {
+			reqBody := ctx.GetString("reqBody")
+			var memberId string
+			gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
+				if value.Get("member_id").String() != "" {
+					memberId = value.Get("member_id").String()
+					return false
+				}
+				return true
+			})
+
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/fetchCommunicationMemberDetail.json"), `"MEMBER_ID"`, memberId)
+			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/navi/tapLovePoint", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/tapLovePoint.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/communicationMember/updateUserCommunicationMemberDetailBadge", func(ctx *gin.Context) {
+			reqBody := ctx.GetString("reqBody")
+			var memberMasterId string
+			gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
+				if value.Get("member_master_id").String() != "" {
+					memberMasterId = value.Get("member_master_id").String()
+					return false
+				}
+				return true
+			})
+
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/updateUserCommunicationMemberDetailBadge.json"), `"MEMBER_MASTER_ID"`, memberMasterId)
+			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/communicationMember/updateUserLiveDifficultyNewFlag", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/updateUserLiveDifficultyNewFlag.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/communicationMember/finishUserStorySide", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/finishUserStorySide.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/communicationMember/finishUserStoryMember", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/finishUserStoryMember.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/communicationMember/setTheme", func(ctx *gin.Context) {
+			reqBody := ctx.GetString("reqBody")
+			var memberMasterId, suitMasterId, backgroundMasterId string
+			gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
+				if value.Get("member_master_id").String() != "" {
+					memberMasterId = value.Get("member_master_id").String()
+					suitMasterId = value.Get("suit_master_id").String()
+					backgroundMasterId = value.Get("custom_background_master_id").String()
+					return false
+				}
+				return true
+			})
+
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/setTheme.json"), `"MEMBER_MASTER_ID"`, memberMasterId)
+			signBody = strings.ReplaceAll(signBody, `"BACKGROUND_MASTER_ID"`, backgroundMasterId)
+			signBody = strings.ReplaceAll(signBody, `"SUIT_MASTER_ID"`, suitMasterId)
+			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/userProfile/fetchProfile", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/fetchProfile.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/emblem/fetchEmblem", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/fetchEmblem.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/emblem/activateEmblem", func(ctx *gin.Context) {
+			reqBody := ctx.GetString("reqBody")
+			var emblemId string
+			gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
+				if value.Get("emblem_master_id").String() != "" {
+					emblemId = value.Get("emblem_master_id").String()
+					return false
+				}
+				return true
+			})
+			signBody := strings.ReplaceAll(utils.ReadAllText("assets/activateEmblem.json"), `"EMBLEM_ID"`, emblemId)
+			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)

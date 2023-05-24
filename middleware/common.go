@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"honoka-chan/database"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -79,6 +80,13 @@ func Common(ctx *gin.Context) {
 }
 
 func CommonAs(ctx *gin.Context) {
+	body, err := io.ReadAll(ctx.Request.Body)
+	if err != nil {
+		panic(err)
+	}
+	defer ctx.Request.Body.Close()
+	ctx.Set("reqBody", string(body))
+
 	ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
 	ctx.Set("ep", ep)
 
