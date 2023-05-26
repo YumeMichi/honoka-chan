@@ -31,7 +31,7 @@ func SifRouter(r *gin.Engine) {
 	r.Static("/static", "static")
 
 	var files []string
-	filepath.Walk("static/templates", func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk("static/templates", func(path string, info os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".html") {
 			files = append(files, path)
 		}
@@ -209,7 +209,7 @@ func AsRouter(r *gin.Engine) {
 		s.POST("/asset/getPackUrl", func(ctx *gin.Context) {
 			reqBody := ctx.GetString("reqBody")
 
-			req := []model.AsReq{}
+			var req []model.AsReq
 			err := json.Unmarshal([]byte(reqBody), &req)
 			if err != nil {
 				panic(err)
@@ -228,8 +228,8 @@ func AsRouter(r *gin.Engine) {
 			}
 
 			// 生成更新包 map
-			packageList := []string{}
-			urlList := []string{}
+			var packageList []string
+			var urlList []string
 
 			err = json.Unmarshal([]byte(utils.ReadAllText("assets/as/packages.json")), &packageList)
 			if err != nil {
@@ -252,7 +252,7 @@ func AsRouter(r *gin.Engine) {
 			}
 
 			// Response
-			respUrls := []string{}
+			var respUrls []string
 			for _, pack := range packNames {
 				packName, ok := pack.(string)
 				if !ok {
@@ -266,7 +266,7 @@ func AsRouter(r *gin.Engine) {
 				UrlList: respUrls,
 			}
 
-			resp := []model.AsResp{}
+			var resp []model.AsResp
 			resp = append(resp, time.Now().UnixMilli()) // 时间戳
 			resp = append(resp, config.MasterVersion)   // 版本号
 			resp = append(resp, 0)                      // 固定值
@@ -323,7 +323,7 @@ func AsRouter(r *gin.Engine) {
 		s.POST("/liveMv/saveDeck", func(ctx *gin.Context) {
 			reqBody := ctx.GetString("reqBody")
 
-			req := []model.AsReq{}
+			var req []model.AsReq
 			err := json.Unmarshal([]byte(reqBody), &req)
 			if err != nil {
 				panic(err)
@@ -423,7 +423,7 @@ func AsRouter(r *gin.Engine) {
 			}
 			// fmt.Println(suitIds)
 
-			userLiveMvDeckCustomByID := []model.UserLiveMvDeckCustomByID{}
+			var userLiveMvDeckCustomByID []model.UserLiveMvDeckCustomByID
 			userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, saveReq.LiveMasterID)
 			userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, userLiveMvDeckInfo)
 			// fmt.Println(userLiveMvDeckCustomByID)
@@ -437,7 +437,7 @@ func AsRouter(r *gin.Engine) {
 			}
 			// fmt.Println(viewStatusIds)
 
-			userMemberByMemberID := []model.UserMemberByMemberID{}
+			var userMemberByMemberID []model.UserMemberByMemberID
 			for k, v := range memberIds {
 				userMemberByMemberID = append(userMemberByMemberID, v)
 				userMemberByMemberID = append(userMemberByMemberID, model.UserMemberInfo{
@@ -633,6 +633,19 @@ func AsRouter(r *gin.Engine) {
 			})
 			signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/activateEmblem.json"), `"EMBLEM_ID"`, emblemId)
 			resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/navi/saveUserNaviVoice", func(ctx *gin.Context) {
+			reqBody := ctx.GetString("reqBody")
+			// var emblemId string
+			gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
+				fmt.Println(value)
+				return true
+			})
+			// signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/activateEmblem.json"), `"EMBLEM_ID"`, emblemId)
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/saveUserNaviVoice.json"), sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
