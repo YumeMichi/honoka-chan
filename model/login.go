@@ -241,6 +241,105 @@ type AsEmblemId struct {
 	IsNew          bool `json:"is_new"`
 }
 
+// AsLiveDifficultyInfo ...
+type AsLiveDifficultyInfo struct {
+	LiveDifficultyID              int         `json:"live_difficulty_id"`
+	MaxScore                      int         `json:"max_score"`
+	MaxCombo                      int         `json:"max_combo"`
+	PlayCount                     int         `json:"play_count"`
+	ClearCount                    int         `json:"clear_count"`
+	CancelCount                   int         `json:"cancel_count"`
+	NotClearedCount               int         `json:"not_cleared_count"`
+	IsFullCombo                   bool        `json:"is_full_combo"`
+	ClearedDifficultyAchievement1 interface{} `json:"cleared_difficulty_achievement_1"`
+	ClearedDifficultyAchievement2 interface{} `json:"cleared_difficulty_achievement_2"`
+	ClearedDifficultyAchievement3 interface{} `json:"cleared_difficulty_achievement_3"`
+	EnableAutoplay                bool        `json:"enable_autoplay"`
+	IsAutoplay                    bool        `json:"is_autoplay"`
+	IsNew                         bool        `json:"is_new"`
+}
+
+// AsMainStoryInfo ...
+type AsMainStoryInfo struct {
+	StoryMainMasterID int `json:"story_main_master_id"`
+}
+
+// AsNaviVoiceInfo ...
+type AsNaviVoiceInfo struct {
+	NaviVoiceMasterID int  `json:"navi_voice_master_id"`
+	IsNew             bool `json:"is_new"`
+}
+
+// AsCustomBackgroundInfo ...
+type AsCustomBackgroundInfo struct {
+	CustomBackgroundMasterID int  `json:"custom_background_master_id"`
+	IsNew                    bool `json:"is_new"`
+}
+
+// AsStorySideInfo ...
+type AsStorySideInfo struct {
+	StorySideMasterID int   `json:"story_side_master_id"`
+	IsNew             bool  `json:"is_new"`
+	AcquiredAt        int64 `json:"acquired_at"`
+}
+
+// AsStoryMemberInfo ...
+type AsStoryMemberInfo struct {
+	StoryMemberMasterID int   `json:"story_member_master_id"`
+	IsNew               bool  `json:"is_new"`
+	AcquiredAt          int64 `json:"acquired_at"`
+}
+
+// AsStoryEventInfo ...
+type AsStoryEventInfo struct {
+	StoryEventID int `json:"story_event_id"`
+}
+
+// AsMissionRes ...
+type AsMissionRes struct {
+	ID    int `xorm:"id"`
+	Count int `xorm:"mission_clear_condition_count"`
+}
+
+// AsFreeMissionInfo ...
+type AsFreeMissionInfo struct {
+	MissionMID       int   `json:"mission_m_id"`
+	IsNew            bool  `json:"is_new"`
+	MissionCount     int   `json:"mission_count"`
+	IsCleared        bool  `json:"is_cleared"`
+	IsReceivedReward bool  `json:"is_received_reward"`
+	NewExpiredAt     int64 `json:"new_expired_at"`
+}
+
+// AsDailyMissionInfo ...
+type AsDailyMissionInfo struct {
+	MissionMID        int   `json:"mission_m_id"`
+	IsNew             bool  `json:"is_new"`
+	MissionStartCount int   `json:"mission_start_count"`
+	MissionCount      int   `json:"mission_count"`
+	IsCleared         bool  `json:"is_cleared"`
+	IsReceivedReward  bool  `json:"is_received_reward"`
+	ClearedExpiredAt  int64 `json:"cleared_expired_at"`
+}
+
+// AsWeeklyMissionInfo ...
+type AsWeeklyMissionInfo struct {
+	MissionMID        int   `json:"mission_m_id"`
+	IsNew             bool  `json:"is_new"`
+	MissionStartCount int   `json:"mission_start_count"`
+	MissionCount      int   `json:"mission_count"`
+	IsCleared         bool  `json:"is_cleared"`
+	IsReceivedReward  bool  `json:"is_received_reward"`
+	ClearedExpiredAt  int64 `json:"cleared_expired_at"`
+	NewExpiredAt      int64 `json:"new_expired_at"`
+}
+
+// AsMemberLovePanelInfo ...
+type AsMemberLovePanelInfo struct {
+	MemberID               int   `json:"member_id"`
+	MemberLovePanelCellIds []int `json:"member_love_panel_cell_ids"`
+}
+
 // AsReq ...
 type AsReq interface{}
 
