@@ -510,13 +510,20 @@ func init() {
 	// jsonStr += "]"
 	// fmt.Println(jsonStr)
 
-	// eng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
+	// mEng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
 	// CheckErr(err)
-	// err = eng.Ping()
+	// err = mEng.Ping()
 	// CheckErr(err)
+	// defer mEng.Close()
+
+	// dEng, err := xorm.NewEngine("sqlite", "assets/dictionary_zh_k.db")
+	// CheckErr(err)
+	// err = dEng.Ping()
+	// CheckErr(err)
+	// defer dEng.Close()
 
 	// cardRes := []model.AsCardRes{}
-	// err = eng.Table("m_card").Cols("id,card_rarity_type,max_passive_skill_slot").OrderBy("id ASC").Find(&cardRes)
+	// err = mEng.Table("m_card").Cols("id,card_rarity_type,max_passive_skill_slot").OrderBy("id ASC").Find(&cardRes)
 	// CheckErr(err)
 
 	// jsonStr := "["
@@ -536,17 +543,41 @@ func init() {
 	// 	}
 
 	// 	var apBuff, stBuff, teBuff int
-	// 	_, err := eng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 2).Select("SUM(value)").Get(&stBuff)
+	// 	_, err := mEng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 2).Select("SUM(value)").Get(&stBuff)
 	// 	CheckErr(err)
 	// 	// fmt.Println(stBuff)
 
-	// 	_, err = eng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 3).Select("SUM(value)").Get(&apBuff)
+	// 	_, err = mEng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 3).Select("SUM(value)").Get(&apBuff)
 	// 	CheckErr(err)
 	// 	// fmt.Println(apBuff)
 
-	// 	_, err = eng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 4).Select("SUM(value)").Get(&teBuff)
+	// 	_, err = mEng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 4).Select("SUM(value)").Get(&teBuff)
 	// 	CheckErr(err)
 	// 	// fmt.Println(teBuff)
+
+	// 	var skillName string
+	// 	var skillId int
+	// 	_, err = mEng.Table("m_card_passive_skill_original").Where("card_master_id = ? AND skill_level = 5", card.ID).Cols("name").Get(&skillName)
+	// 	CheckErr(err)
+	// 	skillName = strings.ReplaceAll(skillName, "k.", "")
+	// 	// fmt.Println(skillName)
+
+	// 	// dEng.ShowSQL(true)
+	// 	condition := "id LIKE '%" + skillName + "%' AND (message LIKE '%表现%同策略%' OR message LIKE '%表现%同属性%') AND message NOT LIKE '%时%'"
+	// 	count, err := dEng.Table("m_dictionary").
+	// 		Where(condition).
+	// 		Count()
+	// 	CheckErr(err)
+	// 	if count > 0 {
+	// 		skillId = 30000507
+	// 	} else {
+	// 		skillId = 30000482
+	// 	}
+
+	// 	var passiveSkillLevel int
+	// 	_, err = mEng.Table("m_card_passive_skill_original").Where("card_master_id = ?", card.ID).
+	// 		Cols("skill_level").OrderBy("skill_level DESC").Limit(1).Get(&passiveSkillLevel)
+	// 	CheckErr(err)
 
 	// 	cardInfo := model.AsCardInfo{
 	// 		CardMasterID:               card.ID,
@@ -564,13 +595,13 @@ func init() {
 	// 		TrainingAttack:             apBuff,
 	// 		TrainingDexterity:          teBuff,
 	// 		ActiveSkillLevel:           5,
-	// 		PassiveSkillALevel:         5,
+	// 		PassiveSkillALevel:         passiveSkillLevel,
 	// 		PassiveSkillBLevel:         1,
 	// 		PassiveSkillCLevel:         1,
-	// 		AdditionalPassiveSkill1ID:  30000482,
-	// 		AdditionalPassiveSkill2ID:  30000482,
-	// 		AdditionalPassiveSkill3ID:  30000482,
-	// 		AdditionalPassiveSkill4ID:  30000482,
+	// 		AdditionalPassiveSkill1ID:  skillId,
+	// 		AdditionalPassiveSkill2ID:  skillId,
+	// 		AdditionalPassiveSkill3ID:  skillId,
+	// 		AdditionalPassiveSkill4ID:  skillId,
 	// 		AcquiredAt:                 time.Now().Unix(),
 	// 		IsNew:                      false,
 	// 	}
