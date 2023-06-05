@@ -7,12 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CheckErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 	// Gin
 	gin.SetMode(gin.ReleaseMode)

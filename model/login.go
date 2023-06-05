@@ -408,6 +408,60 @@ type AsPartyName struct {
 	DotUnderText string `json:"dot_under_text"`
 }
 
+// AsLiveStartReq ...
+type AsLiveStartReq struct {
+	LiveDifficultyID    int  `json:"live_difficulty_id"`
+	DeckID              int  `json:"deck_id"`
+	PartnerUserID       int  `json:"partner_user_id"`
+	PartnerCardMasterID int  `json:"partner_card_master_id"`
+	LpMagnification     int  `json:"lp_magnification"`
+	IsAutoPlay          bool `json:"is_auto_play"`
+	IsReferenceBook     bool `json:"is_reference_book"`
+}
+
+// AsLivePartnerInfo ...
+type AsLivePartnerInfo struct {
+	UserID                              int                 `json:"user_id"`
+	Name                                PartnerName         `json:"name"`
+	Rank                                int                 `json:"rank"`
+	LastPlayedAt                        int64               `json:"last_played_at"`
+	RecommendCardMasterID               int                 `json:"recommend_card_master_id"`
+	RecommendCardLevel                  int                 `json:"recommend_card_level"`
+	IsRecommendCardImageAwaken          bool                `json:"is_recommend_card_image_awaken"`
+	IsRecommendCardAllTrainingActivated bool                `json:"is_recommend_card_all_training_activated"`
+	EmblemID                            int                 `json:"emblem_id"`
+	IsNew                               bool                `json:"is_new"`
+	IntroductionMessage                 IntroductionMessage `json:"introduction_message"`
+	FriendApprovedAt                    interface{}         `json:"friend_approved_at"`
+	RequestStatus                       int                 `json:"request_status"`
+	IsRequestPending                    bool                `json:"is_request_pending"`
+}
+
+// PartnerName ...
+type PartnerName struct {
+	DotUnderText string `json:"dot_under_text"`
+}
+
+// IntroductionMessage ...
+type IntroductionMessage struct {
+	DotUnderText string `json:"dot_under_text"`
+}
+
+// AsLiveResultAchievementStatus ...
+type AsLiveResultAchievementStatus struct {
+	ClearCount       int64 `json:"clear_count"`
+	GotVoltage       int64 `json:"got_voltage"`
+	RemainingStamina int64 `json:"remaining_stamina"`
+}
+
+// AsMvpInfo ...
+type AsMvpInfo struct {
+	CardMasterID        int64 `json:"card_master_id"`
+	GetVoltage          int64 `json:"get_voltage"`
+	SkillTriggeredCount int64 `json:"skill_triggered_count"`
+	AppealCount         int64 `json:"appeal_count"`
+}
+
 // AsReq ...
 type AsReq interface{}
 

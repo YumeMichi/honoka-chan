@@ -1,0 +1,239 @@
+{
+    "partner_select_state": {
+        "live_partners": [
+            {
+                "user_id": 666666666,
+                "name": {
+                    "dot_under_text": "B站主播：梦路_YumeMichi"
+                },
+                "rank": 1,
+                "last_login_at": 1685971269,
+                "card_by_category": [
+                    1,
+                    {
+                        "card_master_id": 302073002,
+                        "level": 80,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            7,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000507,
+                            30000507,
+                            30000507,
+                            30000452,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 4,
+                        "training_stamina": 4488,
+                        "training_appeal": 9213,
+                        "training_technique": 9922,
+                        "member_love_panels": []
+                    },
+                    2,
+                    {
+                        "card_master_id": 200083002,
+                        "level": 80,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            5,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000507,
+                            30000507,
+                            30000507,
+                            30000452,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 4,
+                        "training_stamina": 10800,
+                        "training_appeal": 6000,
+                        "training_technique": 7200,
+                        "member_love_panels": []
+                    },
+                    3,
+                    {
+                        "card_master_id": 200013002,
+                        "level": 80,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            5,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000507,
+                            30000507,
+                            30000507,
+                            30000452,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 4,
+                        "training_stamina": 4950,
+                        "training_appeal": 9900,
+                        "training_technique": 9900,
+                        "member_love_panels": []
+                    },
+                    4,
+                    {
+                        "card_master_id": 200063002,
+                        "level": 80,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            5,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000507,
+                            30000507,
+                            30000507,
+                            30000452,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 4,
+                        "training_stamina": 3655,
+                        "training_appeal": 10237,
+                        "training_technique": 10480,
+                        "member_love_panels": []
+                    },
+                    5,
+                    {
+                        "card_master_id": 201043002,
+                        "level": 80,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            5,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000507,
+                            30000507,
+                            30000507,
+                            30000452,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 4,
+                        "training_stamina": 3655,
+                        "training_appeal": 9505,
+                        "training_technique": 11212,
+                        "member_love_panels": []
+                    },
+                    6,
+                    {
+                        "card_master_id": 101032001,
+                        "level": 60,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            5,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000512,
+                            30000512,
+                            30000462,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 3,
+                        "training_stamina": 3920,
+                        "training_appeal": 3360,
+                        "training_technique": 3920,
+                        "member_love_panels": []
+                    },
+                    7,
+                    {
+                        "card_master_id": 201033001,
+                        "level": 80,
+                        "grade": 5,
+                        "love_level": 1,
+                        "is_awakening": true,
+                        "is_awakening_image": true,
+                        "is_all_training_activated": true,
+                        "active_skill_level": 5,
+                        "passive_skill_levels": [
+                            5,
+                            1
+                        ],
+                        "additional_passive_skill_ids": [
+                            30000507,
+                            30000507,
+                            30000507,
+                            30000507,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "max_free_passive_skill": 4,
+                        "training_stamina": 4575,
+                        "training_appeal": 10522,
+                        "training_technique": 7777,
+                        "member_love_panels": []
+                    }
+                ],
+                "emblem_id": 1106001,
+                "is_friend": true,
+                "introduction_message": {
+                    "dot_under_text": "B站主播：梦路_YumeMichi"
+                }
+            }
+        ],
+        "friend_count": 1
+    }
+}

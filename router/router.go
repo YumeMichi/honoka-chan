@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"honoka-chan/config"
+	"honoka-chan/database"
 	"honoka-chan/encrypt"
 	"honoka-chan/handler"
 	"honoka-chan/middleware"
@@ -13,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -829,6 +831,162 @@ func AsRouter(r *gin.Engine) {
 			// fmt.Println(respBody)
 
 			resp := SignResp(ctx.GetString("ep"), respBody, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/livePartners/fetch", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchLivePartners.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/liveDeck/fetchLiveDeckSelect", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchLiveDeckSelect.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/live/start", func(ctx *gin.Context) {
+			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
+			// fmt.Println(reqBody.String())
+
+			liveStartReq := model.AsLiveStartReq{}
+			if err := json.Unmarshal([]byte(reqBody.String()), &liveStartReq); err != nil {
+				panic(err)
+			}
+			// fmt.Println(liveStartReq)
+
+			var cardInfo string
+			partnerResp := gjson.Parse(utils.ReadAllText("assets/as/fetchLivePartners.json")).Get("partner_select_state.live_partners")
+			partnerResp.ForEach(func(k, v gjson.Result) bool {
+				userId := v.Get("user_id").Int()
+				if userId == int64(liveStartReq.PartnerUserID) {
+					v.Get("card_by_category").ForEach(func(kk, vv gjson.Result) bool {
+						if vv.IsObject() {
+							cardId := vv.Get("card_master_id").Int()
+							if cardId == int64(liveStartReq.PartnerCardMasterID) {
+								cardInfo = vv.String()
+								// fmt.Println(cardInfo)
+								return false
+							}
+						}
+						return true
+					})
+					return false
+				}
+				return true
+			})
+
+			// 保存请求包因为 /live/finish 接口的响应包里有部分字段不在该接口的请求包里
+			liveId := strconv.Itoa(int(time.Now().UnixNano()))
+			err := database.LevelDb.Put([]byte("live_"+liveId), []byte(reqBody.String()))
+			CheckErr(err)
+
+			liveDifficultyId := strconv.Itoa(liveStartReq.LiveDifficultyID)
+			liveNotes := utils.ReadAllText("assets/as/notes/" + liveDifficultyId + ".json")
+			if liveNotes == "" {
+				panic("歌曲情报信息不存在！")
+			}
+
+			liveStartResp := utils.ReadAllText("assets/as/liveStart.json")
+			liveStartResp = strings.ReplaceAll(liveStartResp, `"LIVE_ID"`, liveId)
+			liveStartResp = strings.ReplaceAll(liveStartResp, `"DECK_ID"`, strconv.Itoa(liveStartReq.DeckID))
+			liveStartResp = strings.ReplaceAll(liveStartResp, `"LIVE_NOTES"`, liveNotes)
+			liveStartResp = strings.ReplaceAll(liveStartResp, `"LIVE_PARTNER"`, cardInfo)
+			liveStartResp = strings.ReplaceAll(liveStartResp, `"LIVE_DIFFICULTY_ID"`, liveDifficultyId)
+
+			resp := SignResp(ctx.GetString("ep"), liveStartResp, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/live/finish", func(ctx *gin.Context) {
+			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
+			// fmt.Println(reqBody.String())
+
+			var cardMasterId, maxVolt, skillCount, appealCount int64
+			liveFinishReq := gjson.Parse(reqBody.String())
+			liveFinishReq.Get("live_score.card_stat_dict").ForEach(func(key, value gjson.Result) bool {
+				if value.IsObject() {
+					volt := value.Get("got_voltage").Int()
+					if volt > maxVolt {
+						maxVolt = volt
+
+						cardMasterId = value.Get("card_master_id").Int()
+						skillCount = value.Get("skill_triggered_count").Int()
+						appealCount = value.Get("appeal_count").Int()
+					}
+				}
+				return true
+			})
+
+			mvpInfo := model.AsMvpInfo{
+				CardMasterID:        cardMasterId,
+				GetVoltage:          maxVolt,
+				SkillTriggeredCount: skillCount,
+				AppealCount:         appealCount,
+			}
+			mvp, err := json.Marshal(mvpInfo)
+			CheckErr(err)
+			// fmt.Println("mvpInfo:", mvpInfo)
+
+			liveId := liveFinishReq.Get("live_id").String()
+			res, err := database.LevelDb.Get([]byte("live_" + liveId))
+			CheckErr(err)
+
+			liveStartReq := model.AsLiveStartReq{}
+			if err := json.Unmarshal(res, &liveStartReq); err != nil {
+				panic(err)
+			}
+			// fmt.Println("liveStartReq:", liveStartReq)
+
+			partnerInfo := model.AsLivePartnerInfo{
+				LastPlayedAt:                        time.Now().Unix(),
+				RecommendCardMasterID:               liveStartReq.PartnerCardMasterID,
+				RecommendCardLevel:                  1,
+				IsRecommendCardImageAwaken:          true,
+				IsRecommendCardAllTrainingActivated: true,
+				IsNew:                               false,
+				FriendApprovedAt:                    nil,
+				RequestStatus:                       3,
+				IsRequestPending:                    false,
+			}
+			partnerResp := gjson.Parse(utils.ReadAllText("assets/as/fetchLivePartners.json")).Get("partner_select_state.live_partners")
+			partnerResp.ForEach(func(k, v gjson.Result) bool {
+				userId := v.Get("user_id").Int()
+				if userId == int64(liveStartReq.PartnerUserID) {
+					partnerInfo.UserID = int(userId)
+					partnerInfo.Name.DotUnderText = v.Get("name.dot_under_text").String()
+					partnerInfo.Rank = int(v.Get("rank").Int())
+					partnerInfo.EmblemID = int(v.Get("emblem_id").Int())
+					partnerInfo.IntroductionMessage.DotUnderText = v.Get("introduction_message.dot_under_text").String()
+				}
+				return true
+			})
+			partner, err := json.Marshal(partnerInfo)
+			CheckErr(err)
+			// fmt.Println(partnerInfo)
+
+			liveResultResp := model.AsLiveResultAchievementStatus{
+				ClearCount:       1,
+				GotVoltage:       liveFinishReq.Get("live_score.current_score").Int(),
+				RemainingStamina: liveFinishReq.Get("live_score.remaining_stamina").Int(),
+			}
+			liveResult, err := json.Marshal(liveResultResp)
+			CheckErr(err)
+			// fmt.Println(liveResultResp)
+
+			liveFinishResp := utils.ReadAllText("assets/as/liveFinish.json")
+			liveFinishResp = strings.ReplaceAll(liveFinishResp, `"LIVE_DIFFICULTY_ID"`, strconv.Itoa(liveStartReq.LiveDifficultyID))
+			liveFinishResp = strings.ReplaceAll(liveFinishResp, `"DECK_ID"`, strconv.Itoa(liveStartReq.DeckID))
+			liveFinishResp = strings.ReplaceAll(liveFinishResp, `"MVP_INFO"`, string(mvp))
+			liveFinishResp = strings.ReplaceAll(liveFinishResp, `"PARTNER_INFO"`, string(partner))
+			liveFinishResp = strings.ReplaceAll(liveFinishResp, `"LIVE_RESULT"`, string(liveResult))
+			liveFinishResp = strings.ReplaceAll(liveFinishResp, `"LIVE_VOLTAGE"`, liveFinishReq.Get("live_score.current_score").String())
+			// fmt.Println(liveFinishResp)
+
+			resp := SignResp(ctx.GetString("ep"), liveFinishResp, sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
