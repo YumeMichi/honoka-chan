@@ -5,6 +5,7 @@ data
 temp
 
 assets/data.db
+assets/dictionary_zh_k.db
 assets/masterdata.db
 
 static/llas-dev

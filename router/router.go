@@ -20,6 +20,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+	"xorm.io/xorm"
 )
 
 var (
@@ -638,14 +639,196 @@ func AsRouter(r *gin.Engine) {
 			ctx.String(http.StatusOK, resp)
 		})
 		s.POST("/navi/saveUserNaviVoice", func(ctx *gin.Context) {
-			reqBody := ctx.GetString("reqBody")
-			// var emblemId string
-			gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
-				fmt.Println(value)
-				return true
-			})
-			// signBody := strings.ReplaceAll(utils.ReadAllText("assets/as/activateEmblem.json"), `"EMBLEM_ID"`, emblemId)
 			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/saveUserNaviVoice.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/liveDeck/saveDeckAll", func(ctx *gin.Context) {
+			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
+			// fmt.Println(reqBody.String())
+
+			mEng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
+			CheckErr(err)
+			err = mEng.Ping()
+			CheckErr(err)
+			defer mEng.Close()
+
+			dEng, err := xorm.NewEngine("sqlite", "assets/dictionary_zh_k.db")
+			CheckErr(err)
+			err = dEng.Ping()
+			CheckErr(err)
+			defer dEng.Close()
+
+			req := model.AsSaveDeckReq{}
+			decoder := json.NewDecoder(strings.NewReader(reqBody.String()))
+			decoder.UseNumber()
+			err = decoder.Decode(&req)
+			CheckErr(err)
+			// fmt.Println("Raw:", req.SquadDict)
+
+			if req.CardWithSuit[1] == 0 {
+				req.CardWithSuit[1] = req.CardWithSuit[0]
+			}
+			if req.CardWithSuit[3] == 0 {
+				req.CardWithSuit[3] = req.CardWithSuit[2]
+			}
+			if req.CardWithSuit[5] == 0 {
+				req.CardWithSuit[5] = req.CardWithSuit[4]
+			}
+			if req.CardWithSuit[7] == 0 {
+				req.CardWithSuit[7] = req.CardWithSuit[6]
+			}
+			if req.CardWithSuit[9] == 0 {
+				req.CardWithSuit[9] = req.CardWithSuit[8]
+			}
+			if req.CardWithSuit[11] == 0 {
+				req.CardWithSuit[11] = req.CardWithSuit[10]
+			}
+			if req.CardWithSuit[13] == 0 {
+				req.CardWithSuit[13] = req.CardWithSuit[12]
+			}
+			if req.CardWithSuit[15] == 0 {
+				req.CardWithSuit[15] = req.CardWithSuit[14]
+			}
+			if req.CardWithSuit[17] == 0 {
+				req.CardWithSuit[17] = req.CardWithSuit[16]
+			}
+
+			deckInfo := model.AsDeckInfo{
+				UserLiveDeckID: req.DeckID,
+				Name: model.AsDeckName{
+					DotUnderText: "队伍名称变了?",
+				},
+				CardMasterID1: req.CardWithSuit[0],
+				CardMasterID2: req.CardWithSuit[2],
+				CardMasterID3: req.CardWithSuit[4],
+				CardMasterID4: req.CardWithSuit[6],
+				CardMasterID5: req.CardWithSuit[8],
+				CardMasterID6: req.CardWithSuit[10],
+				CardMasterID7: req.CardWithSuit[12],
+				CardMasterID8: req.CardWithSuit[14],
+				CardMasterID9: req.CardWithSuit[16],
+				SuitMasterID1: req.CardWithSuit[1],
+				SuitMasterID2: req.CardWithSuit[3],
+				SuitMasterID3: req.CardWithSuit[5],
+				SuitMasterID4: req.CardWithSuit[7],
+				SuitMasterID5: req.CardWithSuit[9],
+				SuitMasterID6: req.CardWithSuit[11],
+				SuitMasterID7: req.CardWithSuit[13],
+				SuitMasterID8: req.CardWithSuit[15],
+				SuitMasterID9: req.CardWithSuit[17],
+			}
+			// fmt.Println(deckInfo)
+
+			deckInfoRes := []model.AsResp{}
+			deckInfoRes = append(deckInfoRes, req.DeckID)
+			deckInfoRes = append(deckInfoRes, deckInfo)
+
+			partyInfoRes := []model.AsResp{}
+			for k, v := range req.SquadDict {
+				if k%2 == 0 {
+					partyId, err := v.(json.Number).Int64()
+					CheckErr(err)
+					// fmt.Println("Party ID:", partyId)
+
+					rDictInfo, err := json.Marshal(req.SquadDict[k+1])
+					CheckErr(err)
+
+					dictInfo := model.AsDeckSquadDict{}
+					if err = json.Unmarshal(rDictInfo, &dictInfo); err != nil {
+						panic(err)
+					}
+					// fmt.Println("Party Info:", dictInfo)
+
+					roleIds := []int{}
+					err = mEng.Table("m_card").
+						Where("id IN (?,?,?)", dictInfo.CardMasterIds[0], dictInfo.CardMasterIds[1], dictInfo.CardMasterIds[2]).
+						Cols("role").Find(&roleIds)
+					CheckErr(err)
+					// fmt.Println("roleIds:", roleIds)
+
+					var partyIcon int
+					var partyName string
+					// 脑残逻辑部分
+					exists, err := mEng.Table("m_live_party_name").
+						Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[0], roleIds[1], roleIds[2]).
+						Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+					CheckErr(err)
+					if !exists {
+						exists, err = mEng.Table("m_live_party_name").
+							Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[0], roleIds[2], roleIds[1]).
+							Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+						CheckErr(err)
+						if !exists {
+							exists, err = mEng.Table("m_live_party_name").
+								Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[1], roleIds[0], roleIds[2]).
+								Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+							CheckErr(err)
+							if !exists {
+								exists, err = mEng.Table("m_live_party_name").
+									Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[1], roleIds[2], roleIds[0]).
+									Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+								CheckErr(err)
+								if !exists {
+									exists, err = mEng.Table("m_live_party_name").
+										Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[2], roleIds[0], roleIds[1]).
+										Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+									CheckErr(err)
+									if !exists {
+										exists, err = mEng.Table("m_live_party_name").
+											Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[2], roleIds[1], roleIds[0]).
+											Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+										CheckErr(err)
+										if !exists {
+											panic("Fuck you!")
+										}
+									}
+								}
+							}
+						}
+					}
+
+					var realPartyName string
+					_, err = dEng.Table("m_dictionary").Where("id = ?", strings.ReplaceAll(partyName, "k.", "")).Cols("message").Get(&realPartyName)
+					CheckErr(err)
+
+					partyInfo := model.AsPartyInfo{
+						PartyID:        int(partyId),
+						UserLiveDeckID: req.DeckID,
+						Name: model.AsPartyName{
+							DotUnderText: realPartyName,
+						},
+						IconMasterID:     partyIcon,
+						CardMasterID1:    dictInfo.CardMasterIds[0],
+						CardMasterID2:    dictInfo.CardMasterIds[1],
+						CardMasterID3:    dictInfo.CardMasterIds[2],
+						UserAccessoryID1: dictInfo.UserAccessoryIds[0],
+						UserAccessoryID2: dictInfo.UserAccessoryIds[1],
+						UserAccessoryID3: dictInfo.UserAccessoryIds[2],
+					}
+					// fmt.Println(partyInfo)
+
+					partyInfoRes = append(partyInfoRes, partyId)
+					partyInfoRes = append(partyInfoRes, partyInfo)
+				}
+			}
+
+			// fmt.Println(deckInfoRes)
+			// fmt.Println(partyInfoRes)
+
+			m1, err := json.Marshal(deckInfoRes)
+			CheckErr(err)
+
+			m2, err := json.Marshal(partyInfoRes)
+			CheckErr(err)
+
+			respBody := utils.ReadAllText("assets/as/saveDeckAll.json")
+			respBody = strings.ReplaceAll(respBody, `"DECK_INFO"`, string(m1))
+			respBody = strings.ReplaceAll(respBody, `"PARTY_INFO"`, string(m2))
+			// fmt.Println(respBody)
+
+			resp := SignResp(ctx.GetString("ep"), respBody, sessionKey)
 
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)

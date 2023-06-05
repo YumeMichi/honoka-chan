@@ -195,30 +195,30 @@ type ReproInfo struct {
 
 // AsCardInfo ...
 type AsCardInfo struct {
-	CardMasterID               int  `json:"card_master_id"`
-	Level                      int  `json:"level"`
-	Exp                        int  `json:"exp"`
-	LovePoint                  int  `json:"love_point"`
-	IsFavorite                 bool `json:"is_favorite"`
-	IsAwakening                bool `json:"is_awakening"`
-	IsAwakeningImage           bool `json:"is_awakening_image"`
-	IsAllTrainingActivated     bool `json:"is_all_training_activated"`
-	TrainingActivatedCellCount int  `json:"training_activated_cell_count"`
-	MaxFreePassiveSkill        int  `json:"max_free_passive_skill"`
-	Grade                      int  `json:"grade"`
-	TrainingLife               int  `json:"training_life"`
-	TrainingAttack             int  `json:"training_attack"`
-	TrainingDexterity          int  `json:"training_dexterity"`
-	ActiveSkillLevel           int  `json:"active_skill_level"`
-	PassiveSkillALevel         int  `json:"passive_skill_a_level"`
-	PassiveSkillBLevel         int  `json:"passive_skill_b_level"`
-	PassiveSkillCLevel         int  `json:"passive_skill_c_level"`
-	AdditionalPassiveSkill1ID  int  `json:"additional_passive_skill_1_id"`
-	AdditionalPassiveSkill2ID  int  `json:"additional_passive_skill_2_id"`
-	AdditionalPassiveSkill3ID  int  `json:"additional_passive_skill_3_id"`
-	AdditionalPassiveSkill4ID  int  `json:"additional_passive_skill_4_id"`
-	AcquiredAt                 int  `json:"acquired_at"`
-	IsNew                      bool `json:"is_new"`
+	CardMasterID               int   `json:"card_master_id"`
+	Level                      int   `json:"level"`
+	Exp                        int   `json:"exp"`
+	LovePoint                  int   `json:"love_point"`
+	IsFavorite                 bool  `json:"is_favorite"`
+	IsAwakening                bool  `json:"is_awakening"`
+	IsAwakeningImage           bool  `json:"is_awakening_image"`
+	IsAllTrainingActivated     bool  `json:"is_all_training_activated"`
+	TrainingActivatedCellCount int   `json:"training_activated_cell_count"`
+	MaxFreePassiveSkill        int   `json:"max_free_passive_skill"`
+	Grade                      int   `json:"grade"`
+	TrainingLife               int   `json:"training_life"`
+	TrainingAttack             int   `json:"training_attack"`
+	TrainingDexterity          int   `json:"training_dexterity"`
+	ActiveSkillLevel           int   `json:"active_skill_level"`
+	PassiveSkillALevel         int   `json:"passive_skill_a_level"`
+	PassiveSkillBLevel         int   `json:"passive_skill_b_level"`
+	PassiveSkillCLevel         int   `json:"passive_skill_c_level"`
+	AdditionalPassiveSkill1ID  int   `json:"additional_passive_skill_1_id"`
+	AdditionalPassiveSkill2ID  int   `json:"additional_passive_skill_2_id"`
+	AdditionalPassiveSkill3ID  int   `json:"additional_passive_skill_3_id"`
+	AdditionalPassiveSkill4ID  int   `json:"additional_passive_skill_4_id"`
+	AcquiredAt                 int64 `json:"acquired_at"`
+	IsNew                      bool  `json:"is_new"`
 }
 
 // AsSuitInfo ...
@@ -338,6 +338,74 @@ type AsWeeklyMissionInfo struct {
 type AsMemberLovePanelInfo struct {
 	MemberID               int   `json:"member_id"`
 	MemberLovePanelCellIds []int `json:"member_love_panel_cell_ids"`
+}
+
+// AsCardRes ...
+type AsCardRes struct {
+	ID                  int `xorm:"id"`
+	CardRarityType      int `xorm:"card_rarity_type"`
+	MaxPassiveSkillSlot int `xorm:"max_passive_skill_slot"`
+}
+
+// AsSaveDeckReq ...
+type AsSaveDeckReq struct {
+	DeckID       int           `json:"deck_id"`
+	CardWithSuit []int         `json:"card_with_suit"`
+	SquadDict    []interface{} `json:"squad_dict"`
+}
+
+// AsDeckSquadDict ...
+type AsDeckSquadDict struct {
+	CardMasterIds    []int   `json:"card_master_ids"`
+	UserAccessoryIds []int64 `json:"user_accessory_ids"`
+}
+
+// AsDeckInfo ...
+type AsDeckInfo struct {
+	UserLiveDeckID int        `json:"user_live_deck_id"`
+	Name           AsDeckName `json:"name"`
+	CardMasterID1  int        `json:"card_master_id_1"`
+	CardMasterID2  int        `json:"card_master_id_2"`
+	CardMasterID3  int        `json:"card_master_id_3"`
+	CardMasterID4  int        `json:"card_master_id_4"`
+	CardMasterID5  int        `json:"card_master_id_5"`
+	CardMasterID6  int        `json:"card_master_id_6"`
+	CardMasterID7  int        `json:"card_master_id_7"`
+	CardMasterID8  int        `json:"card_master_id_8"`
+	CardMasterID9  int        `json:"card_master_id_9"`
+	SuitMasterID1  int        `json:"suit_master_id_1"`
+	SuitMasterID2  int        `json:"suit_master_id_2"`
+	SuitMasterID3  int        `json:"suit_master_id_3"`
+	SuitMasterID4  int        `json:"suit_master_id_4"`
+	SuitMasterID5  int        `json:"suit_master_id_5"`
+	SuitMasterID6  int        `json:"suit_master_id_6"`
+	SuitMasterID7  int        `json:"suit_master_id_7"`
+	SuitMasterID8  int        `json:"suit_master_id_8"`
+	SuitMasterID9  int        `json:"suit_master_id_9"`
+}
+
+// AsDeckName ...
+type AsDeckName struct {
+	DotUnderText string `json:"dot_under_text"`
+}
+
+// AsPartyInfo ...
+type AsPartyInfo struct {
+	PartyID          int         `json:"party_id"`
+	UserLiveDeckID   int         `json:"user_live_deck_id"`
+	Name             AsPartyName `json:"name"`
+	IconMasterID     int         `json:"icon_master_id"`
+	CardMasterID1    int         `json:"card_master_id_1"`
+	CardMasterID2    int         `json:"card_master_id_2"`
+	CardMasterID3    int         `json:"card_master_id_3"`
+	UserAccessoryID1 int64       `json:"user_accessory_id_1"`
+	UserAccessoryID2 int64       `json:"user_accessory_id_2"`
+	UserAccessoryID3 int64       `json:"user_accessory_id_3"`
+}
+
+// AsPartyName ...
+type AsPartyName struct {
+	DotUnderText string `json:"dot_under_text"`
 }
 
 // AsReq ...

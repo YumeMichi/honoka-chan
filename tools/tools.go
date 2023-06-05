@@ -509,6 +509,79 @@ func init() {
 	// jsonStr = strings.TrimRight(jsonStr, ",")
 	// jsonStr += "]"
 	// fmt.Println(jsonStr)
+
+	// eng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
+	// CheckErr(err)
+	// err = eng.Ping()
+	// CheckErr(err)
+
+	// cardRes := []model.AsCardRes{}
+	// err = eng.Table("m_card").Cols("id,card_rarity_type,max_passive_skill_slot").OrderBy("id ASC").Find(&cardRes)
+	// CheckErr(err)
+
+	// jsonStr := "["
+	// for _, card := range cardRes {
+	// 	// 绊板等级加成
+	// 	cardLevel := 0
+	// 	cardCellCount := 0
+	// 	if card.CardRarityType == 10 {
+	// 		cardLevel = 40 + 42
+	// 		cardCellCount = 61
+	// 	} else if card.CardRarityType == 20 {
+	// 		cardLevel = 60 + 24
+	// 		cardCellCount = 75
+	// 	} else if card.CardRarityType == 30 {
+	// 		cardLevel = 80 + 12
+	// 		cardCellCount = 87
+	// 	}
+
+	// 	var apBuff, stBuff, teBuff int
+	// 	_, err := eng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 2).Select("SUM(value)").Get(&stBuff)
+	// 	CheckErr(err)
+	// 	// fmt.Println(stBuff)
+
+	// 	_, err = eng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 3).Select("SUM(value)").Get(&apBuff)
+	// 	CheckErr(err)
+	// 	// fmt.Println(apBuff)
+
+	// 	_, err = eng.Table("m_training_tree_card_param").Where("id = ? AND training_content_type = ?", card.ID, 4).Select("SUM(value)").Get(&teBuff)
+	// 	CheckErr(err)
+	// 	// fmt.Println(teBuff)
+
+	// 	cardInfo := model.AsCardInfo{
+	// 		CardMasterID:               card.ID,
+	// 		Level:                      cardLevel,
+	// 		Exp:                        0,
+	// 		LovePoint:                  0,
+	// 		IsFavorite:                 false,
+	// 		IsAwakening:                true,
+	// 		IsAwakeningImage:           true,
+	// 		IsAllTrainingActivated:     true,
+	// 		TrainingActivatedCellCount: cardCellCount,
+	// 		MaxFreePassiveSkill:        card.MaxPassiveSkillSlot,
+	// 		Grade:                      5,
+	// 		TrainingLife:               stBuff,
+	// 		TrainingAttack:             apBuff,
+	// 		TrainingDexterity:          teBuff,
+	// 		ActiveSkillLevel:           5,
+	// 		PassiveSkillALevel:         5,
+	// 		PassiveSkillBLevel:         1,
+	// 		PassiveSkillCLevel:         1,
+	// 		AdditionalPassiveSkill1ID:  30000482,
+	// 		AdditionalPassiveSkill2ID:  30000482,
+	// 		AdditionalPassiveSkill3ID:  30000482,
+	// 		AdditionalPassiveSkill4ID:  30000482,
+	// 		AcquiredAt:                 time.Now().Unix(),
+	// 		IsNew:                      false,
+	// 	}
+	// 	m, err := json.Marshal(cardInfo)
+	// 	CheckErr(err)
+
+	// 	jsonStr += fmt.Sprintf("%d,%s,", card.ID, string(m))
+	// }
+	// jsonStr = strings.TrimRight(jsonStr, ",")
+	// jsonStr += "]"
+	// fmt.Println(jsonStr)
 }
 
 func CheckErr(err error) {
