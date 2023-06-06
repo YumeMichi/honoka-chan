@@ -27,7 +27,13 @@ import (
 
 var (
 	sessionKey = "12345678123456781234567812345678"
+
+	mEng *xorm.Engine
 )
+
+func init() {
+	mEng = config.MainEng
+}
 
 func SifRouter(r *gin.Engine) {
 	// Static
@@ -650,22 +656,10 @@ func AsRouter(r *gin.Engine) {
 			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
 			// fmt.Println(reqBody.String())
 
-			mEng, err := xorm.NewEngine("sqlite", "assets/masterdata.db")
-			CheckErr(err)
-			err = mEng.Ping()
-			CheckErr(err)
-			defer mEng.Close()
-
-			dEng, err := xorm.NewEngine("sqlite", "assets/dictionary_zh_k.db")
-			CheckErr(err)
-			err = dEng.Ping()
-			CheckErr(err)
-			defer dEng.Close()
-
 			req := model.AsSaveDeckReq{}
 			decoder := json.NewDecoder(strings.NewReader(reqBody.String()))
 			decoder.UseNumber()
-			err = decoder.Decode(&req)
+			err := decoder.Decode(&req)
 			CheckErr(err)
 			// fmt.Println("Raw:", req.SquadDict)
 
@@ -792,7 +786,7 @@ func AsRouter(r *gin.Engine) {
 					}
 
 					var realPartyName string
-					_, err = dEng.Table("m_dictionary").Where("id = ?", strings.ReplaceAll(partyName, "k.", "")).Cols("message").Get(&realPartyName)
+					_, err = mEng.Table("m_dictionary").Where("id = ?", strings.ReplaceAll(partyName, "k.", "")).Cols("message").Get(&realPartyName)
 					CheckErr(err)
 
 					partyInfo := model.AsPartyInfo{
