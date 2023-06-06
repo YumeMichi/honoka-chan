@@ -58,7 +58,7 @@ func PlayLive(ctx *gin.Context) {
 
 	notes := []model.NotesList{}
 	// fmt.Println("./assets/notes/" + notes_setting_asset)
-	notes_list := utils.ReadAllText("./assets/notes/" + notes_setting_asset)
+	notes_list := utils.ReadAllText("./assets/sif/notes/" + notes_setting_asset)
 	err = json.Unmarshal([]byte(notes_list), &notes)
 	CheckErr(err)
 
@@ -466,7 +466,7 @@ func PlayScore(ctx *gin.Context) {
 
 	notes := []model.NotesList{}
 	// fmt.Println("./assets/notes/" + notes_setting_asset)
-	notes_list := utils.ReadAllText("./assets/notes/" + notes_setting_asset)
+	notes_list := utils.ReadAllText("./assets/sif/notes/" + notes_setting_asset)
 	err = json.Unmarshal([]byte(notes_list), &notes)
 	CheckErr(err)
 
