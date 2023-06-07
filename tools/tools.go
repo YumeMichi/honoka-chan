@@ -1,5 +1,11 @@
 package tools
 
+import (
+	"honoka-chan/utils"
+
+	"github.com/tidwall/gjson"
+)
+
 func init() {
 	InitUserData(0)
 
@@ -613,6 +619,17 @@ func init() {
 	// jsonStr = strings.TrimRight(jsonStr, ",")
 	// jsonStr += "]"
 	// fmt.Println(jsonStr)
+
+	gjson.Parse(utils.ReadAllText("data/notesdata.json")).ForEach(func(k, v gjson.Result) bool {
+		v.ForEach(func(kk, vv gjson.Result) bool {
+			if vv.IsObject() {
+				fileName := vv.Get("live.live_stage.live_difficulty_id").String()
+				utils.WriteAllText("temp/"+fileName+".json", vv.Get("live.live_stage").String())
+			}
+			return true
+		})
+		return true
+	})
 }
 
 func CheckErr(err error) {
