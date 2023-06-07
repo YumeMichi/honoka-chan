@@ -1035,5 +1035,64 @@ func AsRouter(r *gin.Engine) {
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
+		s.POST("/card/changeIsAwakeningImage", func(ctx *gin.Context) {
+			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
+			// fmt.Println(reqBody.String())
+
+			req := model.AsCardAwakeningReq{}
+			if err := json.Unmarshal([]byte(reqBody.String()), &req); err != nil {
+				panic(err)
+			}
+
+			cardInfo := model.AsCardInfo{}
+			gjson.Parse(utils.ReadAllText("assets/as/login.json")).Get("user_model.user_card_by_card_id").
+				ForEach(func(key, value gjson.Result) bool {
+					if value.IsObject() {
+						if err := json.Unmarshal([]byte(value.String()), &cardInfo); err != nil {
+							panic(err)
+						}
+
+						if cardInfo.CardMasterID == req.CardMasterID {
+							cardInfo.IsAwakeningImage = req.IsAwakeningImage
+
+							return false
+						}
+					}
+					return true
+				})
+
+			card, err := json.Marshal(cardInfo)
+			CheckErr(err)
+
+			jsonStr := fmt.Sprintf("[%d,%s]", cardInfo.CardMasterID, string(card))
+			// fmt.Println(jsonStr)
+
+			cardResp := utils.ReadAllText("assets/as/changeIsAwakeningImage.json")
+			cardResp = strings.ReplaceAll(cardResp, `"USER_CARD_INFO"`, jsonStr)
+			// fmt.Println(cardResp)
+
+			resp := SignResp(ctx.GetString("ep"), cardResp, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/storyEventHistory/finishStory", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/finishStory.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/story/finishUserStoryMain", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/finishUserStoryMain.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
+		s.POST("/story/finishStoryLinkage", func(ctx *gin.Context) {
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/finishStoryLinkage.json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
 	}
 }

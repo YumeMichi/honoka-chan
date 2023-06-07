@@ -468,6 +468,12 @@ type AsUserCardReq struct {
 	CardMasterID int64 `json:"card_master_id"`
 }
 
+// AsCardAwakeningReq ...
+type AsCardAwakeningReq struct {
+	CardMasterID     int  `json:"card_master_id"`
+	IsAwakeningImage bool `json:"is_awakening_image"`
+}
+
 // AsReq ...
 type AsReq interface{}
 
