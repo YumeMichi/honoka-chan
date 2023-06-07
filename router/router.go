@@ -1024,5 +1024,16 @@ func AsRouter(r *gin.Engine) {
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
+		s.POST("/notice/fetchNoticeDetail", func(ctx *gin.Context) {
+			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
+			// fmt.Println(reqBody.String())
+
+			noticeId := reqBody.Get("notice_id").String()
+
+			resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/notices/"+noticeId+".json"), sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
 	}
 }

@@ -31,6 +31,18 @@
                     "banner_thumbnail": {
                         "v": null
                     }
+                },
+                {
+                    "notice_id": 1000020,
+                    "category": 1,
+                    "is_new": false,
+                    "title": {
+                        "dot_under_text": "玩家热点问题FAQ"
+                    },
+                    "date": 1622188800,
+                    "banner_thumbnail": {
+                        "v": "$G["
+                    }
                 }
             ]
         },
