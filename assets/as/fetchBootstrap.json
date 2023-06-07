@@ -1610,14 +1610,14 @@
         ]
     },
     "fetch_bootstrap_new_badge_response": {
-        "is_new_main_story": true,
-        "unreceived_present_box": 10,
+        "is_new_main_story": false,
+        "unreceived_present_box": 0,
         "is_unreceived_present_box_subscription": false,
         "notice_new_arrivals_ids": [],
         "is_update_friend": false,
         "unreceived_mission": 0,
         "unreceived_challenge_beginner": 0,
-        "daily_theater_today_id": 1000474
+        "daily_theater_today_id": 1000463
     },
     "fetch_bootstrap_pickup_info_response": {
         "active_event": null,
@@ -1652,7 +1652,7 @@
     "fetch_bootstrap_notice_response": {
         "super_notices": [],
         "fetched_at": 1684680066,
-        "review_super_notice_at": 1684684800,
+        "review_super_notice_at": 2019600000,
         "force_view_notice_ids": []
     },
     "fetch_bootstrap_subscription_response": {
