@@ -462,6 +462,12 @@ type AsMvpInfo struct {
 	AppealCount         int64 `json:"appeal_count"`
 }
 
+// AsUserCardReq ...
+type AsUserCardReq struct {
+	UserID       int64 `json:"user_id"`
+	CardMasterID int64 `json:"card_master_id"`
+}
+
 // AsReq ...
 type AsReq interface{}
 

@@ -985,5 +985,44 @@ func AsRouter(r *gin.Engine) {
 			ctx.Header("Content-Type", "application/json")
 			ctx.String(http.StatusOK, resp)
 		})
+		s.POST("/card/getOtherUserCard", func(ctx *gin.Context) {
+			reqBody := gjson.Parse(ctx.GetString("reqBody")).Array()[0]
+			// fmt.Println(reqBody.String())
+
+			userCardReq := model.AsUserCardReq{}
+			if err := json.Unmarshal([]byte(reqBody.String()), &userCardReq); err != nil {
+				panic(err)
+			}
+			// fmt.Println(liveStartReq)
+
+			var cardInfo string
+			partnerResp := gjson.Parse(utils.ReadAllText("assets/as/fetchLivePartners.json")).Get("partner_select_state.live_partners")
+			partnerResp.ForEach(func(k, v gjson.Result) bool {
+				userId := v.Get("user_id").Int()
+				if userId == userCardReq.UserID {
+					v.Get("card_by_category").ForEach(func(kk, vv gjson.Result) bool {
+						if vv.IsObject() {
+							cardId := vv.Get("card_master_id").Int()
+							if cardId == userCardReq.CardMasterID {
+								cardInfo = vv.String()
+								// fmt.Println(cardInfo)
+								return false
+							}
+						}
+						return true
+					})
+					return false
+				}
+				return true
+			})
+
+			userCardResp := utils.ReadAllText("assets/as/getOtherUserCard.json")
+			userCardResp = strings.ReplaceAll(userCardResp, `"USER_CARD_INFO"`, cardInfo)
+
+			resp := SignResp(ctx.GetString("ep"), userCardResp, sessionKey)
+
+			ctx.Header("Content-Type", "application/json")
+			ctx.String(http.StatusOK, resp)
+		})
 	}
 }
