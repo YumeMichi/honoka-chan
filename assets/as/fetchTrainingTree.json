@@ -1,0 +1,356 @@
+{
+    "user_card_training_tree_cell_list": [
+        {
+            "cell_id": 0,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 1,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 2,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 3,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 4,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 5,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 6,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 7,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 8,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 9,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 10,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 11,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 12,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 13,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 14,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 15,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 16,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 17,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 18,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 19,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 20,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 21,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 22,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 23,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 24,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 25,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 26,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 27,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 28,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 29,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 30,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 31,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 32,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 33,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 34,
+            "activated_at": 1671437833
+        },
+        {
+            "cell_id": 35,
+            "activated_at": 1671437833
+        },
+        {
+            "cell_id": 36,
+            "activated_at": 1671437833
+        },
+        {
+            "cell_id": 37,
+            "activated_at": 1671437833
+        },
+        {
+            "cell_id": 38,
+            "activated_at": 1671437833
+        },
+        {
+            "cell_id": 39,
+            "activated_at": 1671437838
+        },
+        {
+            "cell_id": 40,
+            "activated_at": 1671437838
+        },
+        {
+            "cell_id": 41,
+            "activated_at": 1671437838
+        },
+        {
+            "cell_id": 42,
+            "activated_at": 1671437838
+        },
+        {
+            "cell_id": 43,
+            "activated_at": 1671437827
+        },
+        {
+            "cell_id": 44,
+            "activated_at": 1671437827
+        },
+        {
+            "cell_id": 45,
+            "activated_at": 1671437827
+        },
+        {
+            "cell_id": 46,
+            "activated_at": 1671437827
+        },
+        {
+            "cell_id": 47,
+            "activated_at": 1671437822
+        },
+        {
+            "cell_id": 48,
+            "activated_at": 1671437822
+        },
+        {
+            "cell_id": 49,
+            "activated_at": 1671437822
+        },
+        {
+            "cell_id": 50,
+            "activated_at": 1671437886
+        },
+        {
+            "cell_id": 51,
+            "activated_at": 1671437810
+        },
+        {
+            "cell_id": 52,
+            "activated_at": 1671437810
+        },
+        {
+            "cell_id": 53,
+            "activated_at": 1671437810
+        },
+        {
+            "cell_id": 54,
+            "activated_at": 1671437810
+        },
+        {
+            "cell_id": 55,
+            "activated_at": 1671437810
+        },
+        {
+            "cell_id": 56,
+            "activated_at": 1671437815
+        },
+        {
+            "cell_id": 57,
+            "activated_at": 1671437815
+        },
+        {
+            "cell_id": 58,
+            "activated_at": 1671437815
+        },
+        {
+            "cell_id": 59,
+            "activated_at": 1671437815
+        },
+        {
+            "cell_id": 60,
+            "activated_at": 1671437782
+        },
+        {
+            "cell_id": 61,
+            "activated_at": 1671437805
+        },
+        {
+            "cell_id": 62,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 63,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 64,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 65,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 66,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 67,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 68,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 69,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 70,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 71,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 72,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 73,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 74,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 75,
+            "activated_at": 1671438125
+        },
+        {
+            "cell_id": 76,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 77,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 78,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 79,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 80,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 81,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 82,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 83,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 84,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 85,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 86,
+            "activated_at": 1671965468
+        },
+        {
+            "cell_id": 87,
+            "activated_at": 1671965468
+        }
+    ]
+}

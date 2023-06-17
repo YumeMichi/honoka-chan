@@ -1,6 +1,5 @@
 package model
 
-/* ==== SIF START ==== */
 // GameOverResp ...
 type GameOverResp struct {
 	ResponseData []interface{} `json:"response_data"`
@@ -654,67 +653,3 @@ type LiveIconInfoResp struct {
 	CommandNum bool            `json:"commandNum"`
 	TimeStamp  int64           `json:"timeStamp"`
 }
-
-/* ==== SIF END ==== */
-
-/* ==== AS START ==== */
-// LiveSaveDeckReq ...
-type LiveSaveDeckReq struct {
-	LiveMasterID        int   `json:"live_master_id"`
-	LiveMvDeckType      int   `json:"live_mv_deck_type"`
-	MemberMasterIDByPos []int `json:"member_master_id_by_pos"`
-	SuitMasterIDByPos   []int `json:"suit_master_id_by_pos"`
-	ViewStatusByPos     []int `json:"view_status_by_pos"`
-}
-
-// LiveSaveDeckResp ...
-type LiveSaveDeckResp struct {
-	UserModel UserModel `json:"user_model"`
-}
-
-// UserMemberInfo ...
-type UserMemberInfo struct {
-	MemberMasterID           int  `json:"member_master_id"`
-	CustomBackgroundMasterID int  `json:"custom_background_master_id"`
-	SuitMasterID             int  `json:"suit_master_id"`
-	LovePoint                int  `json:"love_point"`
-	LovePointLimit           int  `json:"love_point_limit"`
-	LoveLevel                int  `json:"love_level"`
-	ViewStatus               int  `json:"view_status"`
-	IsNew                    bool `json:"is_new"`
-}
-
-// UserMemberByMemberID ...
-type UserMemberByMemberID interface{}
-
-// UserLiveMvDeckInfo ...
-type UserLiveMvDeckInfo struct {
-	LiveMasterID     interface{} `json:"live_master_id"`
-	MemberMasterID1  interface{} `json:"member_master_id_1"`
-	MemberMasterID2  interface{} `json:"member_master_id_2"`
-	MemberMasterID3  interface{} `json:"member_master_id_3"`
-	MemberMasterID4  interface{} `json:"member_master_id_4"`
-	MemberMasterID5  interface{} `json:"member_master_id_5"`
-	MemberMasterID6  interface{} `json:"member_master_id_6"`
-	MemberMasterID7  interface{} `json:"member_master_id_7"`
-	MemberMasterID8  interface{} `json:"member_master_id_8"`
-	MemberMasterID9  interface{} `json:"member_master_id_9"`
-	MemberMasterID10 interface{} `json:"member_master_id_10"`
-	MemberMasterID11 interface{} `json:"member_master_id_11"`
-	MemberMasterID12 interface{} `json:"member_master_id_12"`
-	SuitMasterID1    interface{} `json:"suit_master_id_1"`
-	SuitMasterID2    interface{} `json:"suit_master_id_2"`
-	SuitMasterID3    interface{} `json:"suit_master_id_3"`
-	SuitMasterID4    interface{} `json:"suit_master_id_4"`
-	SuitMasterID5    interface{} `json:"suit_master_id_5"`
-	SuitMasterID6    interface{} `json:"suit_master_id_6"`
-	SuitMasterID7    interface{} `json:"suit_master_id_7"`
-	SuitMasterID8    interface{} `json:"suit_master_id_8"`
-	SuitMasterID9    interface{} `json:"suit_master_id_9"`
-	SuitMasterID10   interface{} `json:"suit_master_id_10"`
-	SuitMasterID11   interface{} `json:"suit_master_id_11"`
-	SuitMasterID12   interface{} `json:"suit_master_id_12"`
-}
-
-// UserLiveMvDeckCustomByID ...
-type UserLiveMvDeckCustomByID interface{}
