@@ -24,13 +24,13 @@ func ProductList(ctx *gin.Context) {
 				LimitAmount: nil,
 				MonthUsed:   0,
 			},
-			SnsProductList:   []interface{}{},
-			ProductList:      []interface{}{},
-			SubscriptionList: []interface{}{},
+			SnsProductList:   []any{},
+			ProductList:      []any{},
+			SubscriptionList: []any{},
 			ShowPointShop:    true,
 			ServerTimestamp:  time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(prodReesp)

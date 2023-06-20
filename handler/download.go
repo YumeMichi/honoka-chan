@@ -45,7 +45,7 @@ func DownloadAdditional(ctx *gin.Context) {
 
 	addResp := model.AdditionalResp{
 		ResponseData: pkgList,
-		ReleaseInfo:  []interface{}{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(addResp)
@@ -85,7 +85,7 @@ func DownloadBatch(ctx *gin.Context) {
 
 	batchResp := model.BatchResp{
 		ResponseData: pkgList,
-		ReleaseInfo:  []interface{}{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(batchResp)
@@ -126,7 +126,7 @@ func DownloadUpdate(ctx *gin.Context) {
 
 	updateResp := model.UpdateResp{
 		ResponseData: pkgList,
-		ReleaseInfo:  []interface{}{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(updateResp)
@@ -157,7 +157,7 @@ func DownloadUrl(ctx *gin.Context) {
 		ResponseData: model.UrlRes{
 			UrlList: urlList,
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(urlResp)
@@ -175,8 +175,8 @@ func DownloadUrl(ctx *gin.Context) {
 
 func DownloadEvent(ctx *gin.Context) {
 	eventResp := model.EventResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(eventResp)

@@ -22,7 +22,7 @@ func PersonalNotice(ctx *gin.Context) {
 			Contents:        "",
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(noticeResp)

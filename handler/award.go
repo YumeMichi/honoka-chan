@@ -22,8 +22,8 @@ func AwardSet(ctx *gin.Context) {
 	_, err := UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Update(&pref)
 	CheckErr(err)
 	awardResp := model.AwardSetResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(awardResp)

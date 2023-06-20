@@ -76,10 +76,10 @@ type DifficultyResp struct {
 
 // LoveResp ...
 type LoveResp struct {
-	Result     []interface{} `json:"result"`
-	Status     int           `json:"status"`
-	CommandNum bool          `json:"commandNum"`
-	TimeStamp  int64         `json:"timeStamp"`
+	Result     []any `json:"result"`
+	Status     int   `json:"status"`
+	CommandNum bool  `json:"commandNum"`
+	TimeStamp  int64 `json:"timeStamp"`
 }
 
 // AccessoryInfo ...

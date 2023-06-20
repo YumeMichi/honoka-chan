@@ -2,10 +2,10 @@ package model
 
 // TopInfoLicenseInfo ...
 type TopInfoLicenseInfo struct {
-	LicenseList  []interface{} `json:"license_list"`
-	LicensedInfo []interface{} `json:"licensed_info"`
-	ExpiredInfo  []interface{} `json:"expired_info"`
-	BadgeFlag    bool          `json:"badge_flag"`
+	LicenseList  []any `json:"license_list"`
+	LicensedInfo []any `json:"licensed_info"`
+	ExpiredInfo  []any `json:"expired_info"`
+	BadgeFlag    bool  `json:"badge_flag"`
 }
 
 // TopInfoRes ...
@@ -24,7 +24,7 @@ type TopInfoRes struct {
 	FriendsRequestCnt      int                `json:"friends_request_cnt"`
 	IsTodayBirthday        bool               `json:"is_today_birthday"`
 	LicenseInfo            TopInfoLicenseInfo `json:"license_info"`
-	UsingBuffInfo          []interface{}      `json:"using_buff_info"`
+	UsingBuffInfo          []any              `json:"using_buff_info"`
 	IsKlabIDTaskFlag       bool               `json:"is_klab_id_task_flag"`
 	KlabIDTaskCanSync      bool               `json:"klab_id_task_can_sync"`
 	HasUnreadAnnounce      bool               `json:"has_unread_announce"`

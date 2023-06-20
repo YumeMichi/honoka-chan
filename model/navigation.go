@@ -2,7 +2,7 @@ package model
 
 // SpecialCutinRes ...
 type SpecialCutinRes struct {
-	SpecialCutinList []interface{} `json:"special_cutin_list"`
+	SpecialCutinList []any `json:"special_cutin_list"`
 }
 
 // SpecialCutinResp ...

@@ -19,7 +19,7 @@ type MultiUnitScenarioStatusList struct {
 // MultiUnitScenarioStatusRes ...
 type MultiUnitScenarioStatusRes struct {
 	MultiUnitScenarioStatusList  []MultiUnitScenarioStatusList `json:"multi_unit_scenario_status_list"`
-	UnlockedMultiUnitScenarioIds []interface{}                 `json:"unlocked_multi_unit_scenario_ids"`
+	UnlockedMultiUnitScenarioIds []any                         `json:"unlocked_multi_unit_scenario_ids"`
 }
 
 // MultiUnitScenarioStatusResp ...
@@ -33,7 +33,7 @@ type MultiUnitScenarioStatusResp struct {
 // MultiUnitStartUpResp ...
 type MultiUnitStartUpResp struct {
 	ResponseData MultiUnitStartUpRes `json:"response_data"`
-	ReleaseInfo  []interface{}       `json:"release_info"`
+	ReleaseInfo  []any               `json:"release_info"`
 	StatusCode   int                 `json:"status_code"`
 }
 

@@ -66,9 +66,9 @@ type AccessoryWearData struct {
 
 // AccessoryWearResp ...
 type AccessoryWearResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }
 
 // SkillEquipReq ...
@@ -121,23 +121,23 @@ type SkillEquipList struct {
 
 // SkillEquipResp ...
 type SkillEquipResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }
 
 // SetDisplayRankResp ...
 type SetDisplayRankResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }
 
 // SetDeckResp ...
 type SetDeckResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }
 
 // Costume ...
@@ -270,8 +270,8 @@ type OwningInfo struct {
 
 // RemovableSkillRes ...
 type RemovableSkillRes struct {
-	OwningInfo    []OwningInfo        `json:"owning_info"`
-	EquipmentInfo map[int]interface{} `json:"equipment_info"`
+	OwningInfo    []OwningInfo `json:"owning_info"`
+	EquipmentInfo map[int]any  `json:"equipment_info"`
 }
 
 // RemovableSkillResp ...

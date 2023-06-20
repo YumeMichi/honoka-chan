@@ -2,9 +2,9 @@ package model
 
 // MuseumResp ...
 type MuseumResp struct {
-	ResponseData MuseumRes     `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData MuseumRes `json:"response_data"`
+	ReleaseInfo  []any     `json:"release_info"`
+	StatusCode   int       `json:"status_code"`
 }
 
 // MuseumParameter ...

@@ -28,7 +28,7 @@ type SubscenarioStatusList struct {
 // SubscenarioStatusRes ...
 type SubscenarioStatusRes struct {
 	SubscenarioStatusList  []SubscenarioStatusList `json:"subscenario_status_list"`
-	UnlockedSubscenarioIds []interface{}           `json:"unlocked_subscenario_ids"`
+	UnlockedSubscenarioIds []any                   `json:"unlocked_subscenario_ids"`
 }
 
 // SubscenarioStatusResp ...
@@ -75,9 +75,9 @@ type EventScenarioStatusResp struct {
 
 // ScenarioResp ...
 type ScenarioResp struct {
-	ResponseData ScenarioRes   `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData ScenarioRes `json:"response_data"`
+	ReleaseInfo  []any       `json:"release_info"`
+	StatusCode   int         `json:"status_code"`
 }
 
 // ScenarioRes ...

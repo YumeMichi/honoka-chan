@@ -2,9 +2,9 @@ package model
 
 // AnnounceResp ...
 type AnnounceResp struct {
-	ResponseData AnnounceRes   `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData AnnounceRes `json:"response_data"`
+	ReleaseInfo  []any       `json:"release_info"`
+	StatusCode   int         `json:"status_code"`
 }
 
 // AnnounceRes ...

@@ -75,7 +75,7 @@ func AlbumSeriesAll(ctx *gin.Context) {
 
 	albumResp := model.AlbumSeriesResp{
 		ResponseData: albumSeriesAllRes,
-		ReleaseInfo:  []interface{}{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(albumResp)

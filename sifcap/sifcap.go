@@ -116,7 +116,7 @@ var errorsMapMutex sync.Mutex
 var errors uint
 
 // Too bad for perf that a... is evaluated
-func Error(t string, s string, a ...interface{}) {
+func Error(t string, s string, a ...any) {
 	errorsMapMutex.Lock()
 	errors++
 	errorsMap[t] = errorsMap[t] + 1
@@ -125,12 +125,12 @@ func Error(t string, s string, a ...interface{}) {
 		fmt.Printf(s, a...)
 	}
 }
-func Info(s string, a ...interface{}) {
+func Info(s string, a ...any) {
 	if outputLevel >= 1 {
 		fmt.Printf(s, a...)
 	}
 }
-func Debug(s string, a ...interface{}) {
+func Debug(s string, a ...any) {
 	if outputLevel >= 2 {
 		fmt.Printf(s, a...)
 	}

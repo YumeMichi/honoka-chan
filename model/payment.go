@@ -7,10 +7,10 @@ type RestrictionInfo struct {
 
 // UnderAgeInfo ...
 type UnderAgeInfo struct {
-	BirthSet    bool        `json:"birth_set"`
-	HasLimit    bool        `json:"has_limit"`
-	LimitAmount interface{} `json:"limit_amount"`
-	MonthUsed   int         `json:"month_used"`
+	BirthSet    bool `json:"birth_set"`
+	HasLimit    bool `json:"has_limit"`
+	LimitAmount any  `json:"limit_amount"`
+	MonthUsed   int  `json:"month_used"`
 }
 
 // SnsProductItemList ...
@@ -137,18 +137,18 @@ type ProductListResp struct {
 
 // ProductResp ...
 type ProductResp struct {
-	ResponseData ProductRes    `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData ProductRes `json:"response_data"`
+	ReleaseInfo  []any      `json:"release_info"`
+	StatusCode   int        `json:"status_code"`
 }
 
 // ProductRes ...
 type ProductRes struct {
 	RestrictionInfo  RestrictionInfo `json:"restriction_info"`
 	UnderAgeInfo     UnderAgeInfo    `json:"under_age_info"`
-	SnsProductList   []interface{}   `json:"sns_product_list"`
-	ProductList      []interface{}   `json:"product_list"`
-	SubscriptionList []interface{}   `json:"subscription_list"`
+	SnsProductList   []any           `json:"sns_product_list"`
+	ProductList      []any           `json:"product_list"`
+	SubscriptionList []any           `json:"subscription_list"`
 	ShowPointShop    bool            `json:"show_point_shop"`
 	ServerTimestamp  int64           `json:"server_timestamp"`
 }

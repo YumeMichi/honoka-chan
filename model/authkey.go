@@ -8,7 +8,7 @@ type AuthKeyRes struct {
 
 // AuthKeyResp ...
 type AuthKeyResp struct {
-	ResponseData AuthKeyRes    `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData AuthKeyRes `json:"response_data"`
+	ReleaseInfo  []any      `json:"release_info"`
+	StatusCode   int        `json:"status_code"`
 }

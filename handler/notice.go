@@ -16,10 +16,10 @@ func NoticeFriendVariety(ctx *gin.Context) {
 	noticeResp := model.NoticeFriendVarietyResp{
 		ResponseData: model.NoticeFriendVarietyRes{
 			ItemCount:       1,
-			NoticeList:      []interface{}{},
+			NoticeList:      []any{},
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(noticeResp)
@@ -39,10 +39,10 @@ func NoticeFriendGreeting(ctx *gin.Context) {
 	noticeResp := model.NoticeFriendGreetingResp{
 		ResponseData: model.NoticeFriendGreetingRes{
 			NextId:          0,
-			NoticeList:      []interface{}{},
+			NoticeList:      []any{},
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(noticeResp)
@@ -63,10 +63,10 @@ func NoticeUserGreeting(ctx *gin.Context) {
 		ResponseData: model.NoticeUserGreetingRes{
 			ItemCount:       0,
 			HasNext:         false,
-			NoticeList:      []interface{}{},
+			NoticeList:      []any{},
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(noticeResp)

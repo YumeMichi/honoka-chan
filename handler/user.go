@@ -16,8 +16,8 @@ import (
 
 func SetNotificationToken(ctx *gin.Context) {
 	notifResp := model.NotificationResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(notifResp)
@@ -41,8 +41,8 @@ func ChangeNavi(ctx *gin.Context) {
 	_, err := UserEng.Table("user_preference_m").Where("user_id = ?", ctx.GetString("userid")).Update(&pref)
 	CheckErr(err)
 	naviResp := model.UserNaviChangeResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(naviResp)
@@ -78,7 +78,7 @@ func ChangeName(ctx *gin.Context) {
 			AfterName:       req.Get("name").String(),
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(nameResp)

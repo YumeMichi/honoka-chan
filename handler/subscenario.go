@@ -24,7 +24,7 @@ func SubScenarioStartup(ctx *gin.Context) {
 			ScenarioAdjustment: 50,
 			ServerTimestamp:    time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(startResp)

@@ -32,7 +32,7 @@ func AuthKey(ctx *gin.Context) {
 	ctx.Set("dummy_token", serverToken)
 	ctx.Set("authorize_token", authorizeToken)
 
-	authJson, err := json.Marshal(map[string]interface{}{
+	authJson, err := json.Marshal(map[string]any{
 		"client_token": clientToken,
 		"server_token": serverToken,
 	})

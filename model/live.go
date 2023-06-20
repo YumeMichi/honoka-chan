@@ -2,9 +2,9 @@ package model
 
 // GameOverResp ...
 type GameOverResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }
 
 // NormalLiveStatusList ...
@@ -42,8 +42,8 @@ type LiveStatusRes struct {
 	NormalLiveStatusList   []NormalLiveStatusList   `json:"normal_live_status_list"`
 	SpecialLiveStatusList  []SpecialLiveStatusList  `json:"special_live_status_list"`
 	TrainingLiveStatusList []TrainingLiveStatusList `json:"training_live_status_list"`
-	MarathonLiveStatusList []interface{}            `json:"marathon_live_status_list"`
-	FreeLiveStatusList     []interface{}            `json:"free_live_status_list"`
+	MarathonLiveStatusList []any                    `json:"marathon_live_status_list"`
+	FreeLiveStatusList     []any                    `json:"free_live_status_list"`
 	CanResumeLive          bool                     `json:"can_resume_live"`
 }
 
@@ -88,12 +88,12 @@ type TrainingLiveList struct {
 
 // LiveScheduleRes ...
 type LiveScheduleRes struct {
-	EventList              []interface{}            `json:"event_list"`
+	EventList              []any                    `json:"event_list"`
 	LiveList               []LiveList               `json:"live_list"`
-	LimitedBonusList       []interface{}            `json:"limited_bonus_list"`
+	LimitedBonusList       []any                    `json:"limited_bonus_list"`
 	LimitedBonusCommonList []LimitedBonusCommonList `json:"limited_bonus_common_list"`
 	RandomLiveList         []RandomLiveList         `json:"random_live_list"`
-	FreeLiveList           []interface{}            `json:"free_live_list"`
+	FreeLiveList           []any                    `json:"free_live_list"`
 	TrainingLiveList       []TrainingLiveList       `json:"training_live_list"`
 }
 
@@ -185,7 +185,7 @@ type PlayRes struct {
 	AvailableLiveResume bool           `json:"available_live_resume"`
 	LiveList            []PlayLiveList `json:"live_list"`
 	IsMarathonEvent     bool           `json:"is_marathon_event"`
-	MarathonEventID     interface{}    `json:"marathon_event_id"`
+	MarathonEventID     any            `json:"marathon_event_id"`
 	NoSkill             bool           `json:"no_skill"`
 	CanActivateEffect   bool           `json:"can_activate_effect"`
 	ServerTimestamp     int64          `json:"server_timestamp"`
@@ -193,9 +193,9 @@ type PlayRes struct {
 
 // PlayResp ...
 type PlayResp struct {
-	ResponseData PlayRes       `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData PlayRes `json:"response_data"`
+	ReleaseInfo  []any   `json:"release_info"`
+	StatusCode   int     `json:"status_code"`
 }
 
 // PlayScoreReq ...
@@ -210,28 +210,28 @@ type PlayScoreReq struct {
 
 // On ...
 type On struct {
-	HasRecord   bool        `json:"has_record"`
-	LiveInfo    LiveInfo    `json:"live_info"`
-	RandomSeed  interface{} `json:"random_seed"`
-	MaxCombo    interface{} `json:"max_combo"`
-	UpdateDate  interface{} `json:"update_date"`
-	PreciseList interface{} `json:"precise_list"`
-	DeckInfo    interface{} `json:"deck_info"`
-	TapAdjust   interface{} `json:"tap_adjust"`
-	CanReplay   bool        `json:"can_replay"`
+	HasRecord   bool     `json:"has_record"`
+	LiveInfo    LiveInfo `json:"live_info"`
+	RandomSeed  any      `json:"random_seed"`
+	MaxCombo    any      `json:"max_combo"`
+	UpdateDate  any      `json:"update_date"`
+	PreciseList any      `json:"precise_list"`
+	DeckInfo    any      `json:"deck_info"`
+	TapAdjust   any      `json:"tap_adjust"`
+	CanReplay   bool     `json:"can_replay"`
 }
 
 // Off ...
 type Off struct {
-	HasRecord   bool        `json:"has_record"`
-	LiveInfo    LiveInfo    `json:"live_info"`
-	RandomSeed  interface{} `json:"random_seed"`
-	MaxCombo    interface{} `json:"max_combo"`
-	UpdateDate  interface{} `json:"update_date"`
-	PreciseList interface{} `json:"precise_list"`
-	DeckInfo    interface{} `json:"deck_info"`
-	TapAdjust   interface{} `json:"tap_adjust"`
-	CanReplay   bool        `json:"can_replay"`
+	HasRecord   bool     `json:"has_record"`
+	LiveInfo    LiveInfo `json:"live_info"`
+	RandomSeed  any      `json:"random_seed"`
+	MaxCombo    any      `json:"max_combo"`
+	UpdateDate  any      `json:"update_date"`
+	PreciseList any      `json:"precise_list"`
+	DeckInfo    any      `json:"deck_info"`
+	TapAdjust   any      `json:"tap_adjust"`
+	CanReplay   bool     `json:"can_replay"`
 }
 
 // PlayScoreRes ...
@@ -245,9 +245,9 @@ type PlayScoreRes struct {
 
 // PlayScoreResp ...
 type PlayScoreResp struct {
-	ResponseData PlayScoreRes  `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData PlayScoreRes `json:"response_data"`
+	ReleaseInfo  []any        `json:"release_info"`
+	StatusCode   int          `json:"status_code"`
 }
 
 // PlayRewardReq ...
@@ -271,7 +271,7 @@ type PlayRewardReq struct {
 	TimeStamp        int             `json:"timeStamp"`
 	PreciseScoreLog  PreciseScoreLog `json:"precise_score_log"`
 	ScoreCute        int             `json:"score_cute"`
-	EventID          interface{}     `json:"event_id"`
+	EventID          any             `json:"event_id"`
 	ScoreCool        int             `json:"score_cool"`
 }
 
@@ -372,67 +372,67 @@ type BaseRewardInfo struct {
 
 // LiveClear ...
 type LiveClear struct {
-	AddType                    int           `json:"add_type"`
-	Amount                     int           `json:"amount"`
-	ItemCategoryID             int           `json:"item_category_id"`
-	UnitID                     int           `json:"unit_id"`
-	UnitOwningUserID           int64         `json:"unit_owning_user_id"`
-	IsSupportMember            bool          `json:"is_support_member"`
-	Exp                        int           `json:"exp"`
-	NextExp                    int           `json:"next_exp"`
-	MaxHp                      int           `json:"max_hp"`
-	Level                      int           `json:"level"`
-	MaxLevel                   int           `json:"max_level"`
-	LevelLimitID               int           `json:"level_limit_id"`
-	SkillLevel                 int           `json:"skill_level"`
-	Rank                       int           `json:"rank"`
-	Love                       int           `json:"love"`
-	IsRankMax                  bool          `json:"is_rank_max"`
-	IsLevelMax                 bool          `json:"is_level_max"`
-	IsLoveMax                  bool          `json:"is_love_max"`
-	IsSigned                   bool          `json:"is_signed"`
-	NewUnitFlag                bool          `json:"new_unit_flag"`
-	RewardBoxFlag              bool          `json:"reward_box_flag"`
-	UnitSkillExp               int           `json:"unit_skill_exp"`
-	DisplayRank                int           `json:"display_rank"`
-	UnitRemovableSkillCapacity int           `json:"unit_removable_skill_capacity"`
-	RemovableSkillIds          []interface{} `json:"removable_skill_ids"`
+	AddType                    int   `json:"add_type"`
+	Amount                     int   `json:"amount"`
+	ItemCategoryID             int   `json:"item_category_id"`
+	UnitID                     int   `json:"unit_id"`
+	UnitOwningUserID           int64 `json:"unit_owning_user_id"`
+	IsSupportMember            bool  `json:"is_support_member"`
+	Exp                        int   `json:"exp"`
+	NextExp                    int   `json:"next_exp"`
+	MaxHp                      int   `json:"max_hp"`
+	Level                      int   `json:"level"`
+	MaxLevel                   int   `json:"max_level"`
+	LevelLimitID               int   `json:"level_limit_id"`
+	SkillLevel                 int   `json:"skill_level"`
+	Rank                       int   `json:"rank"`
+	Love                       int   `json:"love"`
+	IsRankMax                  bool  `json:"is_rank_max"`
+	IsLevelMax                 bool  `json:"is_level_max"`
+	IsLoveMax                  bool  `json:"is_love_max"`
+	IsSigned                   bool  `json:"is_signed"`
+	NewUnitFlag                bool  `json:"new_unit_flag"`
+	RewardBoxFlag              bool  `json:"reward_box_flag"`
+	UnitSkillExp               int   `json:"unit_skill_exp"`
+	DisplayRank                int   `json:"display_rank"`
+	UnitRemovableSkillCapacity int   `json:"unit_removable_skill_capacity"`
+	RemovableSkillIds          []any `json:"removable_skill_ids"`
 }
 
 // LiveRank ...
 type LiveRank struct {
-	AddType                    int           `json:"add_type"`
-	Amount                     int           `json:"amount"`
-	ItemCategoryID             int           `json:"item_category_id"`
-	UnitID                     int           `json:"unit_id"`
-	UnitOwningUserID           int64         `json:"unit_owning_user_id"`
-	IsSupportMember            bool          `json:"is_support_member"`
-	Exp                        int           `json:"exp"`
-	NextExp                    int           `json:"next_exp"`
-	MaxHp                      int           `json:"max_hp"`
-	Level                      int           `json:"level"`
-	MaxLevel                   int           `json:"max_level"`
-	LevelLimitID               int           `json:"level_limit_id"`
-	SkillLevel                 int           `json:"skill_level"`
-	Rank                       int           `json:"rank"`
-	Love                       int           `json:"love"`
-	IsRankMax                  bool          `json:"is_rank_max"`
-	IsLevelMax                 bool          `json:"is_level_max"`
-	IsLoveMax                  bool          `json:"is_love_max"`
-	IsSigned                   bool          `json:"is_signed"`
-	NewUnitFlag                bool          `json:"new_unit_flag"`
-	RewardBoxFlag              bool          `json:"reward_box_flag"`
-	UnitSkillExp               int           `json:"unit_skill_exp"`
-	DisplayRank                int           `json:"display_rank"`
-	UnitRemovableSkillCapacity int           `json:"unit_removable_skill_capacity"`
-	RemovableSkillIds          []interface{} `json:"removable_skill_ids"`
+	AddType                    int   `json:"add_type"`
+	Amount                     int   `json:"amount"`
+	ItemCategoryID             int   `json:"item_category_id"`
+	UnitID                     int   `json:"unit_id"`
+	UnitOwningUserID           int64 `json:"unit_owning_user_id"`
+	IsSupportMember            bool  `json:"is_support_member"`
+	Exp                        int   `json:"exp"`
+	NextExp                    int   `json:"next_exp"`
+	MaxHp                      int   `json:"max_hp"`
+	Level                      int   `json:"level"`
+	MaxLevel                   int   `json:"max_level"`
+	LevelLimitID               int   `json:"level_limit_id"`
+	SkillLevel                 int   `json:"skill_level"`
+	Rank                       int   `json:"rank"`
+	Love                       int   `json:"love"`
+	IsRankMax                  bool  `json:"is_rank_max"`
+	IsLevelMax                 bool  `json:"is_level_max"`
+	IsLoveMax                  bool  `json:"is_love_max"`
+	IsSigned                   bool  `json:"is_signed"`
+	NewUnitFlag                bool  `json:"new_unit_flag"`
+	RewardBoxFlag              bool  `json:"reward_box_flag"`
+	UnitSkillExp               int   `json:"unit_skill_exp"`
+	DisplayRank                int   `json:"display_rank"`
+	UnitRemovableSkillCapacity int   `json:"unit_removable_skill_capacity"`
+	RemovableSkillIds          []any `json:"removable_skill_ids"`
 }
 
 // RewardUnitList ...
 type RewardUnitList struct {
-	LiveClear []LiveClear   `json:"live_clear"`
-	LiveRank  []LiveRank    `json:"live_rank"`
-	LiveCombo []interface{} `json:"live_combo"`
+	LiveClear []LiveClear `json:"live_clear"`
+	LiveRank  []LiveRank  `json:"live_rank"`
+	LiveCombo []any       `json:"live_combo"`
 }
 
 // Rewards ...
@@ -536,8 +536,8 @@ type NextLevelInfo struct {
 
 // GoalAccompInfo ...
 type GoalAccompInfo struct {
-	AchievedIds []interface{} `json:"achieved_ids"`
-	Rewards     []interface{} `json:"rewards"`
+	AchievedIds []any `json:"achieved_ids"`
+	Rewards     []any `json:"rewards"`
 }
 
 // RewardRankInfo ...
@@ -596,25 +596,25 @@ type RewardRes struct {
 	HiScore                      int                           `json:"hi_score"`
 	BaseRewardInfo               BaseRewardInfo                `json:"base_reward_info"`
 	RewardUnitList               RewardUnitList                `json:"reward_unit_list"`
-	UnlockedSubscenarioIds       []interface{}                 `json:"unlocked_subscenario_ids"`
-	UnlockedMultiUnitScenarioIds []interface{}                 `json:"unlocked_multi_unit_scenario_ids"`
+	UnlockedSubscenarioIds       []any                         `json:"unlocked_subscenario_ids"`
+	UnlockedMultiUnitScenarioIds []any                         `json:"unlocked_multi_unit_scenario_ids"`
 	EffortPoint                  []EffortPoint                 `json:"effort_point"`
 	IsEffortPointVisible         bool                          `json:"is_effort_point_visible"`
-	LimitedEffortBox             []interface{}                 `json:"limited_effort_box"`
+	LimitedEffortBox             []any                         `json:"limited_effort_box"`
 	UnitList                     []PlayRewardUnitList          `json:"unit_list"`
 	BeforeUserInfo               BeforeUserInfo                `json:"before_user_info"`
 	AfterUserInfo                AfterUserInfo                 `json:"after_user_info"`
 	NextLevelInfo                []NextLevelInfo               `json:"next_level_info"`
 	GoalAccompInfo               GoalAccompInfo                `json:"goal_accomp_info"`
-	SpecialRewardInfo            []interface{}                 `json:"special_reward_info"`
-	EventInfo                    []interface{}                 `json:"event_info"`
-	DailyRewardInfo              []interface{}                 `json:"daily_reward_info"`
+	SpecialRewardInfo            []any                         `json:"special_reward_info"`
+	EventInfo                    []any                         `json:"event_info"`
+	DailyRewardInfo              []any                         `json:"daily_reward_info"`
 	CanSendFriendRequest         bool                          `json:"can_send_friend_request"`
-	UsingBuffInfo                []interface{}                 `json:"using_buff_info"`
+	UsingBuffInfo                []any                         `json:"using_buff_info"`
 	ClassSystem                  ClassSystem                   `json:"class_system"`
 	AccomplishedAchievementList  []AccomplishedAchievementList `json:"accomplished_achievement_list"`
 	UnaccomplishedAchievementCnt int                           `json:"unaccomplished_achievement_cnt"`
-	AddedAchievementList         []interface{}                 `json:"added_achievement_list"`
+	AddedAchievementList         []any                         `json:"added_achievement_list"`
 	MuseumInfo                   Museum                        `json:"museum_info"`
 	UnitSupportList              []RewardUnitSupportList       `json:"unit_support_list"`
 	ServerTimestamp              int                           `json:"server_timestamp"`
@@ -623,9 +623,9 @@ type RewardRes struct {
 
 // RewardResp ...
 type RewardResp struct {
-	ResponseData RewardRes     `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData RewardRes `json:"response_data"`
+	ReleaseInfo  []any     `json:"release_info"`
+	StatusCode   int       `json:"status_code"`
 }
 
 // LiveSeInfoRes ...

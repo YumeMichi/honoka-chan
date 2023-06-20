@@ -45,7 +45,7 @@ func Api(ctx *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	results := []interface{}{}
+	results := []any{}
 	for _, v := range apiReq {
 		var res []byte
 		var err error
@@ -72,12 +72,12 @@ func Api(ctx *gin.Context) {
 						FriendsRequestCnt:      0,
 						IsTodayBirthday:        false,
 						LicenseInfo: model.TopInfoLicenseInfo{
-							LicenseList:  []interface{}{},
-							LicensedInfo: []interface{}{},
-							ExpiredInfo:  []interface{}{},
+							LicenseList:  []any{},
+							LicensedInfo: []any{},
+							ExpiredInfo:  []any{},
 							BadgeFlag:    false,
 						},
-						UsingBuffInfo:     []interface{}{},
+						UsingBuffInfo:     []any{},
 						IsKlabIDTaskFlag:  false,
 						KlabIDTaskCanSync: false,
 						HasUnreadAnnounce: false,
@@ -163,8 +163,8 @@ func Api(ctx *gin.Context) {
 						NormalLiveStatusList:   normalLives,
 						SpecialLiveStatusList:  specialLives,
 						TrainingLiveStatusList: []model.TrainingLiveStatusList{},
-						MarathonLiveStatusList: []interface{}{},
-						FreeLiveStatusList:     []interface{}{},
+						MarathonLiveStatusList: []any{},
+						FreeLiveStatusList:     []any{},
 						CanResumeLive:          false,
 					},
 					Status:     200,
@@ -202,12 +202,12 @@ func Api(ctx *gin.Context) {
 				}
 				liveListResp := model.LiveScheduleResp{
 					Result: model.LiveScheduleRes{
-						EventList:              []interface{}{},
+						EventList:              []any{},
 						LiveList:               livesList,
-						LimitedBonusList:       []interface{}{},
+						LimitedBonusList:       []any{},
 						LimitedBonusCommonList: []model.LimitedBonusCommonList{}, // 特效道具
 						RandomLiveList:         []model.RandomLiveList{},         // 随机歌曲
-						FreeLiveList:           []interface{}{},
+						FreeLiveList:           []any{},
 						TrainingLiveList:       []model.TrainingLiveList{}, // 挑战歌曲
 					},
 					Status:     200,
@@ -328,7 +328,7 @@ func Api(ctx *gin.Context) {
 				err = UserEng.Table("skill_equip_m").Where("user_id = ?", ctx.GetString("userid")).Cols("unit_owning_user_id").GroupBy("unit_owning_user_id").Find(&unitOwningIds)
 				CheckErr(err)
 
-				equipInfo := map[int]interface{}{}
+				equipInfo := map[int]any{}
 				for _, v := range unitOwningIds {
 					detail := []model.SkillEquipDetail{}
 					err = UserEng.Table("skill_equip_m").Where("user_id = ? AND unit_owning_user_id = ?", ctx.GetString("userid"), v).
@@ -482,7 +482,7 @@ func Api(ctx *gin.Context) {
 			subScenarioResp := model.SubscenarioStatusResp{
 				Result: model.SubscenarioStatusRes{
 					SubscenarioStatusList:  subScenarioLists,
-					UnlockedSubscenarioIds: []interface{}{},
+					UnlockedSubscenarioIds: []any{},
 				},
 				Status:     200,
 				CommandNum: false,
@@ -575,7 +575,7 @@ func Api(ctx *gin.Context) {
 			unitsResp := model.MultiUnitScenarioStatusResp{
 				Result: model.MultiUnitScenarioStatusRes{
 					MultiUnitScenarioStatusList:  multiUnitsList,
-					UnlockedMultiUnitScenarioIds: []interface{}{},
+					UnlockedMultiUnitScenarioIds: []any{},
 				},
 				Status:     200,
 				CommandNum: false,
@@ -648,7 +648,7 @@ func Api(ctx *gin.Context) {
 			marqueeResp := model.NoticeMarqueeResp{
 				Result: model.NoticeMarqueeRes{
 					ItemCount:   0,
-					MarqueeList: []interface{}{},
+					MarqueeList: []any{},
 				},
 				Status:     200,
 				CommandNum: false,
@@ -678,7 +678,7 @@ func Api(ctx *gin.Context) {
 			// key = "special_cutin_result"
 			cutinResp := model.SpecialCutinResp{
 				Result: model.SpecialCutinRes{
-					SpecialCutinList: []interface{}{},
+					SpecialCutinList: []any{},
 				},
 				Status:     200,
 				CommandNum: false,
@@ -753,7 +753,7 @@ func Api(ctx *gin.Context) {
 		case "stamp":
 			// key = "stamp_result"
 			stampResp := utils.ReadAllText("assets/sif/stamp.json")
-			var mStampResp interface{}
+			var mStampResp any
 			err = json.Unmarshal([]byte(stampResp), &mStampResp)
 			CheckErr(err)
 			res, err = json.Marshal(mStampResp)
@@ -807,7 +807,7 @@ func Api(ctx *gin.Context) {
 		case "item":
 			// key = "item_list_result"
 			itemResp := utils.ReadAllText("assets/sif/item.json")
-			var mItemResp interface{}
+			var mItemResp any
 			err = json.Unmarshal([]byte(itemResp), &mItemResp)
 			CheckErr(err)
 			res, err = json.Marshal(mItemResp)
@@ -815,7 +815,7 @@ func Api(ctx *gin.Context) {
 		case "marathon":
 			// key = "marathon_result"
 			marathonResp := model.MarathonInfoResp{
-				Result:     []interface{}{},
+				Result:     []any{},
 				Status:     200,
 				CommandNum: false,
 				TimeStamp:  time.Now().Unix(),
@@ -825,7 +825,7 @@ func Api(ctx *gin.Context) {
 		case "challenge":
 			// key = "challenge_result"
 			challengeResp := model.ChallengeInfoResp{
-				Result:     []interface{}{},
+				Result:     []any{},
 				Status:     200,
 				CommandNum: false,
 				TimeStamp:  time.Now().Unix(),
@@ -897,7 +897,7 @@ func Api(ctx *gin.Context) {
 				CheckErr(err)
 			} else if v.Action == "cardRanking" {
 				// key = "profile_card_ranking_result"
-				var result []interface{}
+				var result []any
 				love := utils.ReadAllText("assets/sif/love.json")
 				err := json.Unmarshal([]byte(love), &result)
 				CheckErr(err)
@@ -1076,7 +1076,7 @@ func Api(ctx *gin.Context) {
 			CheckErr(err)
 		}
 
-		var result interface{}
+		var result any
 		err = json.Unmarshal([]byte(res), &result)
 		CheckErr(err)
 		results = append(results, result)
@@ -1086,7 +1086,7 @@ func Api(ctx *gin.Context) {
 	CheckErr(err)
 	rp := model.ApiResp{
 		ResponseData: b,
-		ReleaseInfo:  []interface{}{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	b, err = json.Marshal(rp)

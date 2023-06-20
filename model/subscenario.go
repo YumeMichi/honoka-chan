@@ -3,7 +3,7 @@ package model
 // SubScenarioResp ...
 type SubScenarioResp struct {
 	ResponseData SubScenarioRes `json:"response_data"`
-	ReleaseInfo  []interface{}  `json:"release_info"`
+	ReleaseInfo  []any          `json:"release_info"`
 	StatusCode   int            `json:"status_code"`
 }
 

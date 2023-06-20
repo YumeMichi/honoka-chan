@@ -2,15 +2,15 @@ package model
 
 // UserNaviResp ...
 type UserNaviChangeResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }
 
 // UserNameChangeResp ...
 type UserNameChangeResp struct {
 	ResponseData UserNameChangeRes `json:"response_data"`
-	ReleaseInfo  []interface{}     `json:"release_info"`
+	ReleaseInfo  []any             `json:"release_info"`
 	StatusCode   int               `json:"status_code"`
 }
 
@@ -42,7 +42,7 @@ type UserNaviResp struct {
 
 // NotificationResp ...
 type NotificationResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }

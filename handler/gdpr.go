@@ -19,7 +19,7 @@ func Gdpr(ctx *gin.Context) {
 			IsEea:           false,
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(gdprResp)

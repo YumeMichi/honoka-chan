@@ -53,8 +53,8 @@ func SignResp(ep, body, key string) (resp string) {
 	return
 }
 
-func GetUserStatus() map[string]interface{} {
-	var r map[string]interface{}
+func GetUserStatus() map[string]any {
+	var r map[string]any
 	if err := json.Unmarshal([]byte(utils.ReadAllText("assets/as/userStatus.json")), &r); err != nil {
 		panic(err)
 	}

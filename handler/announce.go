@@ -26,7 +26,7 @@ func AnnounceCheckState(ctx *gin.Context) {
 			HasUnreadAnnounce: false,
 			ServerTimestamp:   time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(announceResp)

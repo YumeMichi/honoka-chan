@@ -95,7 +95,7 @@ func LBonusExecute(ctx *gin.Context) {
 
 	LbRes := model.LbResp{
 		ResponseData: model.LbRes{
-			Sheets: []interface{}{},
+			Sheets: []any{},
 			CalendarInfo: model.CalendarInfo{
 				CurrentDate: time.Now().Format("2006-01-02 03:04:05"),
 				CurrentMonth: model.LbMonth{
@@ -120,7 +120,7 @@ func LBonusExecute(ctx *gin.Context) {
 					},
 				},
 			},
-			LicenseLbonusList: []interface{}{},
+			LicenseLbonusList: []any{},
 			ClassSystem: model.LbClassSystem{
 				RankInfo: model.LbRankInfo{
 					BeforeClassRankID: 10,
@@ -131,7 +131,7 @@ func LBonusExecute(ctx *gin.Context) {
 				IsOpened:     true,
 				IsVisible:    true,
 			},
-			StartDashSheets: []interface{}{},
+			StartDashSheets: []any{},
 			EffortPoint: []model.EffortPoint{
 				{
 					LiveEffortPointBoxSpecID: 5,
@@ -141,12 +141,12 @@ func LBonusExecute(ctx *gin.Context) {
 					Rewards:                  []model.Rewards{},
 				},
 			},
-			LimitedEffortBox: []interface{}{},
+			LimitedEffortBox: []any{},
 			MuseumInfo:       model.Museum{},
 			ServerTimestamp:  time.Now().Unix(),
 			PresentCnt:       0,
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 

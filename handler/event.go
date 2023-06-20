@@ -25,7 +25,7 @@ func EventList(ctx *gin.Context) {
 			TargetList:      targets,
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(eventsResp)

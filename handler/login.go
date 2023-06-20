@@ -20,7 +20,7 @@ func AuthKey(ctx *gin.Context) {
 			AuthorizeToken: ctx.GetString("authorize_token"),
 			DummyToken:     ctx.GetString("dummy_token"),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(authResp)
@@ -54,7 +54,7 @@ func Login(ctx *gin.Context) {
 			ServerTimestamp: time.Now().Unix(),
 			AdultFlag:       2,
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(loginResp)

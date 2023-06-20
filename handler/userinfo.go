@@ -55,7 +55,7 @@ func UserInfo(ctx *gin.Context) {
 			},
 			ServerTimestamp: time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 	resp, err := json.Marshal(userResp)

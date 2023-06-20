@@ -86,13 +86,13 @@ func AsGetPackUrl(ctx *gin.Context) {
 	}
 	// fmt.Println(req)
 
-	packBody, ok := req[0].(map[string]interface{})
+	packBody, ok := req[0].(map[string]any)
 	if !ok {
 		panic("Assertion failed!")
 	}
 	// fmt.Println(packBody)
 
-	packNames, ok := packBody["pack_names"].([]interface{})
+	packNames, ok := packBody["pack_names"].([]any)
 	if !ok {
 		panic("Assertion failed!")
 	}
@@ -210,7 +210,7 @@ func AsLiveMvSaveDeck(ctx *gin.Context) {
 		panic(err)
 	}
 
-	body, ok := req[0].(map[string]interface{})
+	body, ok := req[0].(map[string]any)
 	if !ok {
 		panic("Assertion failed!")
 	}
@@ -338,65 +338,65 @@ func AsLiveMvSaveDeck(ctx *gin.Context) {
 		UserModel: model.UserModel{
 			UserStatus:                                              CommonUserStatus(),
 			UserMemberByMemberID:                                    userMemberByMemberID,
-			UserCardByCardID:                                        []interface{}{},
-			UserSuitBySuitID:                                        []interface{}{},
-			UserLiveDeckByID:                                        []interface{}{},
-			UserLivePartyByID:                                       []interface{}{},
-			UserLessonDeckByID:                                      []interface{}{},
-			UserLiveMvDeckByID:                                      []interface{}{},
+			UserCardByCardID:                                        []any{},
+			UserSuitBySuitID:                                        []any{},
+			UserLiveDeckByID:                                        []any{},
+			UserLivePartyByID:                                       []any{},
+			UserLessonDeckByID:                                      []any{},
+			UserLiveMvDeckByID:                                      []any{},
 			UserLiveMvDeckCustomByID:                                userLiveMvDeckCustomByID,
-			UserLiveDifficultyByDifficultyID:                        []interface{}{},
-			UserStoryMainByStoryMainID:                              []interface{}{},
-			UserStoryMainSelectedByStoryMainCellID:                  []interface{}{},
-			UserVoiceByVoiceID:                                      []interface{}{},
-			UserEmblemByEmblemID:                                    []interface{}{},
-			UserGachaTicketByTicketID:                               []interface{}{},
-			UserGachaPointByPointID:                                 []interface{}{},
-			UserLessonEnhancingItemByItemID:                         []interface{}{},
-			UserTrainingMaterialByItemID:                            []interface{}{},
-			UserGradeUpItemByItemID:                                 []interface{}{},
-			UserCustomBackgroundByID:                                []interface{}{},
-			UserStorySideByID:                                       []interface{}{},
-			UserStoryMemberByID:                                     []interface{}{},
-			UserCommunicationMemberDetailBadgeByID:                  []interface{}{},
-			UserStoryEventHistoryByID:                               []interface{}{},
-			UserRecoveryLpByID:                                      []interface{}{},
-			UserRecoveryApByID:                                      []interface{}{},
-			UserMissionByMissionID:                                  []interface{}{},
-			UserDailyMissionByMissionID:                             []interface{}{},
-			UserWeeklyMissionByMissionID:                            []interface{}{},
-			UserInfoTriggerBasicByTriggerID:                         []interface{}{},
-			UserInfoTriggerCardGradeUpByTriggerID:                   []interface{}{},
-			UserInfoTriggerMemberGuildSupportItemExpiredByTriggerID: []interface{}{},
-			UserInfoTriggerMemberLoveLevelUpByTriggerID:             []interface{}{},
-			UserAccessoryByUserAccessoryID:                          []interface{}{},
-			UserAccessoryLevelUpItemByID:                            []interface{}{},
-			UserAccessoryRarityUpItemByID:                           []interface{}{},
-			UserUnlockScenesByEnum:                                  []interface{}{},
-			UserSceneTipsByEnum:                                     []interface{}{},
-			UserRuleDescriptionByID:                                 []interface{}{},
-			UserExchangeEventPointByID:                              []interface{}{},
-			UserSchoolIdolFestivalIDRewardMissionByID:               []interface{}{},
-			UserGpsPresentReceivedByID:                              []interface{}{},
-			UserEventMarathonByEventMasterID:                        []interface{}{},
-			UserEventMiningByEventMasterID:                          []interface{}{},
-			UserEventCoopByEventMasterID:                            []interface{}{},
-			UserLiveSkipTicketByID:                                  []interface{}{},
-			UserStoryEventUnlockItemByID:                            []interface{}{},
-			UserEventMarathonBoosterByID:                            []interface{}{},
-			UserReferenceBookByID:                                   []interface{}{},
-			UserReviewRequestProcessFlowByID:                        []interface{}{},
-			UserRankExpByID:                                         []interface{}{},
-			UserShareByID:                                           []interface{}{},
-			UserTowerByTowerID:                                      []interface{}{},
-			UserRecoveryTowerCardUsedCountItemByRecoveryTowerCardUsedCountItemMasterID: []interface{}{},
-			UserStoryLinkageByID:             []interface{}{},
-			UserSubscriptionStatusByID:       []interface{}{},
-			UserStoryMainPartDigestMovieByID: []interface{}{},
-			UserMemberGuildByID:              []interface{}{},
-			UserMemberGuildSupportItemByID:   []interface{}{},
-			UserDailyTheaterByDailyTheaterID: []interface{}{},
-			UserPlayListByID:                 []interface{}{},
+			UserLiveDifficultyByDifficultyID:                        []any{},
+			UserStoryMainByStoryMainID:                              []any{},
+			UserStoryMainSelectedByStoryMainCellID:                  []any{},
+			UserVoiceByVoiceID:                                      []any{},
+			UserEmblemByEmblemID:                                    []any{},
+			UserGachaTicketByTicketID:                               []any{},
+			UserGachaPointByPointID:                                 []any{},
+			UserLessonEnhancingItemByItemID:                         []any{},
+			UserTrainingMaterialByItemID:                            []any{},
+			UserGradeUpItemByItemID:                                 []any{},
+			UserCustomBackgroundByID:                                []any{},
+			UserStorySideByID:                                       []any{},
+			UserStoryMemberByID:                                     []any{},
+			UserCommunicationMemberDetailBadgeByID:                  []any{},
+			UserStoryEventHistoryByID:                               []any{},
+			UserRecoveryLpByID:                                      []any{},
+			UserRecoveryApByID:                                      []any{},
+			UserMissionByMissionID:                                  []any{},
+			UserDailyMissionByMissionID:                             []any{},
+			UserWeeklyMissionByMissionID:                            []any{},
+			UserInfoTriggerBasicByTriggerID:                         []any{},
+			UserInfoTriggerCardGradeUpByTriggerID:                   []any{},
+			UserInfoTriggerMemberGuildSupportItemExpiredByTriggerID: []any{},
+			UserInfoTriggerMemberLoveLevelUpByTriggerID:             []any{},
+			UserAccessoryByUserAccessoryID:                          []any{},
+			UserAccessoryLevelUpItemByID:                            []any{},
+			UserAccessoryRarityUpItemByID:                           []any{},
+			UserUnlockScenesByEnum:                                  []any{},
+			UserSceneTipsByEnum:                                     []any{},
+			UserRuleDescriptionByID:                                 []any{},
+			UserExchangeEventPointByID:                              []any{},
+			UserSchoolIdolFestivalIDRewardMissionByID:               []any{},
+			UserGpsPresentReceivedByID:                              []any{},
+			UserEventMarathonByEventMasterID:                        []any{},
+			UserEventMiningByEventMasterID:                          []any{},
+			UserEventCoopByEventMasterID:                            []any{},
+			UserLiveSkipTicketByID:                                  []any{},
+			UserStoryEventUnlockItemByID:                            []any{},
+			UserEventMarathonBoosterByID:                            []any{},
+			UserReferenceBookByID:                                   []any{},
+			UserReviewRequestProcessFlowByID:                        []any{},
+			UserRankExpByID:                                         []any{},
+			UserShareByID:                                           []any{},
+			UserTowerByTowerID:                                      []any{},
+			UserRecoveryTowerCardUsedCountItemByRecoveryTowerCardUsedCountItemMasterID: []any{},
+			UserStoryLinkageByID:             []any{},
+			UserSubscriptionStatusByID:       []any{},
+			UserStoryMainPartDigestMovieByID: []any{},
+			UserMemberGuildByID:              []any{},
+			UserMemberGuildSupportItemByID:   []any{},
+			UserDailyTheaterByDailyTheaterID: []any{},
+			UserPlayListByID:                 []any{},
 		},
 	}
 	respB, err := json.Marshal(saveResp)
@@ -451,7 +451,7 @@ func AsUpdateUserCommunicationMemberDetailBadge(ctx *gin.Context) {
 		return true
 	})
 
-	userDetail := []interface{}{}
+	userDetail := []any{}
 	userDetail = append(userDetail, memberMasterId)
 	userDetail = append(userDetail, model.UserCommunicationMemberDetailBadgeByID{
 		MemberMasterID: int(memberMasterId),
@@ -807,12 +807,12 @@ func AsLiveStart(ctx *gin.Context) {
 		panic("歌曲情报信息不存在！")
 	}
 
-	var liveNotesRes map[string]interface{}
+	var liveNotesRes map[string]any
 	if err = json.Unmarshal([]byte(liveNotes), &liveNotesRes); err != nil {
 		panic(err)
 	}
 
-	var partnerInfo map[string]interface{}
+	var partnerInfo map[string]any
 	if err = json.Unmarshal([]byte(cardInfo), &partnerInfo); err != nil {
 		panic(err)
 	}
@@ -948,7 +948,7 @@ func AsGetOtherUserCard(ctx *gin.Context) {
 		return true
 	})
 
-	var userCardInfo map[string]interface{}
+	var userCardInfo map[string]any
 	if err := json.Unmarshal([]byte(cardInfo), &userCardInfo); err != nil {
 		panic(err)
 	}
@@ -999,7 +999,7 @@ func AsChangeIsAwakeningImage(ctx *gin.Context) {
 			return true
 		})
 
-	userCardInfo := []interface{}{}
+	userCardInfo := []any{}
 	userCardInfo = append(userCardInfo, cardInfo.CardMasterID)
 	userCardInfo = append(userCardInfo, cardInfo)
 

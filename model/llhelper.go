@@ -2,10 +2,10 @@ package model
 
 // Data ...
 type Data struct {
-	Version   int           `json:"version"`
-	Team      []Team        `json:"team"`
-	Gemstock  interface{}   `json:"gemstock"`
-	Submember []interface{} `json:"submember"`
+	Version   int    `json:"version"`
+	Team      []Team `json:"team"`
+	Gemstock  any    `json:"gemstock"`
+	Submember []any  `json:"submember"`
 }
 
 // Accessory ...

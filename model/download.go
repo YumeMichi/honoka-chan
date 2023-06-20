@@ -21,7 +21,7 @@ type AdditionalRes struct {
 // AdditionalResp ...
 type AdditionalResp struct {
 	ResponseData []AdditionalRes `json:"response_data"`
-	ReleaseInfo  []interface{}   `json:"release_info"`
+	ReleaseInfo  []any           `json:"release_info"`
 	StatusCode   int             `json:"status_code"`
 }
 
@@ -42,21 +42,21 @@ type BatchRes struct {
 
 // BatchResp ...
 type BatchResp struct {
-	ResponseData []BatchRes    `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []BatchRes `json:"response_data"`
+	ReleaseInfo  []any      `json:"release_info"`
+	StatusCode   int        `json:"status_code"`
 }
 
 // UpdateReq ...
 type UpdateReq struct {
-	Module          string        `json:"module"`
-	TargetOs        string        `json:"target_os"`
-	InstallVersion  string        `json:"install_version"`
-	TimeStamp       int           `json:"timeStamp"`
-	Action          string        `json:"action"`
-	PackageList     []interface{} `json:"package_list"`
-	CommandNum      string        `json:"commandNum"`
-	ExternalVersion string        `json:"external_version"`
+	Module          string `json:"module"`
+	TargetOs        string `json:"target_os"`
+	InstallVersion  string `json:"install_version"`
+	TimeStamp       int    `json:"timeStamp"`
+	Action          string `json:"action"`
+	PackageList     []any  `json:"package_list"`
+	CommandNum      string `json:"commandNum"`
+	ExternalVersion string `json:"external_version"`
 }
 
 // UpdateRes ...
@@ -68,9 +68,9 @@ type UpdateRes struct {
 
 // UpdateResp ...
 type UpdateResp struct {
-	ResponseData []UpdateRes   `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []UpdateRes `json:"response_data"`
+	ReleaseInfo  []any       `json:"release_info"`
+	StatusCode   int         `json:"status_code"`
 }
 
 // UrlReq ...
@@ -89,14 +89,14 @@ type UrlRes struct {
 
 // UrlResp ...
 type UrlResp struct {
-	ResponseData UrlRes        `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData UrlRes `json:"response_data"`
+	ReleaseInfo  []any  `json:"release_info"`
+	StatusCode   int    `json:"status_code"`
 }
 
 // EventResp ...
 type EventResp struct {
-	ResponseData []interface{} `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData []any `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }

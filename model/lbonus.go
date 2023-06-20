@@ -63,14 +63,14 @@ type LbClassSystem struct {
 
 // LbRes ...
 type LbRes struct {
-	Sheets            []interface{}  `json:"sheets"`
+	Sheets            []any          `json:"sheets"`
 	CalendarInfo      CalendarInfo   `json:"calendar_info"`
 	TotalLoginInfo    TotalLoginInfo `json:"total_login_info"`
-	LicenseLbonusList []interface{}  `json:"license_lbonus_list"`
+	LicenseLbonusList []any          `json:"license_lbonus_list"`
 	ClassSystem       LbClassSystem  `json:"class_system"`
-	StartDashSheets   []interface{}  `json:"start_dash_sheets"`
+	StartDashSheets   []any          `json:"start_dash_sheets"`
 	EffortPoint       []EffortPoint  `json:"effort_point"`
-	LimitedEffortBox  []interface{}  `json:"limited_effort_box"`
+	LimitedEffortBox  []any          `json:"limited_effort_box"`
 	MuseumInfo        Museum         `json:"museum_info"`
 	ServerTimestamp   int64          `json:"server_timestamp"`
 	PresentCnt        int            `json:"present_cnt"`
@@ -78,7 +78,7 @@ type LbRes struct {
 
 // LbResp ...
 type LbResp struct {
-	ResponseData LbRes         `json:"response_data"`
-	ReleaseInfo  []interface{} `json:"release_info"`
-	StatusCode   int           `json:"status_code"`
+	ResponseData LbRes `json:"response_data"`
+	ReleaseInfo  []any `json:"release_info"`
+	StatusCode   int   `json:"status_code"`
 }

@@ -408,7 +408,7 @@ func PlayLive(ctx *gin.Context) {
 			CanActivateEffect:   true,
 			ServerTimestamp:     time.Now().Unix(),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 
@@ -427,8 +427,8 @@ func PlayLive(ctx *gin.Context) {
 
 func GameOver(ctx *gin.Context) {
 	overResp := model.GameOverResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(overResp)
@@ -519,7 +519,7 @@ func PlayScore(ctx *gin.Context) {
 			CanActivateEffect: true,
 			ServerTimestamp:   int(time.Now().Unix()),
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 
@@ -593,13 +593,13 @@ func PlayReward(ctx *gin.Context) {
 			RewardUnitList: model.RewardUnitList{
 				LiveClear: []model.LiveClear{},
 				LiveRank:  []model.LiveRank{},
-				LiveCombo: []interface{}{},
+				LiveCombo: []any{},
 			},
-			UnlockedSubscenarioIds:       []interface{}{},
-			UnlockedMultiUnitScenarioIds: []interface{}{},
+			UnlockedSubscenarioIds:       []any{},
+			UnlockedMultiUnitScenarioIds: []any{},
 			EffortPoint:                  []model.EffortPoint{},
 			IsEffortPointVisible:         false,
-			LimitedEffortBox:             []interface{}{},
+			LimitedEffortBox:             []any{},
 			UnitList:                     unitsList,
 			BeforeUserInfo: model.BeforeUserInfo{
 				Level:                          1028,
@@ -656,14 +656,14 @@ func PlayReward(ctx *gin.Context) {
 				},
 			},
 			GoalAccompInfo: model.GoalAccompInfo{
-				AchievedIds: []interface{}{},
-				Rewards:     []interface{}{},
+				AchievedIds: []any{},
+				Rewards:     []any{},
 			},
-			SpecialRewardInfo:    []interface{}{},
-			EventInfo:            []interface{}{},
-			DailyRewardInfo:      []interface{}{},
+			SpecialRewardInfo:    []any{},
+			EventInfo:            []any{},
+			DailyRewardInfo:      []any{},
 			CanSendFriendRequest: false,
-			UsingBuffInfo:        []interface{}{},
+			UsingBuffInfo:        []any{},
 			ClassSystem: model.ClassSystem{
 				RankInfo: model.RewardRankInfo{
 					BeforeClassRankID: 10,
@@ -676,13 +676,13 @@ func PlayReward(ctx *gin.Context) {
 			},
 			AccomplishedAchievementList:  []model.AccomplishedAchievementList{},
 			UnaccomplishedAchievementCnt: 15,
-			AddedAchievementList:         []interface{}{},
+			AddedAchievementList:         []any{},
 			MuseumInfo:                   model.Museum{},
 			UnitSupportList:              []model.RewardUnitSupportList{},
 			ServerTimestamp:              1679238066,
 			PresentCnt:                   2159,
 		},
-		ReleaseInfo: []interface{}{},
+		ReleaseInfo: []any{},
 		StatusCode:  200,
 	}
 

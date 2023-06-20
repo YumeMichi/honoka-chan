@@ -15,8 +15,8 @@ import (
 
 func SetDisplayRank(ctx *gin.Context) {
 	dispResp := model.SetDisplayRankResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(dispResp)
@@ -158,8 +158,8 @@ func SetDeck(ctx *gin.Context) {
 	}
 
 	dispResp := model.SetDeckResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(dispResp)
@@ -200,8 +200,8 @@ func SetDeckName(ctx *gin.Context) {
 	CheckErr(err)
 
 	dispResp := model.SetDeckResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(dispResp)
@@ -264,8 +264,8 @@ func WearAccessory(ctx *gin.Context) {
 	}
 
 	wearResp := model.AwardSetResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(wearResp)
@@ -328,8 +328,8 @@ func RemoveSkillEquip(ctx *gin.Context) {
 	}
 
 	wearResp := model.AwardSetResp{
-		ResponseData: []interface{}{},
-		ReleaseInfo:  []interface{}{},
+		ResponseData: []any{},
+		ReleaseInfo:  []any{},
 		StatusCode:   200,
 	}
 	resp, err := json.Marshal(wearResp)
