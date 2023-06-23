@@ -25,7 +25,7 @@ var (
 
 	// LLAS
 	StartUpKey    = "e0xrykyuBrLlwZhd"
-	MasterVersion = "8d6246b7c4264db4"
+	MasterVersion = "f7f2ac627227500b"
 )
 
 func init() {
