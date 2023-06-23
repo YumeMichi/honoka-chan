@@ -184,8 +184,25 @@ func AsGetClearedPlatformAchievement(ctx *gin.Context) {
 }
 
 func AsFetchLiveMusicSelect(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/fetchLiveMusicSelect.json"),
-		"user_model_diff.user_status", GetUserStatus())
+	now := time.Now()
+	year, month, day := now.Year(), now.Month(), now.Day()
+	tomorrow := time.Date(year, month, day+1, 0, 0, 0, 0, now.Location()).Unix()
+	weekday := int(now.Weekday())
+
+	liveDailyList := []model.LiveDaily{}
+	err := MainEng.Table("m_live_daily").Where("weekday = ?", weekday).Cols("id,live_id").Find(&liveDailyList)
+	CheckErr(err)
+	for k := range liveDailyList {
+		liveDailyList[k].EndAt = int(tomorrow)
+		liveDailyList[k].RemainingPlayCount = 5
+		liveDailyList[k].RemainingRecoveryCount = 9
+	}
+
+	signBody := utils.ReadAllText("assets/as/fetchLiveMusicSelect.json")
+	signBody, _ = sjson.Set(signBody, "weekday_state.weekday", weekday)
+	signBody, _ = sjson.Set(signBody, "weekday_state.next_weekday_at", tomorrow)
+	signBody, _ = sjson.Set(signBody, "live_daily_list", liveDailyList)
+	signBody, _ = sjson.Set(signBody, "user_model_diff.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")

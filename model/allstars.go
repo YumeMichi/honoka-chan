@@ -542,3 +542,12 @@ type UserCommunicationMemberDetailBadgeByID struct {
 	IsCardBadge        bool `json:"is_card_badge"`
 	IsMusicBadge       bool `json:"is_music_badge"`
 }
+
+// LiveDaily ...
+type LiveDaily struct {
+	LiveDailyMasterID      int `json:"live_daily_master_id" xorm:"id"`
+	LiveMasterID           int `json:"live_master_id" xorm:"live_id"`
+	EndAt                  int `json:"end_at"`
+	RemainingPlayCount     int `json:"remaining_play_count"`
+	RemainingRecoveryCount int `json:"remaining_recovery_count"`
+}
