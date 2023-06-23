@@ -177,5 +177,6 @@ func AsRouter(r *gin.Engine) {
 		s.POST("/story/finishUserStoryMain", handler.AsFinishStoryMain)
 		s.POST("/story/finishStoryLinkage", handler.AsFinishStoryLinkage)
 		s.POST("/trainingTree/fetchTrainingTree", handler.AsFetchTrainingTree)
+		s.POST("/gameSettings/updatePushNotificationSettings", handler.AsUpdatePushNotificationSettings)
 	}
 }

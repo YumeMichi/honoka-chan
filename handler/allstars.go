@@ -1062,3 +1062,10 @@ func AsFetchTrainingTree(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
 }
+
+func AsUpdatePushNotificationSettings(ctx *gin.Context) {
+	resp := SignResp(ctx.GetString("ep"), "{}", sessionKey)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
