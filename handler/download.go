@@ -7,6 +7,7 @@ import (
 	"honoka-chan/config"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -121,6 +122,20 @@ func DownloadUpdate(ctx *gin.Context) {
 				URL:     fmt.Sprintf("%s/%s/archives/%d_%d_%d.zip", CdnUrl, downloadReq.TargetOs, pkgType, pkg.Id, pkg.Order),
 				Version: config.PackageVersion,
 			})
+		}
+
+		patchFileUrl := fmt.Sprintf("%s/%s/archives/99_0_115.zip", CdnUrl, downloadReq.TargetOs)
+		resp, err := http.Get(patchFileUrl)
+		if err == nil {
+			res, err := io.ReadAll(resp.Body)
+			if err == nil {
+				pkgList = append(pkgList, model.UpdateRes{
+					Size:    len(res),
+					URL:     patchFileUrl,
+					Version: config.PackageVersion,
+				})
+			}
+			defer resp.Body.Close()
 		}
 	}
 
