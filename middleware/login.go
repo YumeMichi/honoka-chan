@@ -22,7 +22,7 @@ func Login(ctx *gin.Context) {
 	xmcKey := utils.SliceXor(clientToken, serverToken)
 	aesKey := xmcKey[0:16]
 
-	req := gjson.Parse(ctx.PostForm("request_data"))
+	req := gjson.Parse(ctx.GetString("request_data"))
 	tKey, err := base64.StdEncoding.DecodeString(req.Get("login_key").String())
 	CheckErr(err)
 	loginKey := utils.Sub16(encrypt.AES_CBC_Decrypt(tKey, aesKey))

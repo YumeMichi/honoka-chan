@@ -23,7 +23,7 @@ type PkgInfo struct {
 
 func DownloadAdditional(ctx *gin.Context) {
 	downloadReq := model.AdditionalReq{}
-	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
+	if err := json.Unmarshal([]byte(ctx.GetString("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
 	pkgList := []model.AdditionalRes{}
@@ -63,7 +63,7 @@ func DownloadAdditional(ctx *gin.Context) {
 
 func DownloadBatch(ctx *gin.Context) {
 	downloadReq := model.BatchReq{}
-	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
+	if err := json.Unmarshal([]byte(ctx.GetString("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
 	pkgList := []model.BatchRes{}
@@ -103,7 +103,7 @@ func DownloadBatch(ctx *gin.Context) {
 
 func DownloadUpdate(ctx *gin.Context) {
 	downloadReq := model.UpdateReq{}
-	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
+	if err := json.Unmarshal([]byte(ctx.GetString("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
 	pkgList := []model.UpdateRes{}
@@ -146,7 +146,7 @@ func DownloadUrl(ctx *gin.Context) {
 	// Extract SQL: SELECT CAST(pkg_type AS TEXT) || '_' || CAST(pkg_id AS TEXT) || '_' || CAST(pkg_order AS TEXT) || '.zip' AS zip_name FROM download_m ORDER BY pkg_type ASC,pkg_id ASC, pkg_order ASC;
 	// Extract Cmd: cat list.txt | while read line; do; unzip -o $line; done
 	downloadReq := model.UrlReq{}
-	if err := json.Unmarshal([]byte(ctx.PostForm("request_data")), &downloadReq); err != nil {
+	if err := json.Unmarshal([]byte(ctx.GetString("request_data")), &downloadReq); err != nil {
 		panic(err)
 	}
 	urlList := []string{}
