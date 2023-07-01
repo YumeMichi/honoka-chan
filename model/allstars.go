@@ -334,8 +334,8 @@ type AsSaveDeckReq struct {
 
 // AsDeckSquadDict ...
 type AsDeckSquadDict struct {
-	CardMasterIds    []int   `json:"card_master_ids"`
-	UserAccessoryIds []int64 `json:"user_accessory_ids"`
+	CardMasterIds    []int `json:"card_master_ids"`
+	UserAccessoryIds []any `json:"user_accessory_ids"`
 }
 
 // AsDeckInfo ...
@@ -376,9 +376,9 @@ type AsPartyInfo struct {
 	CardMasterID1    int         `json:"card_master_id_1"`
 	CardMasterID2    int         `json:"card_master_id_2"`
 	CardMasterID3    int         `json:"card_master_id_3"`
-	UserAccessoryID1 int64       `json:"user_accessory_id_1"`
-	UserAccessoryID2 int64       `json:"user_accessory_id_2"`
-	UserAccessoryID3 int64       `json:"user_accessory_id_3"`
+	UserAccessoryID1 any         `json:"user_accessory_id_1"`
+	UserAccessoryID2 any         `json:"user_accessory_id_2"`
+	UserAccessoryID3 any         `json:"user_accessory_id_3"`
 }
 
 // AsPartyName ...
