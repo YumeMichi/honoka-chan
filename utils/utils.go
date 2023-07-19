@@ -7,7 +7,12 @@ import (
 	"encoding/hex"
 	"math/rand"
 	"os"
+	"sync"
 	"time"
+)
+
+var (
+	rwMutex sync.RWMutex
 )
 
 func PathExists(path string) bool {
@@ -16,6 +21,9 @@ func PathExists(path string) bool {
 }
 
 func ReadAllText(path string) string {
+	rwMutex.RLock()
+	defer rwMutex.RUnlock()
+
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return ""
@@ -24,6 +32,9 @@ func ReadAllText(path string) string {
 }
 
 func WriteAllText(path, text string) {
+	rwMutex.Lock()
+	defer rwMutex.Unlock()
+
 	_ = os.WriteFile(path, []byte(text), 0644)
 }
 

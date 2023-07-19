@@ -2,7 +2,6 @@ package database
 
 import (
 	"errors"
-	"honoka-chan/config"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
@@ -22,7 +21,7 @@ func init() {
 }
 
 func (ldb *LevelDbImpl) InitDb() {
-	ldb.ldb, err = leveldb.OpenFile(config.Conf.LevelDb.DataPath, nil)
+	ldb.ldb, err = leveldb.OpenFile("./data/honoka-chan.db", nil)
 	if err != nil {
 		panic(err.Error())
 	}

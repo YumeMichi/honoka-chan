@@ -551,3 +551,59 @@ type LiveDaily struct {
 	RemainingPlayCount     int `json:"remaining_play_count"`
 	RemainingRecoveryCount int `json:"remaining_recovery_count"`
 }
+
+// AsLiveStageInfo ...
+type AsLiveStageInfo struct {
+	LiveDifficultyID int                  `json:"live_difficulty_id"`
+	LiveNotes        []AsLiveNotes        `json:"live_notes"`
+	LiveWaveSettings []AsLiveWaveSettings `json:"live_wave_settings"`
+	NoteGimmicks     []AsNoteGimmicks     `json:"note_gimmicks"`
+	StageGimmickDict []any                `json:"stage_gimmick_dict"`
+}
+
+// AsLiveNotes ...
+type AsLiveNotes struct {
+	ID                  int `json:"id"`
+	CallTime            int `json:"call_time"`
+	NoteType            int `json:"note_type"`
+	NotePosition        int `json:"note_position"`
+	GimmickID           int `json:"gimmick_id"`
+	NoteAction          int `json:"note_action"`
+	WaveID              int `json:"wave_id"`
+	NoteRandomDropColor int `json:"note_random_drop_color"`
+	AutoJudgeType       int `json:"auto_judge_type"`
+}
+
+// AsLiveWaveSettings ...
+type AsLiveWaveSettings struct {
+	ID            int `json:"id"`
+	WaveDamage    int `json:"wave_damage"`
+	MissionType   int `json:"mission_type"`
+	Arg1          int `json:"arg_1"`
+	Arg2          int `json:"arg_2"`
+	RewardVoltage int `json:"reward_voltage"`
+}
+
+// AsNoteGimmicks ...
+type AsNoteGimmicks struct {
+	UniqID          int `json:"uniq_id"`
+	ID              int `json:"id"`
+	NoteGimmickType int `json:"note_gimmick_type"`
+	Arg1            int `json:"arg_1"`
+	Arg2            int `json:"arg_2"`
+	EffectMID       int `json:"effect_m_id"`
+	IconType        int `json:"icon_type"`
+}
+
+// AsLessonMenuAction ...
+type AsLessonMenuAction struct {
+	CardMasterID                  int64 `json:"card_master_id"`
+	Position                      int   `json:"position"`
+	IsAddedPassiveSkill           bool  `json:"is_added_passive_skill"`
+	IsAddedSpecialPassiveSkill    bool  `json:"is_added_special_passive_skill"`
+	IsRankupedPassiveSkill        bool  `json:"is_rankuped_passive_skill"`
+	IsRankupedSpecialPassiveSkill bool  `json:"is_rankuped_special_passive_skill"`
+	IsPromotedSkill               bool  `json:"is_promoted_skill"`
+	MaxRarity                     any   `json:"max_rarity"`
+	UpCount                       int   `json:"up_count"`
+}

@@ -5,30 +5,36 @@ import (
 	"fmt"
 	"honoka-chan/config"
 	"honoka-chan/encrypt"
-	"honoka-chan/model"
 	"honoka-chan/utils"
+	"os"
+	"strings"
 	"time"
 
+	"github.com/tidwall/sjson"
 	"xorm.io/xorm"
 )
 
 var (
-	CdnUrl   string
-	ErrorMsg = `{"code":20001,"message":""}`
-	MainEng  *xorm.Engine
-	UserEng  *xorm.Engine
+	SifCdnServer string
+	AsCdnServer  string
+	ErrorMsg     = `{"code":20001,"message":""}`
+	MainEng      *xorm.Engine
+	UserEng      *xorm.Engine
 
 	// LLAS
-	sessionKey = "12345678123456781234567812345678"
+	sessionKey     = "12345678123456781234567812345678"
+	presetDataPath = "assets/as/"
+	userDataPath   = "assets/userdata/"
 )
 
 func init() {
-	if config.Conf.Cdn.CdnUrl != "" {
-		CdnUrl = config.Conf.Cdn.CdnUrl
-	}
+	SifCdnServer = config.Conf.Settings.SifCdnServer
+	AsCdnServer = config.Conf.Settings.AsCdnServer
 
 	MainEng = config.MainEng
 	UserEng = config.UserEng
+
+	os.Mkdir(userDataPath, 0755)
 }
 
 func CheckErr(err error) {
@@ -54,70 +60,85 @@ func SignResp(ep, body, key string) (resp string) {
 }
 
 func GetUserStatus() map[string]any {
+	userData := GetUserData("userStatus.json")
 	var r map[string]any
-	if err := json.Unmarshal([]byte(utils.ReadAllText("assets/as/userStatus.json")), &r); err != nil {
+	if err := json.Unmarshal([]byte(userData), &r); err != nil {
 		panic(err)
 	}
 	return r
 }
 
-func CommonUserStatus() model.AsUserStatus {
-	return model.AsUserStatus{
-		Name: model.Name{
-			DotUnderText: "梦路2号机@果果厨",
-		},
-		Nickname: model.Nickname{
-			DotUnderText: "梦路",
-		},
-		LastLoginAt: time.Now().Unix(),
-		Rank:        122,
-		Exp:         416263,
-		Message: model.Message{
-			DotUnderText: "B站主播：梦路_YumeMichi",
-		},
-		RecommendCardMasterID:                     200013001,
-		MaxFriendNum:                              0,
-		LivePointFullAt:                           1684158189,
-		LivePointBroken:                           150,
-		LivePointSubscriptionRecoveryDailyCount:   1,
-		LivePointSubscriptionRecoveryDailyResetAt: 1656259200,
-		ActivityPointCount:                        0,
-		ActivityPointResetAt:                      1684123200,
-		ActivityPointPaymentRecoveryDailyCount:    10,
-		ActivityPointPaymentRecoveryDailyResetAt:  1683734400,
-		GameMoney:                                 115665089,
-		CardExp:                                   32316167,
-		FreeSnsCoin:                               280,
-		AppleSnsCoin:                              0,
-		GoogleSnsCoin:                             0,
-		Cash:                                      0,
-		SubscriptionCoin:                          30,
-		BirthDate:                                 nil,
-		BirthMonth:                                10,
-		BirthDay:                                  18,
-		LatestLiveDeckID:                          1,
-		MainLessonDeckID:                          1,
-		FavoriteMemberID:                          1,
-		LastLiveDifficultyID:                      12092302,
-		LpMagnification:                           1,
-		EmblemID:                                  13100608,
-		DeviceToken:                               "",
-		TutorialPhase:                             99,
-		TutorialEndAt:                             1622217482,
-		LoginDays:                                 446,
-		NaviTapCount:                              2,
-		NaviTapRecoverAt:                          1684771200,
-		IsAutoMode:                                false,
-		MaxScoreLiveDifficultyMasterID:            12037401,
-		LiveMaxScore:                              40553270,
-		MaxComboLiveDifficultyMasterID:            12037401,
-		LiveMaxCombo:                              301,
-		LessonResumeStatus:                        1,
-		AccessoryBoxAdditional:                    90,
-		TermsOfUseVersion:                         0,
-		BootstrapSifidCheckAt:                     1683178908,
-		GdprVersion:                               0,
-		MemberGuildMemberMasterID:                 1,
-		MemberGuildLastUpdatedAt:                  1659485328,
+func GetUserData(fileName string) string {
+	userDataFile := userDataPath + fileName
+	if utils.PathExists(userDataFile) {
+		return utils.ReadAllText(userDataFile)
 	}
+
+	presetDataFile := presetDataPath + fileName
+	if !utils.PathExists(presetDataFile) {
+		panic("File not exists")
+	}
+
+	userData := utils.ReadAllText(presetDataFile)
+	utils.WriteAllText(userDataFile, userData)
+
+	return userData
+}
+
+func SetUserData(fileName, key string, value any) string {
+	userData, err := sjson.Set(GetUserData(fileName), key, value)
+	CheckErr(err)
+
+	utils.WriteAllText(userDataPath+fileName, userData)
+
+	return userData
+}
+
+func GetPartyInfoByRoleIds(roleIds []int) (partyIcon int, partyName string) {
+	// 脑残逻辑部分
+	exists, err := MainEng.Table("m_live_party_name").
+		Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[0], roleIds[1], roleIds[2]).
+		Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+	CheckErr(err)
+	if !exists {
+		exists, err = MainEng.Table("m_live_party_name").
+			Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[0], roleIds[2], roleIds[1]).
+			Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+		CheckErr(err)
+		if !exists {
+			exists, err = MainEng.Table("m_live_party_name").
+				Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[1], roleIds[0], roleIds[2]).
+				Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+			CheckErr(err)
+			if !exists {
+				exists, err = MainEng.Table("m_live_party_name").
+					Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[1], roleIds[2], roleIds[0]).
+					Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+				CheckErr(err)
+				if !exists {
+					exists, err = MainEng.Table("m_live_party_name").
+						Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[2], roleIds[0], roleIds[1]).
+						Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+					CheckErr(err)
+					if !exists {
+						exists, err = MainEng.Table("m_live_party_name").
+							Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[2], roleIds[1], roleIds[0]).
+							Cols("name,live_party_icon").Get(&partyName, &partyIcon)
+						CheckErr(err)
+						if !exists {
+							panic("Fuck you!")
+						}
+					}
+				}
+			}
+		}
+	}
+	return
+}
+
+func GetRealPartyName(partyName string) (realPartyName string) {
+	_, err := MainEng.Table("m_dictionary").Where("id = ?", strings.ReplaceAll(partyName, "k.", "")).
+		Cols("message").Get(&realPartyName)
+	CheckErr(err)
+	return
 }

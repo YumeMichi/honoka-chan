@@ -12,8 +12,7 @@ import (
 )
 
 var (
-	ConfName = "config.yml"
-	Conf     = &AppConfigs{}
+	Conf = &AppConfigs{}
 
 	ExampleDb = "assets/data.example.db"
 	MainDb    = "assets/main.db"
@@ -29,7 +28,7 @@ var (
 )
 
 func init() {
-	Conf = Load(ConfName)
+	Conf = Load("./config.json")
 
 	_, err := os.Stat(UserDb)
 	if err != nil {

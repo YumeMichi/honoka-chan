@@ -1,5 +1,0 @@
-app_name: LL! SIF Private Server
-leveldb:
-    data_path: ./data/honoka-chan.db
-cdn:
-    cdn_url: http://192.168.1.9:8081/static

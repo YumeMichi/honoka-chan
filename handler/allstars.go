@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -44,9 +45,32 @@ func AsLogin(ctx *gin.Context) {
 	newKey := utils.SliceXor(randomBytes, []byte(sessionKey))
 	newKey64 := base64.StdEncoding.EncodeToString(newKey)
 
-	loginBody := utils.ReadAllText("assets/as/login.json")
+	loginBody := GetUserData("login.json")
 	loginBody, _ = sjson.Set(loginBody, "session_key", newKey64)
 	loginBody, _ = sjson.Set(loginBody, "user_model.user_status", GetUserStatus())
+
+	/* ======== UserData ======== */
+	liveDeckData := gjson.Parse(GetUserData("liveDeck.json"))
+	loginBody, _ = sjson.Set(loginBody, "user_model.user_live_deck_by_id", liveDeckData.Get("user_live_deck_by_id").Value())
+
+	var liveParty []any
+	decoder := json.NewDecoder(strings.NewReader(liveDeckData.Get("user_live_party_by_id").String()))
+	decoder.UseNumber()
+	err = decoder.Decode(&liveParty)
+	CheckErr(err)
+	// fmt.Println(liveParty)
+	loginBody, _ = sjson.Set(loginBody, "user_model.user_live_party_by_id", liveParty)
+
+	memberData := gjson.Parse(GetUserData("memberSettings.json"))
+	loginBody, _ = sjson.Set(loginBody, "user_model.user_member_by_member_id", memberData.Get("user_member_by_member_id").Value())
+
+	lessonData := gjson.Parse(GetUserData("lessonDeck.json"))
+	loginBody, _ = sjson.Set(loginBody, "user_model.user_lesson_deck_by_id", lessonData.Get("user_lesson_deck_by_id").Value())
+
+	cardData := gjson.Parse(GetUserData("userCard.json"))
+	loginBody, _ = sjson.Set(loginBody, "user_model.user_card_by_card_id", cardData.Get("user_card_by_card_id").Value())
+	/* ======== UserData ======== */
+
 	resp := SignResp(ctx.GetString("ep"), loginBody, config.StartUpKey)
 
 	ctx.Header("Content-Type", "application/json")
@@ -54,7 +78,7 @@ func AsLogin(ctx *gin.Context) {
 }
 
 func AsFetchBootstrap(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/fetchBootstrap.json"),
+	signBody, _ := sjson.Set(GetUserData("fetchBootstrap.json"),
 		"user_model_diff.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -63,14 +87,18 @@ func AsFetchBootstrap(ctx *gin.Context) {
 }
 
 func AsFetchBillingHistory(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchBillingHistory.json"), sessionKey)
+	signBody, _ := sjson.Set(GetUserData("fetchBillingHistory.json"),
+		"user_model_diff.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
 }
 
 func AsFetchNotice(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchNotice.json"), sessionKey)
+	signBody, _ := sjson.Set(GetUserData("fetchNotice.json"),
+		"user_model_diff.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
@@ -78,97 +106,34 @@ func AsFetchNotice(ctx *gin.Context) {
 
 func AsGetPackUrl(ctx *gin.Context) {
 	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
 
-	var req []model.AsReq
-	err := json.Unmarshal([]byte(reqBody), &req)
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Println(req)
-
-	packBody, ok := req[0].(map[string]any)
-	if !ok {
-		panic("Assertion failed!")
-	}
-	// fmt.Println(packBody)
-
-	packNames, ok := packBody["pack_names"].([]any)
-	if !ok {
-		panic("Assertion failed!")
-	}
-
-	// 生成更新包 map
-	var packageList []string
-	var urlList []string
-
-	err = json.Unmarshal([]byte(utils.ReadAllText("assets/as/packages.json")), &packageList)
-	if err != nil {
-		panic(err)
-	}
-
-	err = json.Unmarshal([]byte(utils.ReadAllText("assets/as/urls.json")), &urlList)
-	if err != nil {
-		panic(err)
-	}
-
-	if len(packageList) != len(urlList) {
-		fmt.Println("File size not match!")
-		return
-	}
-
-	packageUrls := map[string]string{}
-	for k, p := range packageList {
-		packageUrls[p] = urlList[k]
-	}
-
-	// Response
-	var respUrls []string
-	for _, pack := range packNames {
-		packName, ok := pack.(string)
-		if !ok {
-			panic("Assertion failed!")
+	var packNames []string
+	gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
+		if value.IsObject() {
+			if err := json.Unmarshal([]byte(value.Get("pack_names").String()), &packNames); err != nil {
+				panic(err)
+			}
+			return false
 		}
-		// fmt.Println(packageUrls[packName])
-		respUrls = append(respUrls, packageUrls[packName])
+		return true
+	})
+
+	var packUrls []string
+	for _, pack := range packNames {
+		packUrls = append(packUrls, AsCdnServer+"/"+config.MasterVersion+"/"+pack)
 	}
 
-	urlResp := model.PackUrlRespBody{
-		UrlList: respUrls,
-	}
-
-	var resp []model.AsResp
-	resp = append(resp, time.Now().UnixMilli()) // 时间戳
-	resp = append(resp, config.MasterVersion)   // 版本号
-	resp = append(resp, 0)                      // 固定值
-	resp = append(resp, urlResp)                // 数据体
-
-	mm, err := json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Println(string(mm))
-
-	signBody := mm[1 : len(mm)-1]
-	// fmt.Println(string(signBody))
-
-	ep := strings.ReplaceAll(ctx.Request.URL.String(), "/ep3071", "")
-	// fmt.Println(ep)
-
-	sign := encrypt.HMAC_SHA1_Encrypt([]byte(ep+" "+string(signBody)), []byte(sessionKey))
-
-	resp = append(resp, sign)
-	mm, err = json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Println(string(mm))
+	packBody, _ := sjson.Set("{}", "url_list", packUrls)
+	resp := SignResp(ctx.GetString("ep"), packBody, sessionKey)
+	// fmt.Println("Response:", resp)
 
 	ctx.Header("Content-Type", "application/json")
-	ctx.String(http.StatusOK, string(mm))
+	ctx.String(http.StatusOK, resp)
 }
 
 func AsUpdateCardNewFlag(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/updateCardNewFlag.json"),
+	signBody, _ := sjson.Set(GetUserData("updateCardNewFlag.json"),
 		"user_model_diff.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -177,7 +142,8 @@ func AsUpdateCardNewFlag(ctx *gin.Context) {
 }
 
 func AsGetClearedPlatformAchievement(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/getClearedPlatformAchievement.json"), sessionKey)
+	signBody := GetUserData("getClearedPlatformAchievement.json")
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
@@ -188,6 +154,9 @@ func AsFetchLiveMusicSelect(ctx *gin.Context) {
 	year, month, day := now.Year(), now.Month(), now.Day()
 	tomorrow := time.Date(year, month, day+1, 0, 0, 0, 0, now.Location()).Unix()
 	weekday := int(now.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
 
 	liveDailyList := []model.LiveDaily{}
 	err := MainEng.Table("m_live_daily").Where("weekday = ?", weekday).Cols("id,live_id").Find(&liveDailyList)
@@ -198,7 +167,7 @@ func AsFetchLiveMusicSelect(ctx *gin.Context) {
 		liveDailyList[k].RemainingRecoveryCount = 9
 	}
 
-	signBody := utils.ReadAllText("assets/as/fetchLiveMusicSelect.json")
+	signBody := GetUserData("fetchLiveMusicSelect.json")
 	signBody, _ = sjson.Set(signBody, "weekday_state.weekday", weekday)
 	signBody, _ = sjson.Set(signBody, "weekday_state.next_weekday_at", tomorrow)
 	signBody, _ = sjson.Set(signBody, "live_daily_list", liveDailyList)
@@ -210,7 +179,7 @@ func AsFetchLiveMusicSelect(ctx *gin.Context) {
 }
 
 func AsLiveMvStart(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/liveMvStart.json"),
+	signBody, _ := sjson.Set(GetUserData("liveMvStart.json"),
 		"user_model_diff.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -220,26 +189,13 @@ func AsLiveMvStart(ctx *gin.Context) {
 
 func AsLiveMvSaveDeck(ctx *gin.Context) {
 	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
 
-	var req []model.AsReq
-	err := json.Unmarshal([]byte(reqBody), &req)
-	if err != nil {
-		panic(err)
-	}
-
-	body, ok := req[0].(map[string]any)
-	if !ok {
-		panic("Assertion failed!")
-	}
-
-	reqB, err := json.Marshal(body)
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Println(string(reqB))
+	reqData := gjson.Parse(reqBody).Array()[0]
+	// fmt.Println(reqData)
 
 	saveReq := model.LiveSaveDeckReq{}
-	err = json.Unmarshal(reqB, &saveReq)
+	err := json.Unmarshal([]byte(reqData.String()), &saveReq)
 	if err != nil {
 		panic(err)
 	}
@@ -321,7 +277,7 @@ func AsLiveMvSaveDeck(ctx *gin.Context) {
 	}
 	// fmt.Println(suitIds)
 
-	var userLiveMvDeckCustomByID []model.UserLiveMvDeckCustomByID
+	var userLiveMvDeckCustomByID []any
 	userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, saveReq.LiveMasterID)
 	userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, userLiveMvDeckInfo)
 	// fmt.Println(userLiveMvDeckCustomByID)
@@ -335,7 +291,7 @@ func AsLiveMvSaveDeck(ctx *gin.Context) {
 	}
 	// fmt.Println(viewStatusIds)
 
-	var userMemberByMemberID []model.UserMemberByMemberID
+	var userMemberByMemberID []any
 	for k, v := range memberIds {
 		userMemberByMemberID = append(userMemberByMemberID, v)
 		userMemberByMemberID = append(userMemberByMemberID, model.UserMemberInfo{
@@ -351,78 +307,12 @@ func AsLiveMvSaveDeck(ctx *gin.Context) {
 	}
 	// fmt.Println(userMemberByMemberID)
 
-	saveResp := model.LiveSaveDeckResp{
-		UserModel: model.UserModel{
-			UserStatus:                                              CommonUserStatus(),
-			UserMemberByMemberID:                                    userMemberByMemberID,
-			UserCardByCardID:                                        []any{},
-			UserSuitBySuitID:                                        []any{},
-			UserLiveDeckByID:                                        []any{},
-			UserLivePartyByID:                                       []any{},
-			UserLessonDeckByID:                                      []any{},
-			UserLiveMvDeckByID:                                      []any{},
-			UserLiveMvDeckCustomByID:                                userLiveMvDeckCustomByID,
-			UserLiveDifficultyByDifficultyID:                        []any{},
-			UserStoryMainByStoryMainID:                              []any{},
-			UserStoryMainSelectedByStoryMainCellID:                  []any{},
-			UserVoiceByVoiceID:                                      []any{},
-			UserEmblemByEmblemID:                                    []any{},
-			UserGachaTicketByTicketID:                               []any{},
-			UserGachaPointByPointID:                                 []any{},
-			UserLessonEnhancingItemByItemID:                         []any{},
-			UserTrainingMaterialByItemID:                            []any{},
-			UserGradeUpItemByItemID:                                 []any{},
-			UserCustomBackgroundByID:                                []any{},
-			UserStorySideByID:                                       []any{},
-			UserStoryMemberByID:                                     []any{},
-			UserCommunicationMemberDetailBadgeByID:                  []any{},
-			UserStoryEventHistoryByID:                               []any{},
-			UserRecoveryLpByID:                                      []any{},
-			UserRecoveryApByID:                                      []any{},
-			UserMissionByMissionID:                                  []any{},
-			UserDailyMissionByMissionID:                             []any{},
-			UserWeeklyMissionByMissionID:                            []any{},
-			UserInfoTriggerBasicByTriggerID:                         []any{},
-			UserInfoTriggerCardGradeUpByTriggerID:                   []any{},
-			UserInfoTriggerMemberGuildSupportItemExpiredByTriggerID: []any{},
-			UserInfoTriggerMemberLoveLevelUpByTriggerID:             []any{},
-			UserAccessoryByUserAccessoryID:                          []any{},
-			UserAccessoryLevelUpItemByID:                            []any{},
-			UserAccessoryRarityUpItemByID:                           []any{},
-			UserUnlockScenesByEnum:                                  []any{},
-			UserSceneTipsByEnum:                                     []any{},
-			UserRuleDescriptionByID:                                 []any{},
-			UserExchangeEventPointByID:                              []any{},
-			UserSchoolIdolFestivalIDRewardMissionByID:               []any{},
-			UserGpsPresentReceivedByID:                              []any{},
-			UserEventMarathonByEventMasterID:                        []any{},
-			UserEventMiningByEventMasterID:                          []any{},
-			UserEventCoopByEventMasterID:                            []any{},
-			UserLiveSkipTicketByID:                                  []any{},
-			UserStoryEventUnlockItemByID:                            []any{},
-			UserEventMarathonBoosterByID:                            []any{},
-			UserReferenceBookByID:                                   []any{},
-			UserReviewRequestProcessFlowByID:                        []any{},
-			UserRankExpByID:                                         []any{},
-			UserShareByID:                                           []any{},
-			UserTowerByTowerID:                                      []any{},
-			UserRecoveryTowerCardUsedCountItemByRecoveryTowerCardUsedCountItemMasterID: []any{},
-			UserStoryLinkageByID:             []any{},
-			UserSubscriptionStatusByID:       []any{},
-			UserStoryMainPartDigestMovieByID: []any{},
-			UserMemberGuildByID:              []any{},
-			UserMemberGuildSupportItemByID:   []any{},
-			UserDailyTheaterByDailyTheaterID: []any{},
-			UserPlayListByID:                 []any{},
-		},
-	}
-	respB, err := json.Marshal(saveResp)
-	if err != nil {
-		panic(err)
-	}
-	// fmt.Println(string(b))
+	signBody := GetUserData("liveMvSaveDeck.json")
+	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
+	signBody, _ = sjson.Set(signBody, "user_model.user_member_by_member_id", userMemberByMemberID)
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_mv_deck_custom_by_id", userLiveMvDeckCustomByID)
 
-	resp := SignResp(ctx.GetString("ep"), string(respB), sessionKey)
+	resp := SignResp(ctx.GetString("ep"), string(signBody), sessionKey)
 	// fmt.Println(resp)
 
 	ctx.Header("Content-Type", "application/json")
@@ -440,8 +330,26 @@ func AsFetchCommunicationMemberDetail(ctx *gin.Context) {
 		return true
 	})
 
-	signBody := utils.ReadAllText("assets/as/fetchCommunicationMemberDetail.json")
+	lovePanelCellIds := []int{}
+	err := MainEng.Table("m_member_love_panel_cell").
+		Join("LEFT", "m_member_love_panel", "m_member_love_panel_cell.member_love_panel_master_id = m_member_love_panel.id").
+		Cols("m_member_love_panel_cell.id").Where("m_member_love_panel.member_master_id = ?", memberId).
+		OrderBy("m_member_love_panel_cell.id ASC").Find(&lovePanelCellIds)
+	CheckErr(err)
+
+	now := time.Now()
+	year, month, day := now.Year(), now.Month(), now.Day()
+	tomorrow := time.Date(year, month, day+1, 0, 0, 0, 0, now.Location()).Unix()
+	weekday := int(now.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+
+	signBody := GetUserData("fetchCommunicationMemberDetail.json")
 	signBody, _ = sjson.Set(signBody, "member_love_panels.0.member_id", memberId)
+	signBody, _ = sjson.Set(signBody, "member_love_panels.0.member_love_panel_cell_ids", lovePanelCellIds)
+	signBody, _ = sjson.Set(signBody, "weekday_state.weekday", weekday)
+	signBody, _ = sjson.Set(signBody, "weekday_state.next_weekday_at", tomorrow)
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
@@ -449,7 +357,7 @@ func AsFetchCommunicationMemberDetail(ctx *gin.Context) {
 }
 
 func AsTapLovePoint(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/tapLovePoint.json"),
+	signBody, _ := sjson.Set(GetUserData("tapLovePoint.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -474,7 +382,7 @@ func AsUpdateUserCommunicationMemberDetailBadge(ctx *gin.Context) {
 		MemberMasterID: int(memberMasterId),
 	})
 
-	signBody := utils.ReadAllText("assets/as/updateUserCommunicationMemberDetailBadge.json")
+	signBody := GetUserData("updateUserCommunicationMemberDetailBadge.json")
 	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
 	signBody, _ = sjson.Set(signBody, "user_model.user_communication_member_detail_badge_by_id", userDetail)
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
@@ -484,7 +392,7 @@ func AsUpdateUserCommunicationMemberDetailBadge(ctx *gin.Context) {
 }
 
 func AsUpdateUserLiveDifficultyNewFlag(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/updateUserLiveDifficultyNewFlag.json"),
+	signBody, _ := sjson.Set(GetUserData("updateUserLiveDifficultyNewFlag.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -493,7 +401,7 @@ func AsUpdateUserLiveDifficultyNewFlag(ctx *gin.Context) {
 }
 
 func AsFinishUserStorySide(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/finishUserStorySide.json"),
+	signBody, _ := sjson.Set(GetUserData("finishUserStorySide.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -502,7 +410,7 @@ func AsFinishUserStorySide(ctx *gin.Context) {
 }
 
 func AsFinishUserStoryMember(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/finishUserStoryMember.json"),
+	signBody, _ := sjson.Set(GetUserData("finishUserStoryMember.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -512,18 +420,34 @@ func AsFinishUserStoryMember(ctx *gin.Context) {
 
 func AsSetTheme(ctx *gin.Context) {
 	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
+
 	var memberMasterId, suitMasterId, backgroundMasterId int64
 	gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
 		if value.Get("member_master_id").String() != "" {
 			memberMasterId = value.Get("member_master_id").Int()
 			suitMasterId = value.Get("suit_master_id").Int()
 			backgroundMasterId = value.Get("custom_background_master_id").Int()
+
+			gjson.Parse(GetUserData("memberSettings.json")).Get("user_member_by_member_id").
+				ForEach(func(kk, vv gjson.Result) bool {
+					if vv.IsObject() {
+						if vv.Get("member_master_id").Int() == memberMasterId {
+							SetUserData("memberSettings.json", "user_member_by_member_id."+
+								kk.String()+".custom_background_master_id", backgroundMasterId)
+							SetUserData("memberSettings.json", "user_member_by_member_id."+
+								kk.String()+".suit_master_id", suitMasterId)
+							return false
+						}
+					}
+					return true
+				})
 			return false
 		}
 		return true
 	})
 
-	userMemberRes := []model.SetThemeRes{}
+	userMemberRes := []any{}
 	userMemberRes = append(userMemberRes, memberMasterId)
 	userMemberRes = append(userMemberRes, model.UserMemberInfo{
 		MemberMasterID:           int(memberMasterId),
@@ -536,14 +460,14 @@ func AsSetTheme(ctx *gin.Context) {
 		IsNew:                    false,
 	})
 
-	userSuitRes := []model.SetThemeRes{}
+	userSuitRes := []any{}
 	userSuitRes = append(userSuitRes, suitMasterId)
 	userSuitRes = append(userSuitRes, model.AsSuitInfo{
 		SuitMasterID: int(suitMasterId),
 		IsNew:        false,
 	})
 
-	signBody := utils.ReadAllText("assets/as/setTheme.json")
+	signBody := GetUserData("setTheme.json")
 	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
 	signBody, _ = sjson.Set(signBody, "user_model.user_member_by_member_id", userMemberRes)
 	signBody, _ = sjson.Set(signBody, "user_model.user_suit_by_suit_id", userSuitRes)
@@ -554,14 +478,46 @@ func AsSetTheme(ctx *gin.Context) {
 }
 
 func AsFetchProfile(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchProfile.json"), sessionKey)
+	userInfo := gjson.Parse(GetUserData("userStatus.json"))
+	signBody := GetUserData("fetchProfile.json")
+	signBody, _ = sjson.Set(signBody, "profile_info.basic_info.name.dot_under_text",
+		userInfo.Get("name.dot_under_text").String())
+	signBody, _ = sjson.Set(signBody, "profile_info.basic_info.introduction_message.dot_under_text",
+		userInfo.Get("message.dot_under_text").String())
+	signBody, _ = sjson.Set(signBody, "profile_info.basic_info.emblem_id",
+		userInfo.Get("emblem_id").Int())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsSetProfile(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
+
+	req := gjson.Parse(reqBody).Array()[0]
+	if req.Get("name").String() != "" {
+		SetUserData("userStatus.json", "name.dot_under_text",
+			gjson.Parse(reqBody).Array()[0].Get("name").String())
+	} else if req.Get("nickname").String() != "" {
+		SetUserData("userStatus.json", "nickname.dot_under_text",
+			gjson.Parse(reqBody).Array()[0].Get("nickname").String())
+	} else if req.Get("message").String() != "" {
+		SetUserData("userStatus.json", "message.dot_under_text",
+			gjson.Parse(reqBody).Array()[0].Get("message").String())
+	}
+
+	signBody, _ := sjson.Set(GetUserData("setProfile.json"),
+		"user_model.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
 }
 
 func AsFetchEmblem(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/fetchEmblem.json"),
+	signBody, _ := sjson.Set(GetUserData("fetchEmblem.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -571,16 +527,20 @@ func AsFetchEmblem(ctx *gin.Context) {
 
 func AsActivateEmblem(ctx *gin.Context) {
 	reqBody := ctx.GetString("reqBody")
+
 	var emblemId int64
 	gjson.Parse(reqBody).ForEach(func(key, value gjson.Result) bool {
 		if value.Get("emblem_master_id").String() != "" {
 			emblemId = value.Get("emblem_master_id").Int()
+
+			SetUserData("userStatus.json", "emblem_id", emblemId)
+
 			return false
 		}
 		return true
 	})
 
-	signBody := utils.ReadAllText("assets/as/activateEmblem.json")
+	signBody := GetUserData("activateEmblem.json")
 	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
 	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
 	signBody, _ = sjson.Set(signBody, "user_model.user_status.emblem_id", emblemId)
@@ -591,7 +551,7 @@ func AsActivateEmblem(ctx *gin.Context) {
 }
 
 func AsSaveUserNaviVoice(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/saveUserNaviVoice.json"),
+	signBody, _ := sjson.Set(GetUserData("saveUserNaviVoice.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -609,6 +569,12 @@ func AsSaveDeckAll(ctx *gin.Context) {
 	err := decoder.Decode(&req)
 	CheckErr(err)
 	// fmt.Println("Raw:", req.SquadDict)
+
+	liveDeckInfo := GetUserData("liveDeck.json")
+	keyDeckName := fmt.Sprintf("user_live_deck_by_id.%d.name.dot_under_text", req.DeckID*2-1)
+	// fmt.Println(keyDeckName)
+	deckName := gjson.Parse(liveDeckInfo).Get(keyDeckName).String()
+	// fmt.Println("deckName:", deckName)
 
 	if req.CardWithSuit[1] == 0 {
 		req.CardWithSuit[1] = req.CardWithSuit[0]
@@ -641,7 +607,7 @@ func AsSaveDeckAll(ctx *gin.Context) {
 	deckInfo := model.AsDeckInfo{
 		UserLiveDeckID: req.DeckID,
 		Name: model.AsDeckName{
-			DotUnderText: "队伍名称变了?",
+			DotUnderText: deckName,
 		},
 		CardMasterID1: req.CardWithSuit[0],
 		CardMasterID2: req.CardWithSuit[2],
@@ -664,6 +630,9 @@ func AsSaveDeckAll(ctx *gin.Context) {
 	}
 	// fmt.Println(deckInfo)
 
+	keyLiveDeck := fmt.Sprintf("user_live_deck_by_id.%d", req.DeckID*2-1)
+	SetUserData("liveDeck.json", keyLiveDeck, deckInfo)
+
 	deckInfoRes := []model.AsResp{}
 	deckInfoRes = append(deckInfoRes, req.DeckID)
 	deckInfoRes = append(deckInfoRes, deckInfo)
@@ -672,16 +641,19 @@ func AsSaveDeckAll(ctx *gin.Context) {
 	for k, v := range req.SquadDict {
 		if k%2 == 0 {
 			partyId, err := v.(json.Number).Int64()
-			CheckErr(err)
+			if err != nil {
+				panic(err)
+			}
 			// fmt.Println("Party ID:", partyId)
 
 			rDictInfo, err := json.Marshal(req.SquadDict[k+1])
 			CheckErr(err)
 
 			dictInfo := model.AsDeckSquadDict{}
-			if err = json.Unmarshal(rDictInfo, &dictInfo); err != nil {
-				panic(err)
-			}
+			decoder := json.NewDecoder(bytes.NewReader(rDictInfo))
+			decoder.UseNumber()
+			err = decoder.Decode(&dictInfo)
+			CheckErr(err)
 			// fmt.Println("Party Info:", dictInfo)
 
 			roleIds := []int{}
@@ -691,51 +663,8 @@ func AsSaveDeckAll(ctx *gin.Context) {
 			CheckErr(err)
 			// fmt.Println("roleIds:", roleIds)
 
-			var partyIcon int
-			var partyName string
-			// 脑残逻辑部分
-			exists, err := MainEng.Table("m_live_party_name").
-				Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[0], roleIds[1], roleIds[2]).
-				Cols("name,live_party_icon").Get(&partyName, &partyIcon)
-			CheckErr(err)
-			if !exists {
-				exists, err = MainEng.Table("m_live_party_name").
-					Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[0], roleIds[2], roleIds[1]).
-					Cols("name,live_party_icon").Get(&partyName, &partyIcon)
-				CheckErr(err)
-				if !exists {
-					exists, err = MainEng.Table("m_live_party_name").
-						Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[1], roleIds[0], roleIds[2]).
-						Cols("name,live_party_icon").Get(&partyName, &partyIcon)
-					CheckErr(err)
-					if !exists {
-						exists, err = MainEng.Table("m_live_party_name").
-							Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[1], roleIds[2], roleIds[0]).
-							Cols("name,live_party_icon").Get(&partyName, &partyIcon)
-						CheckErr(err)
-						if !exists {
-							exists, err = MainEng.Table("m_live_party_name").
-								Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[2], roleIds[0], roleIds[1]).
-								Cols("name,live_party_icon").Get(&partyName, &partyIcon)
-							CheckErr(err)
-							if !exists {
-								exists, err = MainEng.Table("m_live_party_name").
-									Where("role_1 = ? AND role_2 = ? AND role_3 = ?", roleIds[2], roleIds[1], roleIds[0]).
-									Cols("name,live_party_icon").Get(&partyName, &partyIcon)
-								CheckErr(err)
-								if !exists {
-									panic("Fuck you!")
-								}
-							}
-						}
-					}
-				}
-			}
-
-			var realPartyName string
-			_, err = MainEng.Table("m_dictionary").Where("id = ?", strings.ReplaceAll(partyName, "k.", "")).Cols("message").Get(&realPartyName)
-			CheckErr(err)
-
+			partyIcon, partyName := GetPartyInfoByRoleIds(roleIds)
+			realPartyName := GetRealPartyName(partyName)
 			partyInfo := model.AsPartyInfo{
 				PartyID:        int(partyId),
 				UserLiveDeckID: req.DeckID,
@@ -752,12 +681,20 @@ func AsSaveDeckAll(ctx *gin.Context) {
 			}
 			// fmt.Println(partyInfo)
 
+			gjson.Parse(liveDeckInfo).Get("user_live_party_by_id").ForEach(func(key, value gjson.Result) bool {
+				if value.IsObject() && value.Get("party_id").Int() == partyId {
+					SetUserData("liveDeck.json", "user_live_party_by_id."+key.String(), partyInfo)
+					return false
+				}
+				return true
+			})
+
 			partyInfoRes = append(partyInfoRes, partyId)
 			partyInfoRes = append(partyInfoRes, partyInfo)
 		}
 	}
 
-	respBody := utils.ReadAllText("assets/as/saveDeckAll.json")
+	respBody := GetUserData("saveDeckAll.json")
 	respBody, _ = sjson.Set(respBody, "user_model.user_status", GetUserStatus())
 	respBody, _ = sjson.Set(respBody, "user_model.user_live_deck_by_id", deckInfoRes)
 	respBody, _ = sjson.Set(respBody, "user_model.user_live_party_by_id", partyInfoRes)
@@ -768,14 +705,16 @@ func AsSaveDeckAll(ctx *gin.Context) {
 }
 
 func AsFetchLivePartners(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchLivePartners.json"), sessionKey)
+	signBody := GetUserData("fetchLivePartners.json")
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
 }
 
 func AsFetchLiveDeckSelect(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchLiveDeckSelect.json"), sessionKey)
+	signBody := GetUserData("fetchLiveDeckSelect.json")
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
@@ -792,7 +731,7 @@ func AsLiveStart(ctx *gin.Context) {
 	// fmt.Println(liveStartReq)
 
 	var cardInfo string
-	partnerResp := gjson.Parse(utils.ReadAllText("assets/as/fetchLivePartners.json")).Get("partner_select_state.live_partners")
+	partnerResp := gjson.Parse(GetUserData("fetchLivePartners.json")).Get("partner_select_state.live_partners")
 	partnerResp.ForEach(func(k, v gjson.Result) bool {
 		userId := v.Get("user_id").Int()
 		if userId == int64(liveStartReq.PartnerUserID) {
@@ -824,17 +763,29 @@ func AsLiveStart(ctx *gin.Context) {
 		panic("歌曲情报信息不存在！")
 	}
 
-	var liveNotesRes map[string]any
-	if err = json.Unmarshal([]byte(liveNotes), &liveNotesRes); err != nil {
+	var liveNotesRes model.AsLiveStageInfo
+	if err := json.Unmarshal([]byte(liveNotes), &liveNotesRes); err != nil {
 		panic(err)
 	}
 
-	var partnerInfo map[string]any
-	if err = json.Unmarshal([]byte(cardInfo), &partnerInfo); err != nil {
-		panic(err)
+	if liveStartReq.IsAutoPlay {
+		for k := range liveNotesRes.LiveNotes {
+			liveNotesRes.LiveNotes[k].AutoJudgeType = 30
+		}
 	}
 
-	liveStartResp := utils.ReadAllText("assets/as/liveStart.json")
+	var partnerInfo any
+	if cardInfo != "" {
+		var info map[string]any
+		if err = json.Unmarshal([]byte(cardInfo), &info); err != nil {
+			panic(err)
+		}
+		partnerInfo = info
+	} else {
+		partnerInfo = nil
+	}
+
+	liveStartResp := GetUserData("liveStart.json")
 	liveStartResp, _ = sjson.Set(liveStartResp, "live.live_id", liveId)
 	liveStartResp, _ = sjson.Set(liveStartResp, "live.deck_id", liveStartReq.DeckID)
 	liveStartResp, _ = sjson.Set(liveStartResp, "live.live_stage", liveNotesRes)
@@ -885,29 +836,35 @@ func AsLiveFinish(ctx *gin.Context) {
 	}
 	// fmt.Println("liveStartReq:", liveStartReq)
 
-	partnerInfo := model.AsLivePartnerInfo{
-		LastPlayedAt:                        time.Now().Unix(),
-		RecommendCardMasterID:               liveStartReq.PartnerCardMasterID,
-		RecommendCardLevel:                  1,
-		IsRecommendCardImageAwaken:          true,
-		IsRecommendCardAllTrainingActivated: true,
-		IsNew:                               false,
-		FriendApprovedAt:                    nil,
-		RequestStatus:                       3,
-		IsRequestPending:                    false,
-	}
-	partnerResp := gjson.Parse(utils.ReadAllText("assets/as/fetchLivePartners.json")).Get("partner_select_state.live_partners")
-	partnerResp.ForEach(func(k, v gjson.Result) bool {
-		userId := v.Get("user_id").Int()
-		if userId == int64(liveStartReq.PartnerUserID) {
-			partnerInfo.UserID = int(userId)
-			partnerInfo.Name.DotUnderText = v.Get("name.dot_under_text").String()
-			partnerInfo.Rank = int(v.Get("rank").Int())
-			partnerInfo.EmblemID = int(v.Get("emblem_id").Int())
-			partnerInfo.IntroductionMessage.DotUnderText = v.Get("introduction_message.dot_under_text").String()
+	var partnerInfo any
+	if liveStartReq.PartnerUserID != 0 {
+		info := model.AsLivePartnerInfo{
+			LastPlayedAt:                        time.Now().Unix(),
+			RecommendCardMasterID:               liveStartReq.PartnerCardMasterID,
+			RecommendCardLevel:                  1,
+			IsRecommendCardImageAwaken:          true,
+			IsRecommendCardAllTrainingActivated: true,
+			IsNew:                               false,
+			FriendApprovedAt:                    nil,
+			RequestStatus:                       3,
+			IsRequestPending:                    false,
 		}
-		return true
-	})
+		partnerResp := gjson.Parse(GetUserData("fetchLivePartners.json")).Get("partner_select_state.live_partners")
+		partnerResp.ForEach(func(k, v gjson.Result) bool {
+			userId := v.Get("user_id").Int()
+			if userId == int64(liveStartReq.PartnerUserID) {
+				info.UserID = int(userId)
+				info.Name.DotUnderText = v.Get("name.dot_under_text").String()
+				info.Rank = int(v.Get("rank").Int())
+				info.EmblemID = int(v.Get("emblem_id").Int())
+				info.IntroductionMessage.DotUnderText = v.Get("introduction_message.dot_under_text").String()
+			}
+			return true
+		})
+		partnerInfo = info
+	} else {
+		partnerInfo = nil
+	}
 
 	liveResult := model.AsLiveResultAchievementStatus{
 		ClearCount:       1,
@@ -915,7 +872,7 @@ func AsLiveFinish(ctx *gin.Context) {
 		RemainingStamina: liveFinishReq.Get("live_score.remaining_stamina").Int(),
 	}
 
-	liveFinishResp := utils.ReadAllText("assets/as/liveFinish.json")
+	liveFinishResp := GetUserData("liveFinish.json")
 	liveFinishResp, _ = sjson.Set(liveFinishResp, "live_result.live_difficulty_master_id", liveStartReq.LiveDifficultyID)
 	liveFinishResp, _ = sjson.Set(liveFinishResp, "live_result.live_deck_id", liveStartReq.DeckID)
 	liveFinishResp, _ = sjson.Set(liveFinishResp, "live_result.mvp", mvpInfo)
@@ -929,6 +886,7 @@ func AsLiveFinish(ctx *gin.Context) {
 	liveFinishResp, _ = sjson.Set(liveFinishResp, "user_model_diff.user_status.latest_live_deck_id", liveStartReq.DeckID)
 	liveFinishResp, _ = sjson.Set(liveFinishResp, "user_model_diff.user_status.last_live_difficulty_id", liveStartReq.LiveDifficultyID)
 	resp := SignResp(ctx.GetString("ep"), liveFinishResp, sessionKey)
+	// fmt.Println(resp)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
@@ -945,7 +903,7 @@ func AsGetOtherUserCard(ctx *gin.Context) {
 	// fmt.Println(liveStartReq)
 
 	var cardInfo string
-	partnerResp := gjson.Parse(utils.ReadAllText("assets/as/fetchLivePartners.json")).Get("partner_select_state.live_partners")
+	partnerResp := gjson.Parse(GetUserData("fetchLivePartners.json")).Get("partner_select_state.live_partners")
 	partnerResp.ForEach(func(k, v gjson.Result) bool {
 		userId := v.Get("user_id").Int()
 		if userId == userCardReq.UserID {
@@ -970,7 +928,7 @@ func AsGetOtherUserCard(ctx *gin.Context) {
 		panic(err)
 	}
 
-	userCardResp := utils.ReadAllText("assets/as/getOtherUserCard.json")
+	userCardResp := GetUserData("getOtherUserCard.json")
 	userCardResp, _ = sjson.Set(userCardResp, "other_user_card", userCardInfo)
 	resp := SignResp(ctx.GetString("ep"), userCardResp, sessionKey)
 
@@ -999,8 +957,9 @@ func AsChangeIsAwakeningImage(ctx *gin.Context) {
 		panic(err)
 	}
 
+	loginData := GetUserData("userCard.json")
 	cardInfo := model.AsCardInfo{}
-	gjson.Parse(utils.ReadAllText("assets/as/login.json")).Get("user_model.user_card_by_card_id").
+	gjson.Parse(loginData).Get("user_card_by_card_id").
 		ForEach(func(key, value gjson.Result) bool {
 			if value.IsObject() {
 				if err := json.Unmarshal([]byte(value.String()), &cardInfo); err != nil {
@@ -1009,6 +968,9 @@ func AsChangeIsAwakeningImage(ctx *gin.Context) {
 
 				if cardInfo.CardMasterID == req.CardMasterID {
 					cardInfo.IsAwakeningImage = req.IsAwakeningImage
+
+					k := "user_card_by_card_id." + key.String() + ".is_awakening_image"
+					SetUserData("userCard.json", k, req.IsAwakeningImage)
 
 					return false
 				}
@@ -1020,7 +982,7 @@ func AsChangeIsAwakeningImage(ctx *gin.Context) {
 	userCardInfo = append(userCardInfo, cardInfo.CardMasterID)
 	userCardInfo = append(userCardInfo, cardInfo)
 
-	cardResp := utils.ReadAllText("assets/as/changeIsAwakeningImage.json")
+	cardResp := GetUserData("changeIsAwakeningImage.json")
 	cardResp, _ = sjson.Set(cardResp, "user_model_diff.user_status", GetUserStatus())
 	cardResp, _ = sjson.Set(cardResp, "user_model_diff.user_card_by_card_id", userCardInfo)
 	resp := SignResp(ctx.GetString("ep"), cardResp, sessionKey)
@@ -1030,7 +992,7 @@ func AsChangeIsAwakeningImage(ctx *gin.Context) {
 }
 
 func AsFinishStory(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/finishStory.json"),
+	signBody, _ := sjson.Set(GetUserData("finishStory.json"),
 		"user_model.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -1039,7 +1001,7 @@ func AsFinishStory(ctx *gin.Context) {
 }
 
 func AsFinishStoryMain(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/finishUserStoryMain.json"),
+	signBody, _ := sjson.Set(GetUserData("finishUserStoryMain.json"),
 		"user_model_diff.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -1048,7 +1010,7 @@ func AsFinishStoryMain(ctx *gin.Context) {
 }
 
 func AsFinishStoryLinkage(ctx *gin.Context) {
-	signBody, _ := sjson.Set(utils.ReadAllText("assets/as/finishStoryLinkage.json"),
+	signBody, _ := sjson.Set(GetUserData("finishStoryLinkage.json"),
 		"user_model_diff.user_status", GetUserStatus())
 	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
@@ -1057,7 +1019,8 @@ func AsFinishStoryLinkage(ctx *gin.Context) {
 }
 
 func AsFetchTrainingTree(ctx *gin.Context) {
-	resp := SignResp(ctx.GetString("ep"), utils.ReadAllText("assets/as/fetchTrainingTree.json"), sessionKey)
+	signBody := GetUserData("fetchTrainingTree.json")
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)
@@ -1065,6 +1028,331 @@ func AsFetchTrainingTree(ctx *gin.Context) {
 
 func AsUpdatePushNotificationSettings(ctx *gin.Context) {
 	resp := SignResp(ctx.GetString("ep"), "{}", sessionKey)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsExecuteLesson(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
+
+	req := gjson.Parse(reqBody).Array()[0]
+	deckId := req.Get("selected_deck_id").Int()
+
+	var deckInfo string
+	var actionList []model.AsLessonMenuAction
+	gjson.Parse(GetUserData("lessonDeck.json")).Get("user_lesson_deck_by_id").ForEach(func(key, value gjson.Result) bool {
+		if value.IsObject() && value.Get("user_lesson_deck_id").Int() == deckId {
+			deckInfo = value.String()
+			// fmt.Println("Deck Info:", deckInfo)
+
+			gjson.Parse(deckInfo).ForEach(func(kk, vv gjson.Result) bool {
+				// fmt.Printf("kk: %s, vv: %s\n", kk.String(), vv.String())
+				if strings.Contains(kk.String(), "card_master_id") {
+					actionList = append(actionList, model.AsLessonMenuAction{
+						CardMasterID:                  vv.Int(),
+						Position:                      0,
+						IsAddedPassiveSkill:           true,
+						IsAddedSpecialPassiveSkill:    true,
+						IsRankupedPassiveSkill:        true,
+						IsRankupedSpecialPassiveSkill: true,
+						IsPromotedSkill:               true,
+						MaxRarity:                     4,
+						UpCount:                       1,
+					})
+				}
+				return true
+			})
+			return false
+		}
+		return true
+	})
+	// fmt.Println(actionList)
+
+	SetUserData("executeLesson.json", "lesson_menu_actions.1", actionList)
+	SetUserData("executeLesson.json", "lesson_menu_actions.3", actionList)
+	SetUserData("executeLesson.json", "lesson_menu_actions.5", actionList)
+	signBody := SetUserData("executeLesson.json", "lesson_menu_actions.7", actionList)
+	SetUserData("userStatus.json", "main_lesson_deck_id", deckId)
+	signBody, _ = sjson.Set(signBody, "user_model_diff.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+	// fmt.Println(resp)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsResultLesson(ctx *gin.Context) {
+	userData := GetUserStatus()
+	signBody, _ := sjson.Set(GetUserData("resultLesson.json"),
+		"user_model_diff.user_status", userData)
+	signBody, _ = sjson.Set(signBody, "selected_deck_id", userData["main_lesson_deck_id"])
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+	// fmt.Println(resp)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsSkillEditResult(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
+
+	req := gjson.Parse(reqBody).Array()[0]
+
+	var cardList []any
+	index := 1
+	cardData := GetUserData("userCard.json")
+	cardInfo := gjson.Parse(cardData).Get("user_card_by_card_id")
+	cardInfo.ForEach(func(key, value gjson.Result) bool {
+		if value.IsObject() {
+			if index > 9 {
+				return false
+			}
+			// fmt.Println("cardInfo:", value.String())
+
+			skillList := req.Get("selected_skill_ids")
+			skillList.ForEach(func(kk, vv gjson.Result) bool {
+				if kk.Int()%2 == 0 && vv.Int() == value.Get("card_master_id").Int() {
+					skill := skillList.Get(fmt.Sprintf("%d", kk.Int()+1))
+					skill.ForEach(func(kkk, vvv gjson.Result) bool {
+						skillIdKey := fmt.Sprintf("user_card_by_card_id.%s.additional_passive_skill_%d_id", key.String(), kkk.Int()+1)
+						cardData = SetUserData("userCard.json", skillIdKey, vvv.Int())
+						return true
+					})
+
+					card := gjson.Parse(cardData).Get("user_card_by_card_id." + key.String())
+					cardList = append(cardList, card.Get("card_master_id").Int())
+					cardList = append(cardList, card.Value())
+
+					index++
+				}
+				return true
+			})
+		}
+		return true
+	})
+
+	signBody := GetUserData("skillEditResult.json")
+	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
+	signBody, _ = sjson.Set(signBody, "user_model.user_card_by_card_id", cardList)
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+	// fmt.Println(resp)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsSaveDeckLesson(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
+
+	req := gjson.Parse(reqBody).Array()[0]
+	deckId := req.Get("deck_id").Int()
+	lessonDeck := GetUserData("lessonDeck.json")
+
+	var deckInfo string
+	var deckIndex string
+	gjson.Parse(lessonDeck).Get("user_lesson_deck_by_id").ForEach(func(key, value gjson.Result) bool {
+		if value.IsObject() && value.Get("user_lesson_deck_id").Int() == deckId {
+			deckInfo = value.String()
+			deckIndex = key.String()
+			// fmt.Println("Lesson Deck:", deckInfo)
+			return false
+		}
+		return true
+	})
+
+	cardList := req.Get("card_master_ids")
+	cardList.ForEach(func(key, value gjson.Result) bool {
+		if key.Int()%2 == 0 {
+			position := value.String()
+			// fmt.Println("Position:", position)
+
+			cardMasterId := cardList.Get(fmt.Sprintf("%d", key.Int()+1)).Int()
+			// fmt.Println("Card:", cardMasterId)
+
+			deckInfo, _ = sjson.Set(deckInfo, "card_master_id_"+position, cardMasterId)
+			// fmt.Println("New Lesson Deck:", deckInfo)
+
+			SetUserData("lessonDeck.json", "user_lesson_deck_by_id."+deckIndex, gjson.Parse(deckInfo).Value())
+			// lessonDeck, _ = sjson.Set(lessonDeck, "user_lesson_deck_by_id."+deckIndex, gjson.Parse(deckInfo).Value())
+		}
+		return true
+	})
+
+	signBody := GetUserData("saveDeckLesson.json")
+	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
+	signBody, _ = sjson.Set(signBody, "user_model.user_lesson_deck_by_id.0", deckId)
+	signBody, _ = sjson.Set(signBody, "user_model.user_lesson_deck_by_id.1", gjson.Parse(deckInfo).Value())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+	// fmt.Println(resp)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsSaveSuit(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+	fmt.Println(reqBody)
+
+	req := gjson.Parse(reqBody).Array()[0]
+	deckId := req.Get("deck_id").Int()
+	cardId := req.Get("card_index").Int()
+	suitId := req.Get("suit_master_id").Int()
+
+	deckIndex := deckId*2 - 1
+	keyLiveDeck := fmt.Sprintf("user_live_deck_by_id.%d", deckIndex)
+	// fmt.Println("keyLiveDeck:", keyLiveDeck)
+	liveDeck := gjson.Parse(GetUserData("liveDeck.json")).Get(keyLiveDeck).String()
+	// fmt.Println(liveDeck)
+	keyLiveDeckInfo := fmt.Sprintf("suit_master_id_%d", cardId)
+	liveDeck, _ = sjson.Set(liveDeck, keyLiveDeckInfo, suitId)
+	// fmt.Println(liveDeck)
+
+	var deckInfo model.AsDeckInfo
+	if err := json.Unmarshal([]byte(liveDeck), &deckInfo); err != nil {
+		panic(err)
+	}
+
+	SetUserData("liveDeck.json", keyLiveDeck, deckInfo)
+
+	signBody, _ := sjson.Set(GetUserData("saveSuit.json"),
+		"user_model.user_status", GetUserStatus())
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_deck_by_id.0", deckId)
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_deck_by_id.1", deckInfo)
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+	// fmt.Println(resp)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsSaveDeck(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+	// fmt.Println(reqBody)
+
+	req := gjson.Parse(reqBody).Array()[0]
+	deckId := req.Get("deck_id")
+	// fmt.Println("deckId:", deckId)
+
+	position := req.Get("card_master_ids.0")
+	cardMasterId := req.Get("card_master_ids.1")
+	// fmt.Println("cardMasterId:", cardMasterId)
+
+	var deckInfo, partyInfo string
+	var oldCardMasterId int64
+	var partyId int64
+	var savePartyInfo model.AsPartyInfo
+	deckList := GetUserData("liveDeck.json")
+	gjson.Parse(deckList).Get("user_live_deck_by_id").ForEach(func(key, value gjson.Result) bool {
+		if value.IsObject() && value.Get("user_live_deck_id").String() == deckId.String() {
+			deckInfo = value.String()
+			// fmt.Println("deckInfo:", deckInfo)
+
+			oldCardMasterId = gjson.Parse(deckInfo).Get("card_master_id_" + position.String()).Int()
+			deckInfo, _ = sjson.Set(deckInfo, "card_master_id_"+position.String(), cardMasterId.Int())
+			deckInfo, _ = sjson.Set(deckInfo, "suit_master_id_"+position.String(), cardMasterId.Int())
+			// fmt.Println("New deckInfo:", deckInfo)
+
+			SetUserData("liveDeck.json", "user_live_deck_by_id."+key.String(), gjson.Parse(deckInfo).Value())
+
+			return false
+		}
+		return true
+	})
+	gjson.Parse(deckList).Get("user_live_party_by_id").ForEach(func(key, value gjson.Result) bool {
+		if value.IsObject() && (value.Get("party_id").String() == deckId.String()+"01" ||
+			value.Get("party_id").String() == deckId.String()+"02" ||
+			value.Get("party_id").String() == deckId.String()+"03") {
+			value.ForEach(func(kk, vv gjson.Result) bool {
+				if vv.Int() == oldCardMasterId {
+					partyInfo = value.String()
+					// fmt.Println("partyInfo:", partyInfo)
+
+					partyInfo, _ = sjson.Set(partyInfo, kk.String(), cardMasterId.Int())
+					// fmt.Println("New partyInfo:", partyInfo)
+
+					newPartyInfo := gjson.Parse(partyInfo)
+					partyId = newPartyInfo.Get("party_id").Int()
+
+					roleIds := []int{}
+					err := MainEng.Table("m_card").
+						Where("id IN (?,?,?)", newPartyInfo.Get("card_master_id_1").Int(),
+							newPartyInfo.Get("card_master_id_2").Int(),
+							newPartyInfo.Get("card_master_id_3").Int()).
+						Cols("role").Find(&roleIds)
+					CheckErr(err)
+					// fmt.Println("roleIds:", roleIds)
+
+					partyIcon, partyName := GetPartyInfoByRoleIds(roleIds)
+					realPartyName := GetRealPartyName(partyName)
+					partyInfo, _ = sjson.Set(partyInfo, "name.dot_under_text", realPartyName)
+					partyInfo, _ = sjson.Set(partyInfo, "icon_master_id", partyIcon)
+					// fmt.Println("New partyInfo 2:", partyInfo)
+
+					decoder := json.NewDecoder(strings.NewReader(partyInfo))
+					decoder.UseNumber()
+					err = decoder.Decode(&savePartyInfo)
+					CheckErr(err)
+					SetUserData("liveDeck.json", "user_live_party_by_id."+key.String(), savePartyInfo)
+
+					return false
+				}
+				return true
+			})
+		}
+		return true
+	})
+
+	signBody := GetUserData("SaveDeck.json")
+	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_deck_by_id.0", deckId.Int())
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_deck_by_id.1", gjson.Parse(deckInfo).Value())
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_party_by_id.0", partyId)
+	signBody, _ = sjson.Set(signBody, "user_model.user_live_party_by_id.1", savePartyInfo)
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+	// fmt.Println(resp)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsSetFavoriteMember(ctx *gin.Context) {
+	reqBody := ctx.GetString("reqBody")
+
+	SetUserData("userStatus.json", "favorite_member_id",
+		gjson.Parse(reqBody).Array()[0].Get("member_master_id").Int())
+	signBody, _ := sjson.Set(GetUserData("setFavoriteMember.json"),
+		"user_model.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsFetchMission(ctx *gin.Context) {
+	signBody, _ := sjson.Set(GetUserData("fetchMission.json"),
+		"user_model.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsClearMissionBadge(ctx *gin.Context) {
+	signBody, _ := sjson.Set(GetUserData("clearMissionBadge.json"),
+		"user_model.user_status", GetUserStatus())
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.String(http.StatusOK, resp)
+}
+
+func AsFetchPresent(ctx *gin.Context) {
+	signBody := GetUserData("fetchPresent.json")
+	resp := SignResp(ctx.GetString("ep"), signBody, sessionKey)
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.String(http.StatusOK, resp)

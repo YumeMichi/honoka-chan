@@ -257,7 +257,8 @@ func init() {
 	// CheckErr(err)
 
 	// missionRes := []model.AsMissionRes{}
-	// err = eng.Table("m_mission").Cols("id,mission_clear_condition_count").Where("term = 3").OrderBy("id ASC").Find(&missionRes)
+	// err = eng.Table("m_mission").Cols("id,mission_clear_condition_count").
+	// 	Where("term = 3 AND (end_at > ? OR end_at IS NULL)", time.Now().Unix()).OrderBy("id ASC").Find(&missionRes)
 	// CheckErr(err)
 
 	// jsonStr := "["
@@ -286,7 +287,7 @@ func init() {
 
 	// missionRes := []model.AsMissionRes{}
 	// err = eng.Table("m_mission").Cols("id,mission_clear_condition_count").
-	// 	Where("term = 1 AND end_at > ?", time.Now().Unix()).OrderBy("id ASC").Find(&missionRes)
+	// 	Where("term = 1 AND (end_at > ? OR end_at IS NULL)", time.Now().Unix()).OrderBy("id ASC").Find(&missionRes)
 	// CheckErr(err)
 
 	// jsonStr := "["
@@ -316,7 +317,7 @@ func init() {
 
 	// missionRes := []model.AsMissionRes{}
 	// err = eng.Table("m_mission").Cols("id,mission_clear_condition_count").
-	// 	Where("term = 2 AND end_at > ?", time.Now().Unix()).OrderBy("id ASC").Find(&missionRes)
+	// 	Where("term = 2 AND (end_at > ? OR end_at IS NULL)", time.Now().Unix()).OrderBy("id ASC").Find(&missionRes)
 	// CheckErr(err)
 
 	// jsonStr := "["

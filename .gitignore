@@ -1,14 +1,15 @@
 honoka-chan
 honoka-chan.exe
 
+config.json
+
 data
 temp
 
 assets/data.db
 assets/dictionary_zh_k.db
 assets/masterdata.db
-
-static/llas-dev
+assets/userdata
 
 .idea
 .vscode

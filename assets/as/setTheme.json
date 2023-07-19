@@ -58,27 +58,9 @@
             "member_guild_member_master_id": 1,
             "member_guild_last_updated_at": 1659485328
         },
-        "user_member_by_member_id": [
-            "MEMBER_MASTER_ID",
-            {
-                "member_master_id": "MEMBER_MASTER_ID",
-                "custom_background_master_id": "BACKGROUND_MASTER_ID",
-                "suit_master_id": "SUIT_MASTER_ID",
-                "love_point": 10271130,
-                "love_point_limit": 10271130,
-                "love_level": 450,
-                "view_status": 1,
-                "is_new": true
-            }
-        ],
+        "user_member_by_member_id": [],
         "user_card_by_card_id": [],
-        "user_suit_by_suit_id": [
-            "SUIT_MASTER_ID",
-            {
-                "suit_master_id": "SUIT_MASTER_ID",
-                "is_new": false
-            }
-        ],
+        "user_suit_by_suit_id": [],
         "user_live_deck_by_id": [],
         "user_live_party_by_id": [],
         "user_lesson_deck_by_id": [],
