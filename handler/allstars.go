@@ -282,34 +282,8 @@ func AsLiveMvSaveDeck(ctx *gin.Context) {
 	userLiveMvDeckCustomByID = append(userLiveMvDeckCustomByID, userLiveMvDeckInfo)
 	// fmt.Println(userLiveMvDeckCustomByID)
 
-	viewStatusIds := map[int]int{}
-	for k, v := range saveReq.ViewStatusByPos {
-		if k%2 == 0 {
-			viewStatusId := saveReq.ViewStatusByPos[k+1]
-			viewStatusIds[v] = viewStatusId
-		}
-	}
-	// fmt.Println(viewStatusIds)
-
-	var userMemberByMemberID []any
-	for k, v := range memberIds {
-		userMemberByMemberID = append(userMemberByMemberID, v)
-		userMemberByMemberID = append(userMemberByMemberID, model.UserMemberInfo{
-			MemberMasterID:           v,
-			CustomBackgroundMasterID: 103506600,
-			SuitMasterID:             suitIds[k],
-			LovePoint:                0,
-			LovePointLimit:           999999,
-			LoveLevel:                1,
-			ViewStatus:               viewStatusIds[k],
-			IsNew:                    true,
-		})
-	}
-	// fmt.Println(userMemberByMemberID)
-
 	signBody := GetUserData("liveMvSaveDeck.json")
 	signBody, _ = sjson.Set(signBody, "user_model.user_status", GetUserStatus())
-	signBody, _ = sjson.Set(signBody, "user_model.user_member_by_member_id", userMemberByMemberID)
 	signBody, _ = sjson.Set(signBody, "user_model.user_live_mv_deck_custom_by_id", userLiveMvDeckCustomByID)
 
 	resp := SignResp(ctx.GetString("ep"), string(signBody), sessionKey)
