@@ -38,8 +38,6 @@ func ScenarioStartup(ctx *gin.Context) {
 	ctx.Header("X-Message-Sign", base64.StdEncoding.EncodeToString(encrypt.RSA_Sign_SHA1(resp, "privatekey.pem")))
 
 	ctx.String(http.StatusOK, string(resp))
-
-	ctx.String(http.StatusOK, string(resp))
 }
 
 func ScenarioReward(ctx *gin.Context) {
