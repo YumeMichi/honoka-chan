@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"honoka-chan/config"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
+	"honoka-chan/tools"
 	"net/http"
 	"strconv"
 	"time"
@@ -17,31 +19,39 @@ func UserInfo(ctx *gin.Context) {
 	userId, err := strconv.Atoi(ctx.GetString("userid"))
 	CheckErr(err)
 
+	pref := tools.UserPref{}
+	exists, err := UserEng.Table("user_preference_m").Where("user_id = ?", userId).Get(&pref)
+	CheckErr(err)
+	if !exists {
+		ctx.String(http.StatusForbidden, ErrorMsg)
+		return
+	}
+
 	userResp := model.UserInfoResp{
 		ResponseData: model.UserInfoRes{
 			User: model.UserInfo{
 				UserID:                         userId,
-				Name:                           "\u68a6\u8def @\u65c5\u7acb\u3061\u306e\u65e5\u306b",
-				Level:                          1028,
-				Exp:                            28824396,
-				PreviousExp:                    27734700,
-				NextExp:                        28941885,
-				GameCoin:                       112124104,
-				SnsCoin:                        0,
+				Name:                           pref.UserName,
+				Level:                          config.Conf.UserPrefs.Level,
+				Exp:                            config.Conf.UserPrefs.ExpNumerator,
+				PreviousExp:                    0,
+				NextExp:                        config.Conf.UserPrefs.ExpDenominator,
+				GameCoin:                       config.Conf.UserPrefs.GameCoin,
+				SnsCoin:                        config.Conf.UserPrefs.SnsCoin,
 				FreeSnsCoin:                    0,
 				PaidSnsCoin:                    0,
 				SocialPoint:                    1438395,
 				UnitMax:                        5000,
 				WaitingUnitMax:                 1000,
-				EnergyMax:                      417,
+				EnergyMax:                      config.Conf.UserPrefs.EnergyMax,
 				EnergyFullTime:                 "2023-03-20 03:58:55",
 				LicenseLiveEnergyRecoverlyTime: 60,
 				EnergyFullNeedTime:             0,
-				OverMaxEnergy:                  0,
+				OverMaxEnergy:                  config.Conf.UserPrefs.OverMaxEnergy,
 				TrainingEnergy:                 100,
 				TrainingEnergyMax:              100,
 				FriendMax:                      99,
-				InviteCode:                     "377385143",
+				InviteCode:                     config.Conf.UserPrefs.InviteCode,
 				InsertDate:                     "2015-08-10 18:58:30",
 				UpdateDate:                     "2018-08-09 18:13:12",
 				TutorialState:                  -1,

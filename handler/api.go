@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"honoka-chan/config"
 	"honoka-chan/encrypt"
 	"honoka-chan/model"
 	"honoka-chan/tools"
@@ -975,18 +976,20 @@ func Api(ctx *gin.Context) {
 					Cols("unit_removable_skill_id").Find(&removeSkillIds)
 				CheckErr(err)
 
+				userId, err := strconv.Atoi(config.Conf.UserPrefs.InviteCode)
+				CheckErr(err)
 				profileResp := model.ProfileResp{
 					Result: model.ProfileRes{
 						UserInfo: model.ProfileUserInfo{
-							UserID:               pref.UserID,
+							UserID:               userId,
 							Name:                 pref.UserName,
-							Level:                pref.UserLevel,
+							Level:                config.Conf.UserPrefs.Level,
 							CostMax:              100,
 							UnitMax:              5000,
-							EnergyMax:            1000,
+							EnergyMax:            config.Conf.UserPrefs.EnergyMax,
 							FriendMax:            99,
 							UnitCnt:              int(commonUnit + userUnit),
-							InviteCode:           strconv.Itoa(pref.UserID),
+							InviteCode:           config.Conf.UserPrefs.InviteCode,
 							ElapsedTimeFromLogin: "14\u5c0f\u65f6\u524d",
 							Introduction:         pref.UserDesc,
 						},
