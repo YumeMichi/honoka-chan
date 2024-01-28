@@ -15,6 +15,7 @@ type AppConfigs struct {
 }
 
 type Settings struct {
+	ServerPort   string `json:"server_port"`
 	SifCdnServer string `json:"sif_cdn_server"`
 	AsCdnServer  string `json:"as_cdn_server"`
 }
@@ -35,8 +36,9 @@ func DefaultConfigs() *AppConfigs {
 	return &AppConfigs{
 		AppName: "honoka-chan",
 		Settings: Settings{
-			SifCdnServer: "http://192.168.1.123/static",
-			AsCdnServer:  "http://192.168.1.123/static",
+			ServerPort:   "8080",
+			SifCdnServer: "http://127.0.0.1:8080/static",
+			AsCdnServer:  "http://127.0.0.1:8080/static",
 		},
 		UserPrefs: UserPrefs{
 			Name:           "梦路 @bilibili",
