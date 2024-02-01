@@ -38,7 +38,7 @@ func UserInfo(ctx *gin.Context) {
 				NextExp:                        config.Conf.UserPrefs.ExpDenominator,
 				GameCoin:                       config.Conf.UserPrefs.GameCoin,
 				SnsCoin:                        config.Conf.UserPrefs.SnsCoin,
-				FreeSnsCoin:                    0,
+				FreeSnsCoin:                    config.Conf.UserPrefs.SnsCoin,
 				PaidSnsCoin:                    0,
 				SocialPoint:                    1438395,
 				UnitMax:                        5000,

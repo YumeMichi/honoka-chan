@@ -240,7 +240,7 @@ type PlayScoreRes struct {
 	Off               Off        `json:"off"`
 	RankInfo          []RankInfo `json:"rank_info"`
 	CanActivateEffect bool       `json:"can_activate_effect"`
-	ServerTimestamp   int        `json:"server_timestamp"`
+	ServerTimestamp   int64      `json:"server_timestamp"`
 }
 
 // PlayScoreResp ...
@@ -617,7 +617,7 @@ type RewardRes struct {
 	AddedAchievementList         []any                         `json:"added_achievement_list"`
 	MuseumInfo                   Museum                        `json:"museum_info"`
 	UnitSupportList              []RewardUnitSupportList       `json:"unit_support_list"`
-	ServerTimestamp              int                           `json:"server_timestamp"`
+	ServerTimestamp              int64                         `json:"server_timestamp"`
 	PresentCnt                   int                           `json:"present_cnt"`
 }
 
