@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"encoding/json"
+	"encoding/csv"
 	"honoka-chan/model"
-	"honoka-chan/utils"
 	"net/http"
+	"os"
 	"path"
+	"strconv"
 	"time"
 
 	"github.com/forgoer/openssl"
@@ -78,10 +79,6 @@ func Upload(ctx *gin.Context) {
 	err = ctx.SaveUploadedFile(file, tmpPath)
 	CheckErr(err)
 
-	data := model.Data{}
-	err = json.Unmarshal([]byte(utils.ReadAllText(tmpPath)), &data)
-	CheckErr(err)
-
 	session := UserEng.NewSession()
 	defer session.Close()
 	if err = session.Begin(); err != nil {
@@ -89,13 +86,34 @@ func Upload(ctx *gin.Context) {
 		panic(err)
 	}
 
-	for _, team := range data.Team {
-		if team.Cardid == 0 {
-			continue
+	f, err := os.Open(tmpPath)
+	CheckErr(err)
+	defer f.Close()
+
+	r := csv.NewReader(f)
+	rs, err := r.ReadAll()
+	if err != nil {
+		session.Rollback()
+		ctx.JSON(http.StatusOK, ErrMsg{Error: 1, Msg: "文件解析失败！"})
+		return
+	}
+	for _, rr := range rs {
+		if len(rr) != 2 || rr[0] == "" || rr[1] == "" {
+			session.Rollback()
+			ctx.JSON(http.StatusOK, ErrMsg{Error: 1, Msg: "文件解析失败！"})
+			return
 		}
+
+		skillLv, err := strconv.Atoi(rr[1])
+		if err != nil {
+			session.Rollback()
+			ctx.JSON(http.StatusOK, ErrMsg{Error: 1, Msg: "文件解析失败！"})
+			return
+		}
+
 		var unitId, unitExp, unitRarity, unitHp, unitSigned int
 		exists, err := MainEng.Table("common_unit_m").Join("LEFT", "unit_m", "common_unit_m.unit_id = unit_m.unit_id").
-			Where("unit_m.unit_number = ?", team.Cardid).
+			Where("unit_m.unit_number = ?", rr[0]).
 			Cols("common_unit_m.unit_id,common_unit_m.exp,unit_m.rarity,common_unit_m.max_hp,common_unit_m.is_signed").
 			Get(&unitId, &unitExp, &unitRarity, &unitHp, &unitSigned)
 		CheckErr(err)
@@ -112,6 +130,12 @@ func Upload(ctx *gin.Context) {
 			return
 		}
 
+		if skillLv < 0 || skillLv > 8 {
+			session.Rollback()
+			ctx.JSON(http.StatusOK, ErrMsg{Error: 1, Msg: "技能等级设置有误！"})
+			return
+		}
+
 		var diffExp, diffSmile, diffPure, diffCool int
 		_, err = MainEng.Table("unit_level_limit_pattern_m").Where("unit_level_limit_id = 1 AND unit_level = 350").
 			Cols("next_exp,smile_diff,pure_diff,cool_diff").Get(&diffExp, &diffSmile, &diffPure, &diffCool)
@@ -123,7 +147,7 @@ func Upload(ctx *gin.Context) {
 		}
 
 		var skillExp int
-		if team.Skilllevel != 8 {
+		if skillLv != 8 {
 			skillExp = 0
 		} else {
 			skillExp = 29900
@@ -142,7 +166,7 @@ func Upload(ctx *gin.Context) {
 			Love:                        1000,
 			MaxLove:                     1000,
 			UnitSkillExp:                skillExp,
-			UnitSkillLevel:              team.Skilllevel,
+			UnitSkillLevel:              skillLv,
 			MaxHp:                       unitHp,
 			UnitRemovableSkillCapacity:  8,
 			FavoriteFlag:                false,

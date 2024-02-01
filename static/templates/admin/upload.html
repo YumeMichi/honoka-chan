@@ -7,6 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>SIF 小助手</title>
     {{ template "admin/nav/css.html" . }}
+    <style>
+        li {
+            list-style-type: decimal !important;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,7 +21,7 @@
         {{ template "admin/nav/side.html" . }}
 
         <div class="layui-body">
-            <form class="layui-form layui-col-md4" action="">
+            <form class="layui-form layui-col-md6" action="">
                 <div class="layui-form-item">
                     <label class="layui-form-label">文件</label>
                     <div class="layui-input-block">
@@ -27,13 +33,18 @@
                     <div class="layui-input-block">
                         <div class="layui-collapse">
                             <div class="layui-colla-item">
-                                <h2 class="layui-colla-title">帮助</h2>
+                                <h2 class="layui-colla-title">使用帮助</h2>
                                 <div class="layui-colla-content">
                                     <ol>
-                                        <li>仅支持导入LLHelper队伍信息</li>
-                                        <li>仅需要设置技能等级，卡片默认等级MAX，宝石请在游戏内设置</li>
-                                        <li>仅支持导入UR卡片</li>
-                                        <li>仅支持导入国服拥有的卡片</li>
+                                        <li>从 <a href="https://card.niconi.co.ni/" target="_blank">LLSIF
+                                                查卡器</a> 查询需要导入的卡片 ID，卡片信息上的 No.xxx 数字。
+                                        </li>
+                                        <li>使用任意文本编辑器创建一个 .txt 文件，按照<b>卡片 ID,技能等级</b>的格式（例如 SDS 果，技能 8 级则填入
+                                            3885,8）填入需要导入的卡片，每张卡片单独一行。</li>
+                                        <li>分隔符逗号为<b>半角 ,</b> 而非<b>全角 ，</b>。</li>
+                                        <li>仅需要设置技能等级，卡片默认等级MAX，宝石请在游戏内设置。</li>
+                                        <li>仅支持导入UR卡片。</li>
+                                        <li>仅支持导入国服拥有的卡片。</li>
                                     </ol>
                                 </div>
                             </div>
@@ -62,7 +73,6 @@
                 , url: '/admin/upload' // 此处配置你自己的上传接口即可
                 , auto: false
                 , accept: 'file' // 普通文件
-                , exts: 'sd' // 只允许上传 .sd 文件
                 , size: 50 // 限制文件大小，单位 KB
                 , bindAction: '#test9'
                 , done: function (res) {
