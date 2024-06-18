@@ -10,6 +10,9 @@ LoveLive! 学园偶像祭、学园偶像季: 群星闪耀 自用私服。
 2. [其四：服务端部署](doc/4.md)
 2. [其五：运行测试](doc/5.md)
 
+## 视频教程
+ - [合集·SIF、AS 私服（本地服）搭建教程](https://space.bilibili.com/671443/channel/collectiondetail?sid=2148053)
+
 ## 特别感谢
 
  - 虹原翼 (yazawa@niconi.co.ni) @ [LLSIF 查卡器
