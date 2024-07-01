@@ -1,0 +1,158 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.4
+
+      - name: Build
+        run: |
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o honoka-chan_${{ matrix.goos }}_${{ matrix.goarch }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: honoka-chan_${{ matrix.goos }}_${{ matrix.goarch }}
+          path: honoka-chan_${{ matrix.goos }}_${{ matrix.goarch }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create additional information
+        id: create_additional_info
+        run: |
+          COMMIT_ID=$(git log --format=%H -1)
+          COMMIT_TITLE=$(git log --format=%s -1)
+          echo "COMMIT_ID=${COMMIT_ID}" >> $GITHUB_ENV
+          echo "COMMIT_TITLE=${COMMIT_TITLE}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Download Linux AMD64 Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: honoka-chan_linux_amd64
+
+      - name: Download Linux ARM64 Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: honoka-chan_linux_arm64
+
+      - name: Download Windows AMD64 Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: honoka-chan_windows_amd64
+
+      - name: Download Windows ARM64 Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: honoka-chan_windows_arm64
+
+      - name: Download macOS AMD64 Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: honoka-chan_darwin_amd64
+
+      - name: Download macOS ARM64 Binary
+        uses: actions/download-artifact@v3
+        with:
+          name: honoka-chan_darwin_arm64
+
+      - name: Rename Windows Binaries
+        run: |
+          mv honoka-chan_windows_amd64 honoka-chan_windows_amd64.exe
+          mv honoka-chan_windows_arm64 honoka-chan_windows_arm64.exe
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: Release ${{ env.RELEASE_TAG }}
+          body: ${{ env.COMMIT_ID }} ${{ env.COMMIT_TITLE }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Linux AMD64 Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: honoka-chan_linux_amd64
+          asset_name: honoka-chan_linux_amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Linux ARM64 Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: honoka-chan_linux_arm64
+          asset_name: honoka-chan_linux_arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows AMD64 Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: honoka-chan_windows_amd64.exe
+          asset_name: honoka-chan_windows_amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows ARM64 Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: honoka-chan_windows_arm64.exe
+          asset_name: honoka-chan_windows_arm64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS AMD64 Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: honoka-chan_darwin_amd64
+          asset_name: honoka-chan_darwin_amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS ARM64 Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: honoka-chan_darwin_arm64
+          asset_name: honoka-chan_darwin_arm64
+          asset_content_type: application/octet-stream
