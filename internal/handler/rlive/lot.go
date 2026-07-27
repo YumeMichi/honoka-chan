@@ -15,12 +15,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
-
-var rliveCST = time.FixedZone("CST", 8*3600)
 
 type randomLiveCandidateRow struct {
 	LiveDifficultyID  int    `xorm:"live_difficulty_id"`
@@ -39,7 +36,7 @@ func lot(ctx *gin.Context) {
 		return
 	}
 
-	if err := validateLotReq(req, time.Now()); ss.CheckErr(err) {
+	if err := validateLotReq(req); ss.CheckErr(err) {
 		return
 	}
 
@@ -143,7 +140,7 @@ func loadOrCreateRandomLive(ss *session.Session, req rliveschema.LotReq) (random
 	}, nil
 }
 
-func validateLotReq(req rliveschema.LotReq, now time.Time) error {
+func validateLotReq(req rliveschema.LotReq) error {
 	if req.Difficulty < 1 || req.Difficulty > 4 {
 		return errors.New("invalid difficulty")
 	}
@@ -152,9 +149,6 @@ func validateLotReq(req rliveschema.LotReq, now time.Time) error {
 	}
 	if req.MemberCategory < 0 {
 		return errors.New("invalid member category")
-	}
-	if int(now.In(rliveCST).Weekday())%3+1 != req.Attribute {
-		return errors.New("attribute does not match current random live rotation")
 	}
 	return nil
 }
