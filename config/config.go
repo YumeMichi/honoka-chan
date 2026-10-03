@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -26,12 +27,16 @@ type Settings struct {
 	ListenPort               string `json:"listen_port"`
 	CdnServer                string `json:"cdn_server"`
 	UnlockAllSpecialRotation bool   `json:"unlock_all_special_rotation"`
+	SessionKey               string `json:"session_key"`
 }
 
 func InitConfig() error {
 	conf, err := Load("./config.json")
 	if err != nil {
 		return err
+	}
+	if err := conf.Validate(); err != nil {
+		return fmt.Errorf("invalid configuration: %w", err)
 	}
 	Conf = conf
 	return nil
@@ -46,6 +51,18 @@ func DefaultConfigs() *AppConfigs {
 			UnlockAllSpecialRotation: false,
 		},
 	}
+}
+
+const minSessionKeyBytes = 32
+
+func (c *AppConfigs) Validate() error {
+	if strings.TrimSpace(c.Settings.SessionKey) != c.Settings.SessionKey {
+		return fmt.Errorf("settings.session_key must not contain leading or trailing whitespace")
+	}
+	if len([]byte(c.Settings.SessionKey)) < minSessionKeyBytes {
+		return fmt.Errorf("settings.session_key must contain at least %d bytes", minSessionKeyBytes)
+	}
+	return nil
 }
 
 func Load(p string) (*AppConfigs, error) {

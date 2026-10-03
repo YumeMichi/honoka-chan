@@ -48,3 +48,23 @@ func TestLoadBacksUpInvalidConfig(t *testing.T) {
 	}
 	t.Fatal("invalid config backup was not created")
 }
+
+func TestValidateRequiresSessionKey(t *testing.T) {
+	conf := DefaultConfigs()
+	if err := conf.Validate(); err == nil {
+		t.Fatal("Validate accepted a missing session key")
+	}
+
+	conf.Settings.SessionKey = "01234567890123456789012345678901"
+	if err := conf.Validate(); err != nil {
+		t.Fatalf("Validate rejected a sufficiently long session key: %v", err)
+	}
+}
+
+func TestValidateRejectsWhitespaceAroundSessionKey(t *testing.T) {
+	conf := DefaultConfigs()
+	conf.Settings.SessionKey = " 01234567890123456789012345678901"
+	if err := conf.Validate(); err == nil {
+		t.Fatal("Validate accepted a session key with leading whitespace")
+	}
+}

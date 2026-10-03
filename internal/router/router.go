@@ -2,6 +2,7 @@
 package router
 
 import (
+	"honoka-chan/config"
 	honokautils "honoka-chan/internal/utils"
 	"net/http"
 	"os"
@@ -97,7 +98,7 @@ func SifRouter(r *gin.Engine) {
 	r.StaticFile("/favicon.ico", "static/images/favicon.ico")
 
 	// session
-	store := cookie.NewStore([]byte("llsif"))
+	store := cookie.NewStore([]byte(config.Conf.Settings.SessionKey))
 	r.Use(sessions.Sessions("llsif", store))
 
 	// manga
