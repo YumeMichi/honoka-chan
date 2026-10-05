@@ -1,26 +1,46 @@
 package middleware
 
 import (
+	"bytes"
 	"fmt"
 	"honoka-chan/internal/session"
 	honokautils "honoka-chan/internal/utils"
+	"io"
+	"mime"
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Common(ctx *gin.Context) {
+	// The iOS client sometimes sends an unquoted boundary containing '/'.
+	// Go rejects that Content-Type before reading the otherwise valid body.
+	var rawBody []byte
+	contentType := ctx.GetHeader("Content-Type")
+	_, _, mediaTypeErr := mime.ParseMediaType(contentType)
+	if mediaTypeErr != nil && strings.HasPrefix(contentType, "multipart/form-data; boundary=") &&
+		ctx.Request.ContentLength > 0 && ctx.Request.ContentLength <= 1<<20 {
+		if body, err := io.ReadAll(ctx.Request.Body); err == nil {
+			rawBody = body
+			ctx.Request.Body = io.NopCloser(bytes.NewReader(body))
+		}
+	}
 	reqData := ""
-	if form, err := ctx.MultipartForm(); err == nil {
+	form, formErr := ctx.MultipartForm()
+	if formErr == nil {
 		if v, ok := form.Value["request_data"]; ok && len(v) > 0 {
 			reqData = v[0]
 		}
 	}
 	if reqData == "" {
 		reqData = ctx.PostForm("request_data")
+	}
+	if reqData == "" {
+		reqData = honokautils.RecoverMultipartRequestData(contentType, rawBody)
 	}
 	ctx.Set("request_data", reqData)
 
